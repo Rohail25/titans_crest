@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Services\Admin\AdminConfigService;
+use Illuminate\Http\Request;
+
+class ConfigurationController extends Controller
+{
+    public function index()
+    {
+        $settings = AdminConfigService::getAll();
+        $packages = AdminConfigService::getPackageSettings();
+
+        return view('admin.settings.index', compact('settings', 'packages'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'bnb_wallet_address' => 'required|string',
+            'referral_commission_percent' => 'required|numeric|min:0|max:100',
+            'withdrawal_fee_percent' => 'required|numeric|min:0|max:100',
+            'otp_expiry_minutes' => 'required|integer|min:1',
+            'min_withdrawal_amount' => 'required|numeric|min:0',
+        ]);
+
+        $settings = [
+            'bnb_wallet_address' => $request->bnb_wallet_address,
+            'referral_commission_percent' => $request->referral_commission_percent,
+            'withdrawal_fee_percent' => $request->withdrawal_fee_percent,
+            'otp_expiry_minutes' => $request->otp_expiry_minutes,
+            'min_withdrawal_amount' => $request->min_withdrawal_amount,
+        ];
+
+        AdminConfigService::updateSettings($settings, auth()->user());
+
+        return back()->with('success', 'Settings updated successfully.');
+    }
+
+    public function updatePackage(Request $request, $packageId)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'daily_profit_rate' => 'required|numeric|min:0|max:100',
+            'duration_days' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
+        ]);
+
+        AdminConfigService::updatePackage(
+            $packageId,
+            $request->only(['name', 'price', 'daily_profit_rate', 'duration_days', 'is_active']),
+            auth()->user()
+        );
+
+        return back()->with('success', 'Package updated successfully.');
+    }
+}
