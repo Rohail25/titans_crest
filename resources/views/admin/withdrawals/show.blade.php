@@ -31,7 +31,18 @@
                 <p><strong>Requested Amount:</strong> ${{ number_format($withdrawal->requested_amount, 2) }}</p>
                 <p><strong>Fee (5%):</strong> -${{ number_format($withdrawal->deduction_amount, 2) }}</p>
                 <p><strong>Net Amount:</strong> <strong class="text-success">${{ number_format($withdrawal->net_amount, 2) }}</strong></p>
+                <p><strong>Wallet Address:</strong><br>
+                    <code class="text-info">{{ $withdrawal->wallet_address ?? 'Not provided' }}</code>
+                </p>
+                @if($withdrawal->tx_hash)
+                    <p><strong>Transaction Hash:</strong><br>
+                        <code class="text-success">{{ $withdrawal->tx_hash }}</code>
+                    </p>
+                @endif
                 <p><strong>Requested:</strong> {{ $withdrawal->created_at->format('M d, Y H:i') }}</p>
+                @if($withdrawal->approved_at)
+                    <p><strong>Approved:</strong> {{ $withdrawal->approved_at->format('M d, Y H:i') }}</p>
+                @endif
             </div>
         </div>
     </div>
@@ -100,7 +111,7 @@
 </div>
 
 <!-- Actions -->
-<div class="row">
+{{-- <div class="row">
     <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header text-success">
@@ -111,15 +122,21 @@
                 <form action="{{ route('admin.withdrawals.approve', $withdrawal->id) }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Destination Wallet Address</label>
-                        <input type="text" name="wallet_address" class="form-control" required>
+                        <label class="form-label">User's Wallet Address</label>
+                        <input type="text" class="form-control" value="{{ $withdrawal->wallet_address }}" readonly>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i> Manually send BNB {{ number_format($withdrawal->net_amount, 2) }} to this address via MetaMask
+                        </small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Transaction Hash (Optional)</label>
-                        <input type="text" name="tx_hash" class="form-control">
+                        <label class="form-label">Transaction Hash <span class="text-danger">*</span></label>
+                        <input type="text" name="tx_hash" class="form-control" placeholder="Enter blockchain transaction hash" required>
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i> After sending funds via MetaMask, paste the transaction hash here
+                        </small>
                     </div>
                     <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-check"></i> Approve & Process
+                        <i class="fas fa-check"></i> Confirm Payment & Approve
                     </button>
                 </form>
             </div>
@@ -146,7 +163,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 <a href="{{ route('admin.withdrawals.index') }}" class="btn btn-secondary mt-3">
     <i class="fas fa-arrow-left"></i> Back to List

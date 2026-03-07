@@ -62,14 +62,17 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="min-h-screen gradient-bg pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center">
-        <div class="w-full max-w-md mx-auto">
+    <div class="min-h-screen gradient-bg pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div style="width: 100%; max-width: 450px;">
             <!-- Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Create Account</h1>
-                    <p class="text-gray-600">Join thousands of successful investors</p>
+                    <div class="mb-4">
+                        <a href="/" class="inline-block text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+                    <p class="text-gray-600 text-sm">Join thousands of successful investors</p>
                 </div>
 
                 <!-- Global Error Alert -->
@@ -101,12 +104,12 @@
                 </div>
 
                 <!-- Form -->
-                <form method="POST" action="/register" class="space-y-6">
+                <form method="POST" action="/register" class="space-y-0">
                     @csrf
 
                     <!-- Full Name -->
-                    <div>
-                        <label for="name" class="block text-sm font-semibold text-gray-900 mb-2">Full Name</label>
+                    <div class="mb-6">
+                        <label for="name" class="block text-sm font-semibold text-gray-900 mb-3">Full Name</label>
                         <input 
                             type="text" 
                             name="name" 
@@ -114,7 +117,7 @@
                             value="{{ old('name') }}"
                             required
                             autofocus
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="John Doe"
                         >
                         @error('name')
@@ -123,15 +126,15 @@
                     </div>
 
                     <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-900 mb-2">Email Address</label>
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-semibold text-gray-900 mb-3">Email Address</label>
                         <input 
                             type="email" 
                             name="email" 
                             id="email"
                             value="{{ old('email') }}"
                             required
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="you@example.com"
                         >
                         @error('email')
@@ -140,14 +143,14 @@
                     </div>
 
                     <!-- Password -->
-                    <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-semibold text-gray-900 mb-3">Password</label>
                         <input 
                             type="password" 
                             name="password" 
                             id="password"
                             required
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="••••••••"
                         >
                         @error('password')
@@ -157,27 +160,30 @@
                     </div>
 
                     <!-- Confirm Password -->
-                    <div>
-                        <label for="password_confirmation" class="block text-sm font-semibold text-gray-900 mb-2">Confirm Password</label>
+                    <div class="mb-6">
+                        <label for="password_confirmation" class="block text-sm font-semibold text-gray-900 mb-3">Confirm Password</label>
                         <input 
                             type="password" 
                             name="password_confirmation" 
                             id="password_confirmation"
                             required
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="••••••••"
                         >
+                        @error('password_confirmation')
+                            <p class="mt-2 text-red-600 text-sm font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Referral Code (Optional) -->
-                    <div>
-                        <label for="referral_code" class="block text-sm font-semibold text-gray-900 mb-2">Referral Code (Optional)</label>
+                    <div class="mb-6">
+                        <label for="referral_code" class="block text-sm font-semibold text-gray-900 mb-3">Referral Code <span class="font-normal text-gray-500">(Optional)</span></label>
                         <input 
                             type="text" 
                             name="referral_code" 
                             id="referral_code"
                             value="{{ old('referral_code', $referralCode ?? request('ref')) }}"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="Enter referral code"
                         >
                         @error('referral_code')
@@ -186,10 +192,10 @@
                     </div>
 
                     <!-- Terms -->
-                    <div>
+                    <div class="mb-6 p-4 bg-gray-50 border-2 border-gray-300 rounded-lg">
                         <div class="flex items-start">
-                            <input type="checkbox" name="terms" id="terms" required class="mt-1 rounded border-gray-300 text-blue-900 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <label for="terms" class="ml-3 text-sm text-gray-700">
+                            <input type="checkbox" name="terms" id="terms" required class="mt-1 rounded border-2 border-gray-300 text-blue-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer">
+                            <label for="terms" class="ml-3 text-sm text-gray-700 cursor-pointer">
                                 I agree to the <a href="#" class="text-blue-900 font-semibold hover:underline">Terms of Service</a> and <a href="#" class="text-blue-900 font-semibold hover:underline">Privacy Policy</a>
                             </label>
                         </div>
@@ -201,7 +207,7 @@
                     <!-- Submit Button -->
                     <button 
                         type="submit" 
-                        class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold py-3 rounded-lg hover:from-amber-600 hover:to-amber-700 transition shadow-lg"
+                        class="w-full bg-gradient-to-r from-blue-900 to-blue-700 font-bold py-3 rounded-lg hover:from-blue-800 hover:to-blue-600 transition shadow-lg mb-6 border-2 border-blue-800"
                     >
                         Create Account
                     </button>

@@ -38,10 +38,40 @@
     </div>
 </div>
 
-<!-- Pending Withdrawals Table -->
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-filter"></i> Filter Withdrawals
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ route('admin.withdrawals.index') }}" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="pending_otp" {{ request('status') === 'pending_otp' ? 'selected' : '' }}>Pending OTP</option>
+                    <option value="pending_approval" {{ request('status') === 'pending_approval' ? 'selected' : '' }}>Pending Approval</option>
+                    <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-8 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Apply
+                </button>
+                <a href="{{ route('admin.withdrawals.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- All Withdrawals Table -->
 <div class="card">
     <div class="card-header">
-        <i class="fas fa-list"></i> Pending Withdrawals
+        <i class="fas fa-list"></i> All Withdrawals
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -65,9 +95,19 @@
                         <td>${{ number_format($withdrawal->net_amount, 2) }}</td>
                         <td>${{ number_format($withdrawal->deduction_amount, 2) }}</td>
                         <td>
-                            <span class="badge badge-warning">
-                                <i class="fas fa-hourglass-end"></i>
-                                {{ ucfirst(str_replace('_', ' ', $withdrawal->status)) }}
+                            @php
+                                $status = $withdrawal->status;
+                                $statusClass = match($status) {
+                                    'pending_otp' => 'info',
+                                    'pending_approval' => 'warning',
+                                    'approved' => 'success',
+                                    'rejected' => 'danger',
+                                    'cancelled' => 'secondary',
+                                    default => 'secondary'
+                                };
+                            @endphp
+                            <span class="badge badge-{{ $statusClass }}">
+                                {{ ucfirst(str_replace('_', ' ', $status)) }}
                             </span>
                         </td>
                         <td>
@@ -82,7 +122,7 @@
                 @empty
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-check-circle"></i> No pending withdrawals
+                            <i class="fas fa-inbox"></i> No withdrawals found
                         </td>
                     </tr>
                 @endforelse

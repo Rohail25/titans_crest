@@ -36,14 +36,17 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="min-h-screen gradient-bg pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center">
-        <div class="w-full max-w-md mx-auto">
+    <div class="min-h-screen gradient-bg pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div style="width: 100%; max-width: 450px;">
             <!-- Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-                    <p class="text-gray-600">Sign in to access your investment account</p>
+                    <div class="mb-4">
+                        <a href="/" class="inline-block text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+                    <p class="text-gray-600 text-sm">Sign in to access your investment account</p>
                 </div>
 
                 <!-- Session Messages -->
@@ -76,13 +79,14 @@
                         </ul>
                     </div>
                 @endif
+
                 <!-- Form -->
-                <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
+                <form method="POST" action="{{ route('login.post') }}" class="space-y-5">
                     @csrf
 
                     <!-- Email -->
-                    <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-900 mb-2">Email Address</label>
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-semibold text-gray-900 mb-3">Email Address</label>
                         <input 
                             type="email" 
                             name="email" 
@@ -90,7 +94,7 @@
                             value="{{ old('email') }}"
                             required
                             autofocus
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="you@example.com"
                         >
                         @error('email')
@@ -99,14 +103,14 @@
                     </div>
 
                     <!-- Password -->
-                    <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-semibold text-gray-900 mb-3">Password</label>
                         <input 
                             type="password" 
                             name="password" 
                             id="password"
                             required
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                             placeholder="••••••••"
                         >
                         @error('password')
@@ -115,15 +119,15 @@
                     </div>
 
                     <!-- Remember Me -->
-                    <div class="flex items-center">
-                        <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-blue-900 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <label for="remember" class="ml-3 text-sm text-gray-700">Remember me</label>
+                    <div class="flex items-center mb-6">
+                        <input type="checkbox" name="remember" id="remember" class="rounded border-2 border-gray-300 text-blue-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer">
+                        <label for="remember" class="ml-3 text-sm text-gray-700 cursor-pointer">Remember me</label>
                     </div>
 
                     <!-- Submit Button -->
                     <button 
                         type="submit" 
-                        class="w-full bg-gray-400 text-black font-bold py-3 rounded-lg hover:from-blue-800 hover:to-blue-600 transition shadow-lg"
+                        class="text-black w-full bg-gradient-to-r from-blue-900 to-blue-700 font-bold py-3 rounded-lg hover:from-blue-800 hover:to-blue-600 transition shadow-lg mb-6 border-2 border-blue-800"
                     >
                         Sign In
                     </button>

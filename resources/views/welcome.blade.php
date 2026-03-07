@@ -354,6 +354,212 @@
         </div>
     </section>
 
+    <!-- Testimonials Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">What Our <span class="gradient-text">Investors Say</span></h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Real success stories from real investors on our platform</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border border-blue-200 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold">JM</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-gray-900">John Mitchell</h4>
+                            <p class="text-sm text-gray-600">Verified Investor</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"I've been investing with Titans Crest for 6 months now and the returns have exceeded my expectations. The platform is transparent, secure, and the daily profits are consistently credited."</p>
+                    <div class="text-amber-400 text-lg">★★★★★</div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-8 border border-amber-200 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold">SR</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-gray-900">Sarah Rodriguez</h4>
+                            <p class="text-sm text-gray-600">Professional Investor</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"As someone who has invested in various platforms, Titans Crest stands out with its clarity and customer support. The withdrawal process is quick and I've never had any issues."</p>
+                    <div class="text-amber-400 text-lg">★★★★★</div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 border border-green-200 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">AK</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-gray-900">Ahmed Khan</h4>
+                            <p class="text-sm text-gray-600">Elite Member</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"I made the Elite investment and the dedicated manager assigned to my account is fantastic. They provide regular updates and have helped optimize my earnings significantly."</p>
+                    <div class="text-amber-400 text-lg">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked <span class="gradient-text">Questions</span></h2>
+                <p class="text-xl text-gray-600">Find answers to common questions about our platform</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>Is my investment safe on Titans Crest?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">Yes, absolutely. We use bank-level encryption, multi-layer security protocols, and our blockchain transactions are transparent and auditable. Your BNB investment is secured with smart contracts.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>When do I receive my daily profits?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">Daily profits are calculated and automatically credited to your account wallet every 24 hours. You can choose to withdraw or reinvest these profits to take advantage of compound growth.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>What is the 3x returns cap?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">The 3x cap means your investment will earn up to three times its initial amount in total profits. For example, a $1,000 investment can earn up to $3,000 in profits. After reaching this cap, your investment is still safe and can be withdrawn.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>How do I withdraw my funds?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">Withdrawals are quick and secure. Simply navigate to your wallet, request withdrawal, and verify with OTP. Most withdrawals are processed within minutes to your BNB wallet address. No hidden fees or delays.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>Can I refer friends and earn commissions?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">Yes! Our referral program allows you to earn commissions when friends sign up using your referral code. You'll receive a percentage of their first investment as a bonus, with no limit on how many people you can refer.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left font-semibold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition faq-button">
+                        <span>What's the minimum investment amount?</span>
+                        <span class="text-blue-900 text-xl">+</span>
+                    </button>
+                    <div class="px-6 py-4 bg-gray-50 hidden faq-content">
+                        <p class="text-gray-700">The minimum investment is $100 for our Starter package. However, we have packages for all investment levels, with our Elite package starting at $5,000. Choose the package that best suits your financial situation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Trust Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Security &amp; <span class="gradient-text">Trust</span></h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Your security is our top priority. Learn how we protect your investments</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border-2 border-blue-200">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Security Features</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>SSL/TLS Encryption:</strong> All data is encrypted during transmission</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>OTP Verification:</strong> Two-factor authentication for all transactions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>Smart Contracts:</strong> Blockchain-based transactions are auditable and transparent</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>Regular Audits:</strong> Third-party security audits conducted quarterly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>Cold Storage:</strong> Majority of funds held in secure cold storage wallets</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-blue-900 rounded-full p-2 mr-4 mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700"><strong>24/7 Monitoring:</strong> Real-time surveillance for suspicious activities</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-8">
+                    <!-- Trust Indicator 1 -->
+                    <div class="bg-white rounded-2xl p-6 border-2 border-amber-200 text-center transform hover:scale-105 transition">
+                        <div class="text-5xl mb-3">🛡️</div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">DeFi Compliant</h4>
+                        <p class="text-gray-600 text-sm">Full compliance with DeFi standards and blockchain protocols</p>
+                    </div>
+                    
+                    <!-- Trust Indicator 2 -->
+                    <div class="bg-white rounded-2xl p-6 border-2 border-blue-200 text-center transform hover:scale-105 transition">
+                        <div class="text-5xl mb-3">✅</div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Verified Platform</h4>
+                        <p class="text-gray-600 text-sm">Verified on multiple blockchain explorers and rating platforms</p>
+                    </div>
+                    
+                    <!-- Trust Indicator 3 -->
+                    <div class="bg-white rounded-2xl p-6 border-2 border-green-200 text-center transform hover:scale-105 transition">
+                        <div class="text-5xl mb-3">🔐</div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Insured Deposits</h4>
+                        <p class="text-gray-600 text-sm">Selected deposits covered by insurance for additional protection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div class="max-w-4xl mx-auto text-center">
@@ -362,6 +568,32 @@
             <a href="/register" class="inline-block bg-gradient-to-r from-amber-500 to-amber-600 text-white px-12 py-4 rounded-lg font-bold text-lg hover:from-amber-600 hover:to-amber-700 transition shadow-lg">Create Free Account</a>
         </div>
     </section>
+
+    <script>
+        // FAQ Accordion functionality
+        const faqButtons = document.querySelectorAll('.faq-button');
+        faqButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const faqItem = this.closest('.faq-item');
+                const faqContent = faqItem.querySelector('.faq-content');
+                const isOpen = !faqContent.classList.contains('hidden');
+                
+                // Close all other FAQs
+                document.querySelectorAll('.faq-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.querySelectorAll('.faq-button span:last-child').forEach(span => {
+                    span.textContent = '+';
+                });
+                
+                // Toggle current FAQ
+                if (!isOpen) {
+                    faqContent.classList.remove('hidden');
+                    this.querySelector('span:last-child').textContent = '−';
+                }
+            });
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">

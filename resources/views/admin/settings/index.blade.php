@@ -39,6 +39,18 @@
                     <label class="form-label">Minimum Withdrawal Amount</label>
                     <input type="number" name="min_withdrawal_amount" step="0.01" class="form-control" value="{{ $settings->firstWhere('key', 'min_withdrawal_amount')->value ?? '10' }}" required>
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maximum Daily Profit Multiplier</label>
+                    <div class="input-group">
+                        <input type="number" name="max_daily_profit_multiplier" step="0.1" class="form-control" value="{{ $settings->firstWhere('key', 'max_daily_profit_multiplier')->value ?? '2' }}" required>
+                        <span class="input-group-text" style="background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: white;">x Package Value</span>
+                    </div>
+                    {{-- <small class="form-text text-white d-block mt-2">
+                        <i class="fas fa-info-circle"></i> Maximum daily earnings = Package Value × Daily Rate × This Multiplier
+                        <br>Example: $1000 package with 0.1% daily rate and 2x multiplier = Max $2 daily profit
+                    </small> --}}
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Settings

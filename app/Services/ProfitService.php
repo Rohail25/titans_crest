@@ -27,10 +27,19 @@ class ProfitService
             ->get();
 
         $totalProfit = 0;
+        $maxDailyProfitMultiplier = Setting::get('max_daily_profit_multiplier', 2);
 
         foreach ($activePackages as $userPackage) {
             $package = $userPackage->package;
-            $profit = $package->price * $package->daily_profit_rate;
+            // Calculate profit based on daily rate (percentage)
+            $calculatedProfit = ($package->price / 100) * $package->daily_profit_rate;
+            
+            // Apply maximum daily profit cap (multiplier × package price)
+            $maxProfitForPackage = $package->price * $maxDailyProfitMultiplier;
+            
+            // Use the lower of the two values
+            $profit = min($calculatedProfit, $maxProfitForPackage);
+            
             $totalProfit += $profit;
         }
 
@@ -63,12 +72,16 @@ class ProfitService
         $creditAmount = min($profit, $remaining);
 
         DB::transaction(function () use ($user, $creditAmount) {
+            $maxDailyProfitMultiplier = Setting::get('max_daily_profit_multiplier', 2);
             $this->walletService->addBalance(
                 $user,
                 $creditAmount,
                 'profit_share',
                 null,
-                ['calculated_profit' => $this->calculateDailyProfit($user)]
+                [
+                    'calculated_profit' => $this->calculateDailyProfit($user),
+                    'max_daily_profit_multiplier' => $maxDailyProfitMultiplier,
+                ]
             );
         });
     }
@@ -98,6 +111,15 @@ class ProfitService
                 \Log::error("Profit distribution failed for user {$user->id}: " . $e->getMessage());
             }
         }
+    }
+
+    /**
+     * Get maximum daily profit multiplier from settings
+     * Default is 2x (max daily earnings = 2x package value)
+     */
+    public function getMaxDailyProfitMultiplier(): float
+    {
+        return (float) Setting::get('max_daily_profit_multiplier', 2);
     }
 
     /**

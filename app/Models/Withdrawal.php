@@ -14,6 +14,7 @@ class Withdrawal extends Model
         'net_amount',
         'status',
         'wallet_address',
+        'tx_hash',
         'rejection_reason',
         'approved_at',
     ];

@@ -30,7 +30,8 @@ class AdminConfigService
                 $oldValue = Setting::get($key);
                 Setting::set($key, $value);
                 
-                AuditLogService::log($admin, 'update_setting', 'Setting', $key, ['value' => $oldValue], ['value' => $value]);
+                // Pass null as target_id for settings since they don't have numeric IDs
+                AuditLogService::log($admin, 'update_setting', 'Setting', null, ['key' => $key, 'value' => $oldValue], ['key' => $key, 'value' => $value]);
             }
         });
     }

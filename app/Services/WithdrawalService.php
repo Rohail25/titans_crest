@@ -73,7 +73,7 @@ class WithdrawalService
     /**
      * Start withdrawal process (step 1: initiate)
      */
-    public function initiateWithdrawal(User $user, float $amount): Withdrawal
+    public function initiateWithdrawal(User $user, float $amount, string $walletAddress): Withdrawal
     {
         // Validate
         $errors = $this->validateWithdrawal($user, $amount);
@@ -81,16 +81,22 @@ class WithdrawalService
             throw new \Exception(implode(', ', $errors));
         }
 
+        // Validate wallet address format
+        if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $walletAddress)) {
+            throw new \Exception('Invalid BNB wallet address format');
+        }
+
         $deduction = $this->calculateDeduction($amount);
         $netAmount = $amount - $deduction;
 
-        return DB::transaction(function () use ($user, $amount, $deduction, $netAmount) {
+        return DB::transaction(function () use ($user, $amount, $deduction, $netAmount, $walletAddress) {
             // Create withdrawal record with pending_otp status
             return Withdrawal::create([
                 'user_id' => $user->id,
                 'requested_amount' => $amount,
                 'deduction_amount' => $deduction,
                 'net_amount' => $netAmount,
+                'wallet_address' => $walletAddress,
                 'status' => 'pending_otp',
             ]);
         });

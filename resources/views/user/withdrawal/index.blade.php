@@ -24,6 +24,15 @@
                 <form id="withdrawalForm">
                     @csrf
                     <div class="mb-3">
+                        <label class="form-label">BNB Wallet Address <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="walletAddress" 
+                            name="wallet_address" placeholder="Enter your BNB wallet address (0x...)" required>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> Make sure this is correct - funds will be sent to this address
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Withdrawal Amount</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
@@ -227,6 +236,13 @@ document.getElementById('withdrawalForm').addEventListener('submit', function(e)
     e.preventDefault();
     
     const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    const walletAddress = document.getElementById('walletAddress').value.trim();
+    
+    // Validate BNB wallet address format
+    if (!walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+        alert('Invalid BNB wallet address. Must start with 0x followed by 40 hexadecimal characters.');
+        return;
+    }
     
     fetch('{{ route("user.withdrawal.initiate") }}', {
         method: 'POST',
@@ -234,7 +250,10 @@ document.getElementById('withdrawalForm').addEventListener('submit', function(e)
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
-        body: JSON.stringify({ amount })
+        body: JSON.stringify({ 
+            amount: amount,
+            wallet_address: walletAddress
+        })
     })
     .then(r => r.json())
     .then(data => {

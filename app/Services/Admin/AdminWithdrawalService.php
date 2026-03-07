@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminWithdrawalService
 {
+    public static function getWithdrawals(?string $status = null, int $limit = 50)
+    {
+        $query = Withdrawal::with('user')->orderBy('created_at', 'desc');
+
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        return $query->paginate($limit)->withQueryString();
+    }
+
     public static function getPendingWithdrawals($limit = 50)
     {
         return Withdrawal::with('user')
@@ -24,16 +35,15 @@ class AdminWithdrawalService
         return Withdrawal::with('user')->findOrFail($id);
     }
 
-    public static function approveWithdrawal(Withdrawal $withdrawal, User $admin, string $walletAddress, ?string $txHash = null): void
+    public static function approveWithdrawal(Withdrawal $withdrawal, User $admin, string $txHash): void
     {
-        DB::transaction(function () use ($withdrawal, $admin, $walletAddress, $txHash) {
+        DB::transaction(function () use ($withdrawal, $admin, $txHash) {
             if ($withdrawal->status !== 'pending_approval') {
                 throw new \Exception('Withdrawal cannot be approved. Status: ' . $withdrawal->status);
             }
 
             $withdrawal->update([
                 'status' => 'approved',
-                'wallet_address' => $walletAddress,
                 'tx_hash' => $txHash,
                 'approved_at' => now(),
             ]);
@@ -44,7 +54,7 @@ class AdminWithdrawalService
                 'Withdrawal',
                 $withdrawal->id,
                 ['status' => 'pending_approval'],
-                ['status' => 'approved', 'wallet_address' => $walletAddress]
+                ['status' => 'approved', 'tx_hash' => $txHash]
             );
 
             // Log email notification
@@ -52,7 +62,7 @@ class AdminWithdrawalService
                 'user_id' => $withdrawal->user_id,
                 'recipient' => $withdrawal->user->email,
                 'subject' => 'Withdrawal Approved',
-                'body' => "Your withdrawal of {$withdrawal->net_amount} has been approved and sent to {$walletAddress}.",
+                'body' => "Your withdrawal of BNB {$withdrawal->net_amount} has been approved and sent to {$withdrawal->wallet_address}. Transaction hash: {$txHash}",
                 'type' => 'withdrawal',
                 'status' => 'sent',
             ]);
@@ -68,10 +78,11 @@ class AdminWithdrawalService
 
             // Refund balance if funds were locked
             if ($withdrawal->status === 'pending_approval') {
-                WalletService::addBalance(
+                $walletService = new WalletService();
+                $walletService->addBalance(
                     $withdrawal->user,
                     $withdrawal->net_amount,
-                    'withdrawal_refund',
+                    'refund',
                     $withdrawal->id,
                     ['reason' => $reason]
                 );

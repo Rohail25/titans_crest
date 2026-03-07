@@ -37,12 +37,17 @@ class WithdrawalController extends Controller
     public function initiate(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'amount' => ['required', 'numeric', 'min:10']
+            'amount' => ['required', 'numeric', 'min:10'],
+            'wallet_address' => ['required', 'string', 'regex:/^0x[a-fA-F0-9]{40}$/']
         ]);
 
         try {
             $user = auth()->user();
-            $withdrawal = $this->withdrawalService->initiateWithdrawal($user, (float) $validated['amount']);
+            $withdrawal = $this->withdrawalService->initiateWithdrawal(
+                $user, 
+                (float) $validated['amount'],
+                $validated['wallet_address']
+            );
 
             // Generate OTP
             $otp = $this->otpService->generateOTP($user, 'withdrawal');

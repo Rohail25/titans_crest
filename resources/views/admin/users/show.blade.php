@@ -64,6 +64,90 @@
                         <td><small>{{ $deposit->tx_hash }}</small></td>
                         <td>{{ $deposit->created_at->format('M d, Y') }}</td>
                     </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No deposits found</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Earnings -->
+<div class="card mb-4">
+    <div class="card-header">Earnings Overview</div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="text-muted small">Total Earnings</div>
+                <h5 class="text-success">${{ number_format($user->earnings->sum('amount'), 2) }}</h5>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">Daily Commissions</div>
+                <h5 class="text-info">${{ number_format($user->earnings->where('type', 'daily_profit')->sum('amount'), 2) }}</h5>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">Referral Commissions</div>
+                <h5 class="text-warning">${{ number_format($user->earnings->where('type', 'referral_commission')->sum('amount'), 2) }}</h5>
+            </div>
+            <div class="col-md-3">
+                <div class="text-muted small">Total Entries</div>
+                <h5>{{ $user->earnings->count() }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Package</th>
+                    <th>Metadata</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($user->earnings()->latest()->take(10)->get() as $earning)
+                    <tr>
+                        <td>
+                            @if($earning->type === 'daily_profit')
+                                <span class="badge bg-info"><i class="fas fa-calendar-day"></i> Daily Profit</span>
+                            @elseif($earning->type === 'referral_commission')
+                                <span class="badge bg-warning"><i class="fas fa-users"></i> Referral</span>
+                            @else
+                                <span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $earning->type)) }}</span>
+                            @endif
+                        </td>
+                        <td><strong class="text-success">${{ number_format($earning->amount, 2) }}</strong></td>
+                        <td>
+                            @if($earning->userPackage)
+                                {{ $earning->userPackage->package->name ?? 'N/A' }}
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($earning->metadata)
+                                <small class="text-muted">
+                                    @if(isset($earning->metadata['multiplier']))
+                                        Multiplier: {{ $earning->metadata['multiplier'] }}
+                                    @endif
+                                    @if(isset($earning->metadata['referral_level']))
+                                        Level: {{ $earning->metadata['referral_level'] }}
+                                    @endif
+                                </small>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>{{ $earning->created_at->format('M d, Y H:i') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No earnings found</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -88,6 +172,10 @@
                         <td>${{ number_format($withdrawal->net_amount, 2) }}</td>
                         <td><span class="badge badge-{{ $withdrawal->status === 'approved' ? 'success' : 'warning' }}">{{ ucfirst(str_replace('_', ' ', $withdrawal->status)) }}</span></td>
                         <td>{{ $withdrawal->created_at->format('M d, Y') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No withdrawals found</td>
                     </tr>
                 @endforelse
             </tbody>

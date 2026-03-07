@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -330,13 +331,15 @@
         }
 
         /* Forms */
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(212, 175, 55, 0.2);
             color: var(--text-light);
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             background: rgba(255, 255, 255, 0.08);
             border-color: var(--accent);
             color: var(--text-light);
@@ -448,6 +451,7 @@
     </style>
     @yield('styles')
 </head>
+
 <body>
     <!-- Top Bar -->
     <div class="admin-topbar">
@@ -464,7 +468,8 @@
             </a>
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
-                <button type="submit" class="btn btn-sm" style="background: transparent; border: none; color: var(--text-light);">
+                <button type="submit" class="btn btn-sm"
+                    style="background: transparent; border: none; color: var(--text-light);">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </form>
@@ -475,50 +480,58 @@
         <!-- Sidebar -->
         <div class="admin-sidebar">
             <div class="sidebar-title">Dashboard</div>
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard') }}"
+                class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-chart-line"></i>
                 <span>Overview</span>
             </a>
 
             <div class="sidebar-title">Operations</div>
-            <a href="{{ route('admin.withdrawals.index') }}" class="{{ request()->routeIs('admin.withdrawals.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.withdrawals.index') }}"
+                class="{{ request()->routeIs('admin.withdrawals.*') ? 'active' : '' }}">
                 <i class="fas fa-coins"></i>
                 <span>Withdrawals</span>
             </a>
-            <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.users.index') }}"
+                class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <i class="fas fa-users"></i>
                 <span>Users</span>
             </a>
-            <a href="{{ route('admin.fund-management.index') }}" class="{{ request()->routeIs('admin.fund-management.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.fund-management.index') }}"
+                class="{{ request()->routeIs('admin.fund-management.*') ? 'active' : '' }}">
                 <i class="fas fa-wallet"></i>
                 <span>Fund Mgmt</span>
             </a>
 
             <div class="sidebar-title">System</div>
-            <a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.reports.index') }}"
+                class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                 <i class="fas fa-file-alt"></i>
                 <span>Reports</span>
             </a>
-            <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.settings.index') }}"
+                class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
 
             <div class="sidebar-title">Logs</div>
-            <a href="{{ route('admin.email-logs.index') }}" class="{{ request()->routeIs('admin.email-logs.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.email-logs.index') }}"
+                class="{{ request()->routeIs('admin.email-logs.*') ? 'active' : '' }}">
                 <i class="fas fa-envelope"></i>
                 <span>Email Logs</span>
             </a>
-            <a href="{{ route('admin.audit-logs.index') }}" class="{{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.audit-logs.index') }}"
+                class="{{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
                 <i class="fas fa-history"></i>
                 <span>Audit Logs</span>
             </a>
 
-            <div class="sidebar-title">User Panel</div>
+            {{-- <div class="sidebar-title">User Panel</div>
             <a href="{{ route('user.dashboard') }}">
                 <i class="fas fa-arrow-right"></i>
                 <span>User Side</span>
-            </a>
+            </a> --}}
         </div>
 
         <!-- Main Content -->
@@ -561,10 +574,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             const activeLink = document.querySelector('.admin-sidebar a.active');
             if (activeLink) {
-                activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                activeLink.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
             }
         });
     </script>
     @yield('scripts')
 </body>
+
 </html>

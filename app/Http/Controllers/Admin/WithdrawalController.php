@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 
 class WithdrawalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $withdrawals = AdminWithdrawalService::getPendingWithdrawals();
+        $request->validate([
+            'status' => 'nullable|in:pending_otp,pending_approval,approved,rejected,cancelled',
+        ]);
+
+        $withdrawals = AdminWithdrawalService::getWithdrawals($request->status);
         $stats = AdminWithdrawalService::getWithdrawalStats();
 
         return view('admin.withdrawals.index', compact('withdrawals', 'stats'));
@@ -30,8 +34,7 @@ class WithdrawalController extends Controller
     public function approve(Request $request, $id)
     {
         $request->validate([
-            'wallet_address' => 'required|string',
-            'tx_hash' => 'nullable|string',
+            'tx_hash' => 'required|string',
         ]);
 
         $withdrawal = \App\Models\Withdrawal::findOrFail($id);
@@ -39,11 +42,10 @@ class WithdrawalController extends Controller
         AdminWithdrawalService::approveWithdrawal(
             $withdrawal,
             auth()->user(),
-            $request->wallet_address,
             $request->tx_hash
         );
 
-        return redirect()->route('admin.withdrawals.index')->with('success', 'Withdrawal approved successfully.');
+        return redirect()->route('admin.withdrawals.index')->with('success', 'Withdrawal approved successfully. Transaction hash recorded.');
     }
 
     public function reject(Request $request, $id)

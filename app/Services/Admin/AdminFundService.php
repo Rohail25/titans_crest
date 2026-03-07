@@ -11,7 +11,8 @@ class AdminFundService
     public static function addFundsToWallet(User $user, User $admin, float $amount, string $reason): void
     {
         DB::transaction(function () use ($user, $admin, $amount, $reason) {
-            WalletService::addBalance($user, $amount, 'admin_fund_add', null, ['reason' => $reason]);
+            $walletService = new WalletService();
+            $walletService->addBalance($user, $amount, 'admin_fund_add', null, ['reason' => $reason]);
             
             AuditLogService::log(
                 $admin,
@@ -33,7 +34,8 @@ class AdminFundService
                 throw new \Exception('Insufficient balance');
             }
 
-            WalletService::deductBalance($user, $amount, 'admin_fund_deduct', null, $reason);
+            $walletService = new WalletService();
+            $walletService->deductBalance($user, $amount, 'admin_fund_deduct', null, $reason);
             
             AuditLogService::log(
                 $admin,
@@ -55,7 +57,8 @@ class AdminFundService
                 throw new \Exception('Insufficient suspicious balance');
             }
 
-            $converted = WalletService::convertSuspiciousBalance($user, $amount);
+            $walletService = new WalletService();
+            $converted = $walletService->convertSuspiciousBalance($user, $amount);
             
             if ($converted) {
                 AuditLogService::log(

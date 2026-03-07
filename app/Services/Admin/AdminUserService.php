@@ -97,7 +97,9 @@ class AdminUserService
     public static function addManualCredit(User $user, User $admin, float $amount, string $reason): void
     {
         DB::transaction(function () use ($user, $admin, $amount, $reason) {
-            WalletService::addBalance($user, $amount, 'manual_credit', null, ['reason' => $reason]);
+            // Instantiate WalletService to call instance method
+            $walletService = new WalletService();
+            $walletService->addBalance($user, $amount, 'admin_fund_add', null, ['reason' => $reason]);
             
             AuditLogService::log(
                 $admin,
