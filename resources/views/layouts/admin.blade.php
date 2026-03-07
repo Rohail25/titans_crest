@@ -514,6 +514,16 @@
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
+            <a href="{{ route('admin.referral-commissions.index') }}"
+                class="{{ request()->routeIs('admin.referral-commissions.*') ? 'active' : '' }}">
+                <i class="fas fa-sitemap"></i>
+                <span>Referral Commissions</span>
+            </a>
+            <a href="{{ route('admin.profit-sharing.index') }}"
+                class="{{ request()->routeIs('admin.profit-sharing.*') ? 'active' : '' }}">
+                <i class="fas fa-share-alt"></i>
+                <span>Profit Sharing</span>
+            </a>
 
             <div class="sidebar-title">Logs</div>
             <a href="{{ route('admin.email-logs.index') }}"

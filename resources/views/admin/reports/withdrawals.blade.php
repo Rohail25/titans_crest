@@ -107,7 +107,7 @@
                             <small class="text-muted">{{ $withdrawal->user->email ?? 'N/A' }}</small>
                         </td>
                         <td>
-                            <span class="badge bg-info">BNB {{ number_format($withdrawal->requested_amount, 2) }}</span>
+                            <span class="badge bg-info">BNB {{ number_format($withdrawal->net_amount, 2) }}</span>
                         </td>
                         <td>
                             <small title="{{ $withdrawal->wallet_address }}">
@@ -192,7 +192,7 @@
                         <div class="modal-body">
                             <div class="alert alert-warning mb-3">
                                 <strong><i class="fas fa-exclamation-triangle"></i> Action Required:</strong><br>
-                                1. Send <strong>BNB {{ number_format($withdrawal->requested_amount, 2) }}</strong> to user's wallet via MetaMask<br>
+                                1. Send <strong>BNB {{ number_format($withdrawal->net_amount, 2) }}</strong> to user's wallet via MetaMask<br>
                                 2. Copy the transaction hash from MetaMask<br>
                                 3. Paste it below to confirm payment
                             </div>

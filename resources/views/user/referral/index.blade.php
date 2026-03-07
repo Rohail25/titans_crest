@@ -132,19 +132,19 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-6">
-                        <div class="stat-card-label">Level 1 Commission</div>
-                        <h5>10%</h5>
-                        <small class="text-muted">Direct referrals</small>
+                        <div class="stat-card-label">Direct Referral</div>
+                        <h5>5 Levels</h5>
+                        <small class="text-muted">7%, 4%, 2%, 1%, 1%</small>
                     </div>
                     <div class="col-6">
-                        <div class="stat-card-label">Multi-Level</div>
-                        <h5>Unlimited</h5>
-                        <small class="text-muted">Build deep teams</small>
+                        <div class="stat-card-label">Daily Profit Share</div>
+                        <h5>10 Levels</h5>
+                        <small class="text-muted">20% down to 2%</small>
                     </div>
                 </div>
                 <hr>
                 <small class="text-muted">
-                    Example: If a friend purchases a $100 package, you earn $10 commission!
+                    Example: If a direct referral buys a $100 package, level 1 earns $7 and deeper uplines earn by configured levels.
                 </small>
             </div>
         </div>

@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ConfigurationController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\ReferralCommissionController;
+use App\Http\Controllers\Admin\ProfitSharingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -146,6 +148,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/', [AuditLogController::class, 'index'])->name('index');
         Route::get('{id}', [AuditLogController::class, 'show'])->name('show');
         Route::get('admin/{adminId}', [AuditLogController::class, 'byAdmin'])->name('by-admin');
+    });
+    
+    // Commission Management
+    Route::prefix('commissions')->group(function () {
+        Route::prefix('referral')->name('referral-commissions.')->group(function () {
+            Route::get('/', [ReferralCommissionController::class, 'index'])->name('index');
+            Route::put('/', [ReferralCommissionController::class, 'update'])->name('update');
+        });
+        
+        Route::prefix('profit-sharing')->name('profit-sharing.')->group(function () {
+            Route::get('/', [ProfitSharingController::class, 'index'])->name('index');
+            Route::put('/', [ProfitSharingController::class, 'update'])->name('update');
+        });
     });
     
     // Admin Profile Routes

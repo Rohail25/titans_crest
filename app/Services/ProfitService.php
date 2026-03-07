@@ -6,14 +6,17 @@ use App\Models\User;
 use App\Models\UserPackage;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProfitService
 {
     protected WalletService $walletService;
+    protected ProfitSharingService $profitSharingService;
 
-    public function __construct(WalletService $walletService)
+    public function __construct(WalletService $walletService, ProfitSharingService $profitSharingService)
     {
         $this->walletService = $walletService;
+        $this->profitSharingService = $profitSharingService;
     }
 
     /**
@@ -83,6 +86,9 @@ class ProfitService
                     'max_daily_profit_multiplier' => $maxDailyProfitMultiplier,
                 ]
             );
+
+            // Share this user's earned daily profit with uplines.
+            $this->profitSharingService->shareProfitWithUplines($user, $creditAmount);
         });
     }
 
@@ -97,6 +103,7 @@ class ProfitService
             $query->whereIn('id', $userIds);
         }
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, User> $users */
         $users = $query->with('userPackages.package')
             ->whereHas('userPackages', function ($q) {
                 $q->where('is_active', true);
@@ -108,7 +115,7 @@ class ProfitService
                 $this->distributeDailyProfit($user);
             } catch (\Exception $e) {
                 // Log error but continue with next user
-                \Log::error("Profit distribution failed for user {$user->id}: " . $e->getMessage());
+                Log::error("Profit distribution failed for user {$user->id}: " . $e->getMessage());
             }
         }
     }

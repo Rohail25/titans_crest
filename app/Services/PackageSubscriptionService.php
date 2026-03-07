@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Earning;
 use App\Models\Package;
-use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserPackage;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +12,7 @@ class PackageSubscriptionService
 {
     public function __construct(
         protected WalletService $walletService,
+        protected ReferralCommissionService $referralCommissionService,
     ) {}
 
     public function subscribe(User $user, Package $package): UserPackage
@@ -57,42 +57,9 @@ class PackageSubscriptionService
                 'is_active' => true,
             ]);
 
-            $this->creditReferralCommission($user, $package);
+            $this->referralCommissionService->distributeCommissions($user, (float) $package->price);
 
             return $userPackage;
         });
-    }
-
-    protected function creditReferralCommission(User $user, Package $package): void
-    {
-        $referrer = $user->referrer;
-        if (!$referrer) {
-            return;
-        }
-
-        $commissionPercent = (float) Setting::get('referral_commission_percent', 10);
-        $commissionAmount = (float) $package->price * ($commissionPercent / 100);
-
-        if ($commissionAmount <= 0) {
-            return;
-        }
-
-        $this->walletService->addBalance(
-            $referrer,
-            $commissionAmount,
-            'referral',
-            (string) $user->id,
-            [
-                'referred_user_id' => $user->id,
-                'referred_user_name' => $user->name,
-                'package_id' => $package->id,
-                'package_name' => $package->name,
-                'percent' => $commissionPercent,
-            ]
-        );
-
-        if ($referrer->referralTree) {
-            $referrer->referralTree->increment('commission_earned', $commissionAmount);
-        }
     }
 }
