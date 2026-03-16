@@ -8,11 +8,19 @@
     Deposit Reports
 </div>
 
+@php
+    $depositRows = $deposits->getCollection();
+@endphp
+
 <!-- Filters -->
 <div class="card mb-4">
     <div class="card-header">Filter Deposits</div>
     <div class="card-body">
         <form action="{{ route('admin.reports.deposits') }}" method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="User name or email" value="{{ request('search') }}">
+            </div>
             <div class="col-md-3">
                 <label class="form-label">Status</label>
                 <select name="status" class="form-select">
@@ -33,9 +41,27 @@
                 <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
             </div>
 
+            <div class="col-md-2">
+                <label class="form-label">Sort By</label>
+                <select name="sort" class="form-select">
+                    <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                    <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                    <option value="amount" {{ request('sort') === 'amount' ? 'selected' : '' }}>Amount</option>
+                    <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <label class="form-label">Order</label>
+                <select name="direction" class="form-select">
+                    <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Desc</option>
+                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Asc</option>
+                </select>
+            </div>
+
             <div class="col-md-3 d-flex gap-2 align-items-end">
-                <button type="submit" class="btn btn-primary flex-grow-1">
-                    <i class="fas fa-filter"></i> Filter
+                <button type="submit" class="btn btn-primary grow">
+                    <i class="fas fa-filter"></i> Apply
                 </button>
                 <a href="{{ route('admin.reports.deposits') }}" class="btn btn-secondary">
                     <i class="fas fa-redo"></i> Reset
@@ -51,7 +77,7 @@
 <!-- Deposits Table -->
 <div class="card">
     <div class="card-header">
-        <span>Deposits ({{ $deposits->count() }} records)</span>
+        <span>Deposits ({{ $deposits->total() }} records)</span>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -129,7 +155,7 @@
 </div>
 
 <!-- Confirm Deposit Modal -->
-@foreach($deposits as $deposit)
+@foreach($depositRows as $deposit)
     @if($deposit->status === 'pending')
         <div class="modal fade" id="confirmDeposit{{ $deposit->id }}" tabindex="-1">
             <div class="modal-dialog">
@@ -190,5 +216,9 @@
         </div>
     @endif
 @endforeach
+
+<div class="mt-3">
+    {{ $deposits->links() }}
+</div>
 
 @endsection

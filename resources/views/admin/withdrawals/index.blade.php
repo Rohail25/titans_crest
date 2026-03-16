@@ -45,6 +45,10 @@
     </div>
     <div class="card-body">
         <form method="GET" action="{{ route('admin.withdrawals.index') }}" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="User name or email" value="{{ request('search') }}">
+            </div>
             <div class="col-md-4">
                 <label class="form-label">Status</label>
                 <select name="status" class="form-select">
@@ -56,7 +60,23 @@
                     <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                 </select>
             </div>
-            <div class="col-md-8 d-flex align-items-end gap-2">
+            <div class="col-md-2">
+                <label class="form-label">Sort By</label>
+                <select name="sort" class="form-select">
+                    <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                    <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                    <option value="net_amount" {{ request('sort') === 'net_amount' ? 'selected' : '' }}>Amount</option>
+                    <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Order</label>
+                <select name="direction" class="form-select">
+                    <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Descending</option>
+                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Apply
                 </button>

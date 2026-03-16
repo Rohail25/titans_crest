@@ -11,8 +11,14 @@
 <!-- Filters -->
 <div class="card mb-4">
     <div class="card-body">
-        <form method="GET" class="d-flex gap-2 flex-wrap">
-            <select name="action" class="form-select" style="max-width: 200px;">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="Admin name/email, action, target" value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Action</label>
+                <select name="action" class="form-select">
                 <option value="">All Actions</option>
                 <option value="approve_withdrawal" {{ request('action') === 'approve_withdrawal' ? 'selected' : '' }}>Approve Withdrawal</option>
                 <option value="reject_withdrawal" {{ request('action') === 'reject_withdrawal' ? 'selected' : '' }}>Reject Withdrawal</option>
@@ -21,17 +27,39 @@
                 <option value="manual_credit" {{ request('action') === 'manual_credit' ? 'selected' : '' }}>Manual Credit</option>
                 <option value="update_setting" {{ request('action') === 'update_setting' ? 'selected' : '' }}>Update Setting</option>
                 <option value="update_package" {{ request('action') === 'update_package' ? 'selected' : '' }}>Update Package</option>
-            </select>
-            <select name="target_type" class="form-select" style="max-width: 150px;">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Target</label>
+                <select name="target_type" class="form-select">
                 <option value="">All Targets</option>
                 <option value="Withdrawal" {{ request('target_type') === 'Withdrawal' ? 'selected' : '' }}>Withdrawal</option>
                 <option value="User" {{ request('target_type') === 'User' ? 'selected' : '' }}>User</option>
                 <option value="Setting" {{ request('target_type') === 'Setting' ? 'selected' : '' }}>Setting</option>
                 <option value="Package" {{ request('target_type') === 'Package' ? 'selected' : '' }}>Package</option>
                 <option value="Wallet" {{ request('target_type') === 'Wallet' ? 'selected' : '' }}>Wallet</option>
-            </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-secondary">Clear</a>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sort By</label>
+                <select name="sort" class="form-select">
+                    <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                    <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                    <option value="action" {{ request('sort') === 'action' ? 'selected' : '' }}>Action</option>
+                    <option value="target_type" {{ request('sort') === 'target_type' ? 'selected' : '' }}>Target</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label">Order</label>
+                <select name="direction" class="form-select">
+                    <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Desc</option>
+                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Asc</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-secondary">Reset</a>
+            </div>
         </form>
     </div>
 </div>
@@ -89,6 +117,9 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+    <div class="card-body" style="border-top: 1px solid rgba(212, 175, 55, 0.1);">
+        {{ $logs->links() }}
     </div>
 </div>
 @endsection

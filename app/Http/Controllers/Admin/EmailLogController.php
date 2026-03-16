@@ -10,20 +10,15 @@ class EmailLogController extends Controller
 {
     public function index(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
             'type' => 'nullable|in:otp,withdrawal,deposit,notification,other',
             'status' => 'nullable|in:pending,sent,failed',
+            'sort' => 'nullable|in:id,recipient,type,status,created_at,sent_at',
+            'direction' => 'nullable|in:asc,desc',
         ]);
 
-        if ($request->has('q')) {
-            $logs = AdminEmailLogService::searchLogs($request->q);
-        } elseif ($request->type) {
-            $logs = AdminEmailLogService::getLogsByType($request->type);
-        } elseif ($request->status) {
-            $logs = AdminEmailLogService::getLogsByStatus($request->status);
-        } else {
-            $logs = AdminEmailLogService::getAllLogs();
-        }
+        $logs = AdminEmailLogService::getFilteredLogs($validated);
 
         $stats = AdminEmailLogService::getEmailStats();
 

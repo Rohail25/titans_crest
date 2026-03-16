@@ -42,14 +42,49 @@
     </div>
 </div>
 
-<!-- Search -->
+<!-- Filters -->
 <div class="card mb-4">
     <div class="card-body">
-        <form method="GET" action="{{ route('admin.users.index') }}" class="d-flex gap-2">
-            <input type="text" name="q" class="form-control" placeholder="Search by name, email, or referral code..." value="{{ request('q') }}">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Search
-            </button>
+        <form method="GET" action="{{ route('admin.users.index') }}" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="Name, email, referral code" value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="banned" {{ request('status') === 'banned' ? 'selected' : '' }}>Banned</option>
+                    <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sort By</label>
+                <select name="sort" class="form-select">
+                    <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                    <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                    <option value="name" {{ request('sort') === 'name' ? 'selected' : '' }}>Name</option>
+                    <option value="email" {{ request('sort') === 'email' ? 'selected' : '' }}>Email</option>
+                    <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Order</label>
+                <select name="direction" class="form-select">
+                    <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Descending</option>
+                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary grow">
+                    <i class="fas fa-search"></i> Apply
+                </button>
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset
+                </a>
+            </div>
         </form>
     </div>
 </div>

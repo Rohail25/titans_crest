@@ -10,33 +10,35 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%); }
-        .gradient-text { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-bg { background: linear-gradient(135deg, #041a3d 0%, #0b2f66 55%, #174a8f 100%); }
+        .gradient-text { background: linear-gradient(135deg, #e4bf56 0%, #d4af37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(2, 15, 42, 0.18), 0 10px 10px -5px rgba(2, 15, 42, 0.1); }
     </style>
 </head>
 <body class="bg-gray-50">
     
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-[#062a5f] shadow-sm fixed w-full top-0 z-50 border-b border-[#d4af37]/30" style="background-color: #062a5f;">
+        <div class="max-w-7xl bg-[#062a5f] mx-auto py-3 px-4 sm:px-6 lg:px-8" >
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <span class="text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></span>
+                    {{-- <span class="text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></span> --}}
+                    <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="80" height="80"></a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-gray-700 hover:text-blue-900 transition">Features</a>
-                    <a href="#packages" class="text-gray-700 hover:text-blue-900 transition">Packages</a>
-                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-900 transition">How It Works</a>
-                    <a href="#stats" class="text-gray-700 hover:text-blue-900 transition">Stats</a>
+                    <a href="/about" class="text-white hover:text-[#d4af37] transition">About</a>
+                    <a href="#features" class="text-white hover:text-[#d4af37] transition">Features</a>
+                    <a href="#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
+                    <a href="#how-it-works" class="text-white hover:text-[#d4af37] transition">How It Works</a>
+                    <a href="#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">Dashboard</a>
+                        <a href="{{ url('/dashboard') }}" class="bg-[#d4af37] text-[#062a5f] px-6 py-2 rounded-lg font-semibold hover:bg-[#e1c263] transition">Dashboard</a>
                     @else
-                        <a href="/login" class="text-gray-700 hover:text-blue-900 transition">Log in</a>
-                        <a href="/register" class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">Get Started</a>
+                        <a href="/login" class="text-white px-5 py-2 rounded-lg hover:bg-white/10 transition" style="background-color: #174a8f;">Login</a>
+                        <a href="/register" class="text-white  px-6 py-2 rounded-lg font-bold hover:bg-[#e1c263] transition shadow-md" style="background-color: #d4af37;">Sign Up</a>
                     @endauth
                 </div>
             </div>
@@ -44,17 +46,20 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="gradient-bg pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <section
+        class="gradient-bg pt-32 pb-20 px-4 sm:px-6 lg:px-8"
+        style="background-image: linear-gradient(135deg, rgba(4, 26, 61, 0.86), rgba(11, 47, 102, 0.74)), url('/images/hero-section.jpg'); background-size: cover; background-position: center;"
+    >
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-white">
-                    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+                    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
                         Grow Your Wealth with <span class="gradient-text">BNB Staking</span>
                     </h1>
                     <p class="text-xl mb-8 text-blue-100">Join thousands of investors earning daily profits through our secure, transparent, and professional investment platform.</p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/register" class="bg-amber-500 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-amber-400 transition text-center">Start Investing Now</a>
-                        <a href="#how-it-works" style="background: #4a53c4;" class="bg-opacity-20 px-8 py-4 rounded-lg font-bold text-lg hover:bg-opacity-30 transition text-center backdrop-blur-sm">Learn More</a>
+                        <a href="/register" class="bg-[#d4af37] text-[#062a5f] px-8 py-4 rounded-lg font-bold text-lg hover:bg-[#e1c263] transition text-center">Invest Now</a>
+                        <a href="#how-it-works" class="border border-white/60 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/10 transition text-center backdrop-blur-sm">Learn More</a>
                     </div>
                     
                     <!-- Trust Indicators -->
@@ -76,9 +81,9 @@
                 
                 <!-- Hero Image/Illustration -->
                 <div class="hidden md:block">
-                    <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-8 border border-white border-opacity-20">
+                    <div class="bg-[#0b2f66]/70 backdrop-blur-md rounded-2xl p-8 border border-[#d4af37]/40">
                         <div class="space-y-4">
-                            <div class="bg-gradient-to-r from-amber-400 to-amber-600 rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-gradient-to-r from-[#d4af37] to-[#b8901e] rounded-lg p-4 flex items-center justify-between">
                                 <div>
                                     <div class="text-white text-sm">Total Balance</div>
                                     <div class="text-white text-2xl font-bold">$24,567.89</div>
@@ -89,12 +94,12 @@
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                                    <div class="text-blue-100 text-sm">Daily Profit</div>
-                                    <div class="text-white text-xl font-bold">+$127.45</div>
+                                    <div class=" text-sm">Daily Profit</div>
+                                    <div class=" text-xl font-bold">+$127.45</div>
                                 </div>
                                 <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                                    <div class="text-blue-100 text-sm">Total Earnings</div>
-                                    <div class="text-white text-xl font-bold">$3,456.78</div>
+                                    <div class=" text-sm">Total Earnings</div>
+                                    <div class=" text-xl font-bold">$3,456.78</div>
                                 </div>
                             </div>
                         </div>
@@ -107,12 +112,20 @@
     <!-- Features Section -->
     <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose <span class="gradient-text">Titans Crest</span></h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Experience professional investment management with industry-leading features and security</p>
+            <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
+                <div class="grid md:grid-cols-2 gap-8 items-center p-8 md:p-10">
+                    <div>
+                        <h2 class="text-3xl font-bold text-[#062a5f] mb-2">About Titan Crest</h2>
+                        <p class="text-sm font-semibold text-[#d4af37] mb-4">Innovative &amp; Secure Digital Asset Management</p>
+                        <p class="text-gray-700 leading-relaxed">Titans Crest is a global investment platform focused on cryptocurrency trading and blockchain technology. Our mission is to provide secure digital asset investment opportunities through advanced market strategies and professional portfolio management.</p>
+                    </div>
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=1200&q=80" alt="About Titans Crest" class="w-full h-64 md:h-72 object-cover rounded-xl border border-gray-200 shadow-sm">
+                    </div>
+                </div>
             </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            {{-- <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
                 <!-- Feature 1 -->
                 <div class="card-hover bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
                     <div class="bg-blue-900 w-14 h-14 rounded-lg flex items-center justify-center mb-4">
@@ -156,7 +169,7 @@
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Instant Withdrawals</h3>
                     <p class="text-gray-600">Quick and hassle-free withdrawal process with OTP security verification.</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </section>
 
@@ -167,138 +180,127 @@
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">Investment <span class="gradient-text">Packages</span></h2>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">Choose the perfect plan that matches your investment goals</p>
             </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-3 gap-8">
+
                 <!-- Starter Package -->
-                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-200 card-hover">
+                <div class="bg-white rounded-2xl p-8 shadow-md border-2 border-[#d9e1ee] card-hover">
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
-                        <div class="text-4xl font-extrabold text-blue-900 mb-4">$100</div>
-                        <p class="text-gray-600 mb-6">Perfect for beginners</p>
+                        <h3 class="text-2xl font-bold text-[#062a5f] mb-2">Starter</h3>
+                        <div class="text-4xl font-extrabold text-[#0b2f66] mb-4">$50 - $200</div>
+                        <p class="text-gray-600 mb-6">Entry package for new investors</p>
                     </div>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Min: $100</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-gray-700">Capital: $50 to $200</span>
                         </li>
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Max: $499</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Daily Returns</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">3x Cap</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-gray-700">Up to 2x Capital</span>
                         </li>
                     </ul>
-                    <a href="/register" class="block w-full bg-blue-900 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-800 transition">Choose Plan</a>
+                    <a href="/register" class="block w-full bg-[#0b2f66] text-white text-center py-3 rounded-lg font-semibold hover:bg-[#174a8f] transition" style="background-color: #0b2f66;">Choose Plan</a>
                 </div>
 
-                <!-- Professional Package -->
-                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-amber-400 card-hover relative">
-                    <div class="absolute top-0 right-0 bg-amber-500 text-white px-4 py-1 rounded-bl-lg rounded-tr-xl text-sm font-bold">POPULAR</div>
+                <!-- Standard Package -->
+                <div class="bg-white rounded-2xl p-8 shadow-md border-2 border-[#d9e1ee] card-hover">
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Professional</h3>
-                        <div class="text-4xl font-extrabold gradient-text mb-4">$500</div>
-                        <p class="text-gray-600 mb-6">Most popular choice</p>
+                        <h3 class="text-2xl font-bold text-[#062a5f] mb-2">Standard</h3>
+                        <div class="text-4xl font-extrabold text-[#0b2f66] mb-4">$500 - $5,000</div>
+                        <p class="text-gray-600 mb-6">Balanced growth and flexibility</p>
                     </div>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Min: $500</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-gray-700">Capital: $500 to $5,000</span>
                         </li>
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Max: $999</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Higher Daily Returns</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">3x Cap</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Priority Support</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-gray-700">Up to 2x Capital</span>
                         </li>
                     </ul>
-                    <a href="/register" class="block w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-amber-700 transition">Choose Plan</a>
+                    <a href="/register" class="block w-full bg-[#0b2f66] text-white text-center py-3 rounded-lg font-semibold hover:bg-[#174a8f] transition" style="background-color: #0b2f66;">Choose Plan</a>
                 </div>
 
                 <!-- Premium Package -->
-                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-200 card-hover">
+                <div class="bg-[#0b2f66] rounded-2xl p-8 shadow-lg border-2 border-[#d4af37] card-hover relative">
+                    <div class="absolute top-0 right-0 bg-[#d4af37] text-[#062a5f] px-4 py-1 rounded-bl-lg rounded-tr-xl text-sm font-bold">FEATURED</div>
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
-                        <div class="text-4xl font-extrabold text-blue-900 mb-4">$1,000</div>
-                        <p class="text-gray-600 mb-6">For serious investors</p>
+                        <h3 class="text-2xl font-bold  mb-2">Premium</h3>
+                        <div class="text-4xl font-extrabold text-[#d4af37] mb-4">$10,000+</div>
+                        <p class=" mb-6">High-tier professional package</p>
                     </div>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Min: $1,000</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="">Capital: $10,000 and above</span>
                         </li>
                         <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Max: $4,999</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">Premium Returns</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">3x Cap</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-700">VIP Support</span>
+                            <svg class="w-5 h-5 text-[#d4af37] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="">Up to 2x Capital</span>
                         </li>
                     </ul>
-                    <a href="/register" class="block w-full bg-blue-900 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-800 transition">Choose Plan</a>
-                </div>
-
-                <!-- Elite Package -->
-                <div class="bg-gradient-to-br from-gray-900 to-blue-900 rounded-2xl p-8 shadow-lg border-2 border-amber-400 card-hover">
-                    <div class="text-center">
-                        <h3 class="text-2xl font-bold text-white mb-2">Elite</h3>
-                        <div class="text-4xl font-extrabold gradient-text mb-4">$5,000+</div>
-                        <p class="text-gray-300 mb-6">Maximum returns</p>
-                    </div>
-                    <ul class="space-y-3 mb-8">
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-200">Min: $5,000</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-200">Unlimited Max</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-200">Maximum Returns</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-200">3x Cap</span>
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-gray-200">Dedicated Manager</span>
-                        </li>
-                    </ul>
-                    <a href="/register" class="block w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-amber-700 transition">Choose Plan</a>
+                    <a href="/register" class="block w-full bg-[#d4af37]  text-center py-3 rounded-lg font-bold hover:bg-[#e1c263] transition text-white" style="background-color: #0b2f66;">Choose Plan</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- 10-Level Referral Plan -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 gradient-bg">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-white mb-2">10-Level Referral Plan</h2>
+                <p class="text-blue-100">Earn commissions up to 10 levels deep.</p>
+            </div>
+
+            <div class="bg-white/95 rounded-2xl shadow-lg overflow-hidden border border-[#d4af37]/40">
+                <table class="w-full text-left">
+                    <thead class="bg-[#062a5f] text-white">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold text-[#d4af37]">Level</th>
+                            <th class="px-6 py-4 font-semibold text-[#d4af37]">Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white">
+                        <tr class="border-b border-gray-200">
+                            <td class="pl-4 pr-6 py-4">1</td>
+                            <td class="pl-4 pr-6 py-4">7%</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="pl-4 pr-6 py-4">2</td>
+                            <td class="pl-4 pr-6 py-4">4%</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="pl-4 pr-6 py-4">3</td>
+                            <td class="pl-4 pr-6 py-4">2%</td>
+                        </tr>
+                        <tr>
+                            <td class="pl-4 pr-6 py-4">4</td>
+                            <td class="pl-4 pr-6 py-4">1%</td>
+                        </tr>
+                        <tr>
+                            <td class="pl-4 pr-6 py-4">5</td>
+                            <td class="pl-4 pr-6 py-4">1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-6">
+                <a
+                    href="{{ asset('files/Titans%20Crest.pdf') }}"
+                    download="Titans Crest.pdf"
+                    class="inline-flex items-center bg-[#d4af37] text-[#062a5f] px-6 py-3 rounded-lg font-bold hover:bg-[#e1c263] transition shadow-md"
+                 style="background-color: #d4af37; color: #062a5f; margin-top: 20px;">
+                    Download Referral Plan PDF
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- How It Works -->
-    <section id="how-it-works" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    {{-- <section id="how-it-works" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">How It <span class="gradient-text">Works</span></h2>
@@ -328,10 +330,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Stats Section -->
-    <section id="stats" class="py-20 px-4 sm:px-6 lg:px-8 gradient-bg">
+    <section id="stats" class="py-20 px-4 sm:px-6 lg:px-8 gradient-bg" style="margin-top:50px">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-8 text-center text-white">
                 <div>
@@ -476,15 +478,42 @@
                         <span class="text-blue-900 text-xl">+</span>
                     </button>
                     <div class="px-6 py-4 bg-gray-50 hidden faq-content">
-                        <p class="text-gray-700">The minimum investment is $100 for our Starter package. However, we have packages for all investment levels, with our Elite package starting at $5,000. Choose the package that best suits your financial situation.</p>
+                        <p class="text-gray-700">The minimum investment is $50 for our Basic package. We offer plans for every level, from $50 starter-friendly options up to our Elite package starting at $5,000.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Terms and Conditions -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-gray-900 mb-2">Terms and Conditions</h2>
+                <p class="text-gray-600">Please review the terms below before investing.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-md p-8">
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>All investments made on the platform are voluntary and users must understand the risks involved in digital asset trading.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The company aims to generate profits through professional cryptocurrency trading and digital asset management.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Returns are estimated and may vary depending on market conditions.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Investors must register an account and select an investment package to participate in the program.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The minimum withdrawal amount is 10 USD.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>A 5% withdrawal fee will be applied to every withdrawal request.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Profits will be distributed according to the investment plan selected by the user.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The company reserves the right to update or modify the investment plans and policies when necessary.</span></li>
+                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Any misuse of the platform, multiple accounts, or fraudulent activity may result in account suspension.</span></li>
+                </ul>
+                <div class="mt-8 text-center">
+                    <a href="/terms-and-conditions" class="inline-flex items-center text-[#062a5f] font-semibold hover:text-[#174a8f]">View Full Terms and Conditions</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Security & Trust Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    {{-- <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">Security &amp; <span class="gradient-text">Trust</span></h2>
@@ -558,7 +587,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- CTA Section -->
     <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -596,6 +625,7 @@
     </script>
 
     <!-- Footer -->
+  <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
@@ -620,6 +650,7 @@
                         @else
                             <li><a href="/login" class="hover:text-amber-400 transition">Login</a></li>
                             <li><a href="/register" class="hover:text-amber-400 transition">Register</a></li>
+                            <li><a href="/terms-and-conditions" class="hover:text-amber-400 transition">Terms and Conditions</a></li>
                         @endauth
                     </ul>
                 </div>
@@ -636,6 +667,7 @@
             </div>
         </div>
     </footer>
+
 
 </body>
 

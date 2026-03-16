@@ -30,6 +30,49 @@
         </div>
     @endif
 
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Filter Levels</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.referral-commissions.index') }}" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="search" class="form-control" placeholder="Level number" value="{{ request('search') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Sort By</label>
+                    <select name="sort" class="form-select">
+                        <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                        <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                        <option value="level" {{ request('sort') === 'level' ? 'selected' : '' }}>Level</option>
+                        <option value="percentage" {{ request('sort') === 'percentage' ? 'selected' : '' }}>Percentage</option>
+                        <option value="is_active" {{ request('sort') === 'is_active' ? 'selected' : '' }}>Status</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Order</label>
+                    <select name="direction" class="form-select">
+                        <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Descending</option>
+                        <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary grow">Apply</button>
+                    <a href="{{ route('admin.referral-commissions.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header">
             <h5 class="card-title mb-0">Commission Structure</h5>
@@ -126,6 +169,9 @@
                     </a>
                 </div>
             </form>
+        </div>
+        <div class="card-body" style="border-top: 1px solid rgba(212, 175, 55, 0.1);">
+            {{ $commissions->links() }}
         </div>
     </div>
 

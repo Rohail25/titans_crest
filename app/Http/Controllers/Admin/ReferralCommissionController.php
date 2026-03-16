@@ -13,9 +13,31 @@ class ReferralCommissionController extends Controller
      */
     public function index()
     {
+        $request = request();
         $this->ensureDefaultLevels();
 
-        $commissions = ReferralCommission::orderBy('level')->get();
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:active,inactive',
+            'sort' => 'nullable|in:id,level,percentage,is_active,created_at',
+            'direction' => 'nullable|in:asc,desc',
+        ]);
+
+        $allowedSorts = ['id', 'level', 'percentage', 'is_active', 'created_at'];
+        $sort = in_array($validated['sort'] ?? 'created_at', $allowedSorts, true) ? ($validated['sort'] ?? 'created_at') : 'created_at';
+        $direction = ($validated['direction'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $commissions = ReferralCommission::query()
+            ->when(!empty($validated['search']), function ($q) use ($validated) {
+                $search = trim((string) $validated['search']);
+                $q->where('level', 'like', "%{$search}%");
+            })
+            ->when(!empty($validated['status']), function ($q) use ($validated) {
+                $q->where('is_active', $validated['status'] === 'active');
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(25)
+            ->withQueryString();
         
         return view('admin.commissions.referral-index', [
             'commissions' => $commissions,

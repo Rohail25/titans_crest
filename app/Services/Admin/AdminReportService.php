@@ -7,76 +7,177 @@ use Illuminate\Support\Facades\DB;
 
 class AdminReportService
 {
+    private static function normalizeSort(string $sort, array $allowed, string $default = 'created_at'): string
+    {
+        return in_array($sort, $allowed, true) ? $sort : $default;
+    }
+
+    private static function normalizeDirection(string $direction): string
+    {
+        return strtolower($direction) === 'asc' ? 'asc' : 'desc';
+    }
+
+    public static function getUserReportPaginated(array $filters = [], int $perPage = 25)
+    {
+        $sort = self::normalizeSort($filters['sort'] ?? 'created_at', ['id', 'name', 'email', 'status', 'created_at']);
+        $direction = self::normalizeDirection($filters['direction'] ?? 'desc');
+
+        $query = \App\Models\User::where('role', 'user')->with(['wallet', 'userPackages.package', 'earnings']);
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
+    public static function getDepositReportPaginated(array $filters = [], int $perPage = 25)
+    {
+        $sort = self::normalizeSort($filters['sort'] ?? 'created_at', ['id', 'amount', 'status', 'created_at', 'confirmed_at']);
+        $direction = self::normalizeDirection($filters['direction'] ?? 'desc');
+
+        $query = \App\Models\Deposit::with('user');
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
+    public static function getWithdrawalReportPaginated(array $filters = [], int $perPage = 25)
+    {
+        $sort = self::normalizeSort($filters['sort'] ?? 'created_at', ['id', 'net_amount', 'requested_amount', 'status', 'created_at', 'approved_at']);
+        $direction = self::normalizeDirection($filters['direction'] ?? 'desc');
+
+        $query = \App\Models\Withdrawal::with('user');
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
+    public static function getEarningsReportPaginated(array $filters = [], int $perPage = 25)
+    {
+        $sort = self::normalizeSort($filters['sort'] ?? 'created_at', ['id', 'amount', 'type', 'created_at']);
+        $direction = self::normalizeDirection($filters['direction'] ?? 'desc');
+
+        $query = \App\Models\Earning::with('user');
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('type', $filters['status']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
     public static function getUserReport(?string $status = null, ?string $dateFrom = null, ?string $dateTo = null)
     {
-        $query = \App\Models\User::where('role', 'user');
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        if ($dateFrom) {
-            $query->where('created_at', '>=', $dateFrom);
-        }
-
-        if ($dateTo) {
-            $query->where('created_at', '<=', $dateTo);
-        }
-
-        return $query->with('wallet')->get();
+        return self::getUserReportPaginated([
+            'status' => $status,
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ], 10000)->getCollection();
     }
 
     public static function getDepositReport(?string $status = null, ?string $dateFrom = null, ?string $dateTo = null)
     {
-        $query = \App\Models\Deposit::with('user');
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        if ($dateFrom) {
-            $query->where('created_at', '>=', $dateFrom);
-        }
-
-        if ($dateTo) {
-            $query->where('created_at', '<=', $dateTo);
-        }
-
-        return $query->orderBy('created_at', 'desc')->get();
+        return self::getDepositReportPaginated([
+            'status' => $status,
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ], 10000)->getCollection();
     }
 
     public static function getWithdrawalReport(?string $status = null, ?string $dateFrom = null, ?string $dateTo = null)
     {
-        $query = \App\Models\Withdrawal::with('user');
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        if ($dateFrom) {
-            $query->where('created_at', '>=', $dateFrom);
-        }
-
-        if ($dateTo) {
-            $query->where('created_at', '<=', $dateTo);
-        }
-
-        return $query->orderBy('created_at', 'desc')->get();
+        return self::getWithdrawalReportPaginated([
+            'status' => $status,
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ], 10000)->getCollection();
     }
 
     public static function getEarningsReport(?string $dateFrom = null, ?string $dateTo = null)
     {
-        $query = \App\Models\Earning::with('user');
-
-        if ($dateFrom) {
-            $query->where('created_at', '>=', $dateFrom);
-        }
-
-        if ($dateTo) {
-            $query->where('created_at', '<=', $dateTo);
-        }
-
-        return $query->orderBy('created_at', 'desc')->get();
+        return self::getEarningsReportPaginated([
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ], 10000)->getCollection();
     }
 
     public static function getSystemStats()

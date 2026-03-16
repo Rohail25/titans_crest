@@ -28,37 +28,55 @@ class DatabaseSeeder extends Seeder
         Setting::set('min_withdrawal_amount', '10', 'Minimum Withdrawal Amount');
 
         // Create default packages
-        Package::create([
-            'name' => 'Starter Package',
-            'price' => 100,
-            'daily_profit_rate' => 0.0167,  // 1.67%
-            'duration_days' => null,  // Lifetime
-            'is_active' => true,
-        ]);
+        Package::firstOrCreate(
+            ['name' => 'Basic Package'],
+            [
+                'price' => 50,
+                'daily_profit_rate' => 0.0167,
+                'duration_days' => null,
+                'is_active' => true,
+            ]
+        );
 
-        Package::create([
-            'name' => 'Professional Package',
-            'price' => 500,
-            'daily_profit_rate' => 0.0167,
-            'duration_days' => null,
-            'is_active' => true,
-        ]);
+        Package::firstOrCreate(
+            ['name' => 'Starter Package'],
+            [
+                'price' => 100,
+                'daily_profit_rate' => 0.0167,  // 1.67%
+                'duration_days' => null,  // Lifetime
+                'is_active' => true,
+            ]
+        );
 
-        Package::create([
-            'name' => 'Premium Package',
-            'price' => 1000,
-            'daily_profit_rate' => 0.0167,
-            'duration_days' => null,
-            'is_active' => true,
-        ]);
+        Package::firstOrCreate(
+            ['name' => 'Professional Package'],
+            [
+                'price' => 500,
+                'daily_profit_rate' => 0.0167,
+                'duration_days' => null,
+                'is_active' => true,
+            ]
+        );
 
-        Package::create([
-            'name' => 'Elite Package',
-            'price' => 5000,
-            'daily_profit_rate' => 0.0167,
-            'duration_days' => null,
-            'is_active' => true,
-        ]);
+        Package::firstOrCreate(
+            ['name' => 'Premium Package'],
+            [
+                'price' => 1000,
+                'daily_profit_rate' => 0.0167,
+                'duration_days' => null,
+                'is_active' => true,
+            ]
+        );
+
+        Package::firstOrCreate(
+            ['name' => 'Elite Package'],
+            [
+                'price' => 5000,
+                'daily_profit_rate' => 0.0167,
+                'duration_days' => null,
+                'is_active' => true,
+            ]
+        );
 
         // Create admin user
         $admin = User::firstOrCreate(

@@ -5,13 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\AdminConfigService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ConfigurationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:active,inactive',
+            'sort' => 'nullable|in:id,name,price,daily_profit_rate,duration_days,created_at',
+            'direction' => 'nullable|in:asc,desc',
+        ]);
+
         $settings = AdminConfigService::getAll();
-        $packages = AdminConfigService::getPackageSettings();
+        $packages = AdminConfigService::getFilteredPackageSettings($validated);
 
         return view('admin.settings.index', compact('settings', 'packages'));
     }
@@ -36,7 +44,7 @@ class ConfigurationController extends Controller
             'max_daily_profit_multiplier' => $request->max_daily_profit_multiplier,
         ];
 
-        AdminConfigService::updateSettings($settings, auth()->user());
+        AdminConfigService::updateSettings($settings, Auth::user());
 
         return back()->with('success', 'Settings updated successfully.');
     }
@@ -54,7 +62,7 @@ class ConfigurationController extends Controller
         AdminConfigService::updatePackage(
             $packageId,
             $request->only(['name', 'price', 'daily_profit_rate', 'duration_days', 'is_active']),
-            auth()->user()
+            Auth::user()
         );
 
         return back()->with('success', 'Package updated successfully.');

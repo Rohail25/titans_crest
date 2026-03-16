@@ -17,20 +17,19 @@ class ReportController extends Controller
 
     public function users(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
             'status' => 'nullable|in:active,inactive,banned,suspended',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
+            'sort' => 'nullable|in:id,name,email,status,created_at',
+            'direction' => 'nullable|in:asc,desc',
         ]);
 
-        $users = AdminReportService::getUserReport(
-            $request->status,
-            $request->date_from,
-            $request->date_to
-        );
+        $users = AdminReportService::getUserReportPaginated($validated);
 
         if ($request->has('export')) {
-            $csv = AdminReportService::exportToCSV('users', $users);
+            $csv = AdminReportService::exportToCSV('users', $users->getCollection()->all());
             return response($csv)
                 ->header('Content-Type', 'text/csv')
                 ->header('Content-Disposition', 'attachment; filename="users-report.csv"');
@@ -41,20 +40,19 @@ class ReportController extends Controller
 
     public function deposits(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
             'status' => 'nullable|in:pending,confirmed,rejected',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
+            'sort' => 'nullable|in:id,amount,status,created_at,confirmed_at',
+            'direction' => 'nullable|in:asc,desc',
         ]);
 
-        $deposits = AdminReportService::getDepositReport(
-            $request->status,
-            $request->date_from,
-            $request->date_to
-        );
+        $deposits = AdminReportService::getDepositReportPaginated($validated);
 
         if ($request->has('export')) {
-            $csv = AdminReportService::exportToCSV('deposits', $deposits);
+            $csv = AdminReportService::exportToCSV('deposits', $deposits->getCollection()->all());
             return response($csv)
                 ->header('Content-Type', 'text/csv')
                 ->header('Content-Disposition', 'attachment; filename="deposits-report.csv"');
@@ -65,20 +63,19 @@ class ReportController extends Controller
 
     public function withdrawals(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
             'status' => 'nullable|in:pending_otp,pending_approval,approved,rejected',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
+            'sort' => 'nullable|in:id,net_amount,requested_amount,status,created_at,approved_at',
+            'direction' => 'nullable|in:asc,desc',
         ]);
 
-        $withdrawals = AdminReportService::getWithdrawalReport(
-            $request->status,
-            $request->date_from,
-            $request->date_to
-        );
+        $withdrawals = AdminReportService::getWithdrawalReportPaginated($validated);
 
         if ($request->has('export')) {
-            $csv = AdminReportService::exportToCSV('withdrawals', $withdrawals);
+            $csv = AdminReportService::exportToCSV('withdrawals', $withdrawals->getCollection()->all());
             return response($csv)
                 ->header('Content-Type', 'text/csv')
                 ->header('Content-Disposition', 'attachment; filename="withdrawals-report.csv"');
@@ -89,15 +86,16 @@ class ReportController extends Controller
 
     public function earnings(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:deposit,referral,profit_share,bonus,suspicious,withdrawal,admin_fund_add,admin_fund_deduct,package_subscription,refund',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
+            'sort' => 'nullable|in:id,amount,type,created_at',
+            'direction' => 'nullable|in:asc,desc',
         ]);
 
-        $earnings = AdminReportService::getEarningsReport(
-            $request->date_from,
-            $request->date_to
-        );
+        $earnings = AdminReportService::getEarningsReportPaginated($validated);
 
         return view('admin.reports.earnings', compact('earnings'));
     }

@@ -39,25 +39,53 @@
 <!-- Filters -->
 <div class="card mb-4">
     <div class="card-body">
-        <form method="GET" class="d-flex gap-2">
-            <input type="text" name="q" class="form-control" placeholder="Search emails..." value="{{ request('q') }}">
-            <select name="type" class="form-select" style="max-width: 150px;">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="Name, email, subject" value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Type</label>
+                <select name="type" class="form-select">
                 <option value="">All Types</option>
                 <option value="otp" {{ request('type') === 'otp' ? 'selected' : '' }}>OTP</option>
                 <option value="withdrawal" {{ request('type') === 'withdrawal' ? 'selected' : '' }}>Withdrawal</option>
                 <option value="deposit" {{ request('type') === 'deposit' ? 'selected' : '' }}>Deposit</option>
                 <option value="notification" {{ request('type') === 'notification' ? 'selected' : '' }}>Notification</option>
-            </select>
-            <select name="status" class="form-select" style="max-width: 120px;">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
                 <option value="">All Status</option>
                 <option value="sent" {{ request('status') === 'sent' ? 'selected' : '' }}>Sent</option>
                 <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Failed</option>
                 <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-            </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('admin.email-logs.failed') }}" class="btn btn-warning">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sort By</label>
+                <select name="sort" class="form-select">
+                    <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                    <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                    <option value="recipient" {{ request('sort') === 'recipient' ? 'selected' : '' }}>Recipient</option>
+                    <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label">Order</label>
+                <select name="direction" class="form-select">
+                    <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Desc</option>
+                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Asc</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="{{ route('admin.email-logs.index') }}" class="btn btn-secondary">Reset</a>
+                <a href="{{ route('admin.email-logs.failed') }}" class="btn btn-warning">
                 <i class="fas fa-exclamation-triangle"></i> Failed Only
             </a>
+            </div>
         </form>
     </div>
 </div>

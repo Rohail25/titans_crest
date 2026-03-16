@@ -456,12 +456,13 @@
     <!-- Top Bar -->
     <div class="admin-topbar">
         <div class="brand">
-            <i class="fas fa-crown"></i>
-            <span>Titans Crest Admin</span>
-            <span class="admin-badge">Admin</span>
+            {{-- <i class="fas fa-crown"></i> --}}
+            {{-- <span>Titans Crest Admin</span>
+            <span class="admin-badge">Admin</span> --}}
+            <img src="images/logo.svg" alt="Titans Crest" width="100" height="100">
         </div>
         <div class="user-menu">
-            <span><i class="fas fa-bell"></i></span>
+            {{-- <span><i class="fas fa-bell"></i></span> --}}
             <a href="{{ route('admin.profile.show') }}">
                 <i class="fas fa-user-circle"></i>
                 {{ auth()->user()->name }}
@@ -475,9 +476,10 @@
             </form>
         </div>
     </div>
-
+    
     <div class="admin-container">
         <!-- Sidebar -->
+        
         <div class="admin-sidebar">
             <div class="sidebar-title">Dashboard</div>
             <a href="{{ route('admin.dashboard') }}"

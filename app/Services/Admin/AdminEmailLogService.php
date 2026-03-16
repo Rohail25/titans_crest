@@ -6,27 +6,55 @@ use App\Models\EmailLog;
 
 class AdminEmailLogService
 {
+    public static function getFilteredLogs(array $filters = [], int $limit = 50)
+    {
+        $allowedSorts = ['id', 'recipient', 'type', 'status', 'created_at', 'sent_at'];
+        $sort = in_array($filters['sort'] ?? 'created_at', $allowedSorts, true)
+            ? ($filters['sort'] ?? 'created_at')
+            : 'created_at';
+        $direction = strtolower($filters['direction'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $query = EmailLog::with('user');
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->where(function ($q) use ($search) {
+                $q->where('recipient', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhere('body', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($limit)
+            ->withQueryString();
+    }
+
     public static function getAllLogs($limit = 50)
     {
-        return EmailLog::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+        return self::getFilteredLogs([], $limit);
     }
 
     public static function getLogsByType(string $type, $limit = 50)
     {
-        return EmailLog::with('user')
-            ->where('type', $type)
-            ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+        return self::getFilteredLogs(['type' => $type], $limit);
     }
 
     public static function getLogsByStatus(string $status, $limit = 50)
     {
-        return EmailLog::with('user')
-            ->where('status', $status)
-            ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+        return self::getFilteredLogs(['status' => $status], $limit);
     }
 
     public static function getLogsByUser(int $userId, $limit = 50)
@@ -38,12 +66,7 @@ class AdminEmailLogService
 
     public static function searchLogs(string $query, $limit = 50)
     {
-        return EmailLog::with('user')
-            ->where('recipient', 'like', "%{$query}%")
-            ->orWhere('subject', 'like', "%{$query}%")
-            ->orWhere('body', 'like', "%{$query}%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+        return self::getFilteredLogs(['search' => $query], $limit);
     }
 
     public static function getEmailStats()

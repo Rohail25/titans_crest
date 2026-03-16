@@ -52,53 +52,42 @@
     </div>
 </div>
 
-<!-- Team Structure -->
+<!-- Direct Referrals -->
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-users"></i> My Downline</h5>
+                <h5 class="mb-0"><i class="fas fa-user-friends"></i> Direct Referrals</h5>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Level</th>
-                                <th>Joined</th>
-                                <th>Commission</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($downline as $member)
-                                <tr>
-                                    <td>
-                                        <strong>{{ $member['user']->name }}</strong>
-                                    </td>
-                                    <td>{{ $member['user']->email }}</td>
-                                    <td>
-                                        <span class="badge badge-primary">Level {{ $member['level'] }}</span>
-                                    </td>
-                                    <td>{{ $member['user']->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        <strong>${{ number_format($member['commission'], 2) }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-success">Active</span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        No referrals yet. Share your referral code to get started!
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+            <div class="card-body">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-0">
+                        @include('user.referral._level-table', [
+                            'users' => $level1Users,
+                            'emptyText' => 'No direct referrals yet. Share your referral code to get started!'
+                        ])
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="stat-card h-100">
+                            <div class="stat-card-label">Total Direct Referrals</div>
+                            <div class="stat-card-value">{{ $directSummary['total_direct_referrals'] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card h-100">
+                            <div class="stat-card-label">Total Deposit From Direct Referrals</div>
+                            <div class="stat-card-value">${{ number_format($directSummary['total_direct_deposit'], 2) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card h-100 primary">
+                            <div class="stat-card-label">Total Referral Commission Earned</div>
+                            <div class="stat-card-value">${{ number_format($directSummary['total_referral_commission_earned'], 2) }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

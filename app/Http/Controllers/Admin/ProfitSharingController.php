@@ -11,11 +11,28 @@ class ProfitSharingController extends Controller
     /**
      * Display all profit sharing levels.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->ensureDefaultLevels();
 
-        $levels = ProfitSharingLevel::orderBy('level')->get();
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'sort' => 'nullable|in:id,level,percentage,created_at',
+            'direction' => 'nullable|in:asc,desc',
+        ]);
+
+        $allowedSorts = ['id', 'level', 'percentage', 'created_at'];
+        $sort = in_array($validated['sort'] ?? 'created_at', $allowedSorts, true) ? ($validated['sort'] ?? 'created_at') : 'created_at';
+        $direction = ($validated['direction'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $levels = ProfitSharingLevel::query()
+            ->when(!empty($validated['search']), function ($q) use ($validated) {
+                $search = trim((string) $validated['search']);
+                $q->where('level', 'like', "%{$search}%");
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(25)
+            ->withQueryString();
         
         return view('admin.commissions.profit-sharing-index', [
             'levels' => $levels,

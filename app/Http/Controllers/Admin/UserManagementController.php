@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\AdminUserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserManagementController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->has('q')) {
-            $users = AdminUserService::searchUsers($request->q);
-        } else {
-            $users = AdminUserService::getAllUsers();
-        }
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:active,inactive,banned,suspended',
+            'sort' => 'nullable|in:id,name,email,status,created_at',
+            'direction' => 'nullable|in:asc,desc',
+        ]);
+
+        $users = AdminUserService::getFilteredUsers($validated);
 
         $stats = AdminUserService::getUserStats();
 
@@ -36,7 +40,7 @@ class UserManagementController extends Controller
 
         $user = \App\Models\User::findOrFail($id);
 
-        AdminUserService::banUser($user, auth()->user(), $request->reason);
+        AdminUserService::banUser($user, Auth::user(), $request->reason);
 
         return redirect()->route('admin.users.show', $id)->with('success', 'User banned successfully.');
     }
@@ -45,7 +49,7 @@ class UserManagementController extends Controller
     {
         $user = \App\Models\User::findOrFail($id);
 
-        AdminUserService::activateUser($user, auth()->user());
+        AdminUserService::activateUser($user, Auth::user());
 
         return redirect()->route('admin.users.show', $id)->with('success', 'User activated successfully.');
     }
@@ -59,7 +63,7 @@ class UserManagementController extends Controller
 
         $user = \App\Models\User::findOrFail($id);
 
-        AdminUserService::addManualCredit($user, auth()->user(), $request->amount, $request->reason);
+        AdminUserService::addManualCredit($user, Auth::user(), $request->amount, $request->reason);
 
         return redirect()->route('admin.users.show', $id)->with('success', 'Manual credit added successfully.');
     }

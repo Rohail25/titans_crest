@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\AdminWithdrawalService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WithdrawalController extends Controller
 {
@@ -41,7 +42,7 @@ class WithdrawalController extends Controller
 
         AdminWithdrawalService::approveWithdrawal(
             $withdrawal,
-            auth()->user(),
+            Auth::user(),
             $request->tx_hash
         );
 
@@ -58,7 +59,7 @@ class WithdrawalController extends Controller
 
         AdminWithdrawalService::rejectWithdrawal(
             $withdrawal,
-            auth()->user(),
+            Auth::user(),
             $request->reason
         );
 

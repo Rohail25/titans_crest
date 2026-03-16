@@ -81,9 +81,9 @@ class AdminWithdrawalService
                 $walletService = new WalletService();
                 $walletService->addBalance(
                     $withdrawal->user,
-                    $withdrawal->net_amount,
-                    'refund',
-                    $withdrawal->id,
+                    (float) $withdrawal->net_amount,
+                    'withdrawal_refund',
+                    (string) $withdrawal->id,
                     ['reason' => $reason]
                 );
             }

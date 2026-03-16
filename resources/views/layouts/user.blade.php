@@ -579,10 +579,11 @@
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h3><i class="fas fa-crown"></i> Titans Crest</h3>
-                <p>Investment Dashboard</p>
+        <aside class="sidebar pt-0">
+            <div class="sidebar-brand mb-0 pb-0" >
+                {{-- <h3><i class="fas fa-crown"></i> Titans Crest</h3>
+                <p>Investment Dashboard</p> --}}
+                <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="150" height="150"></a>
             </div>
 
             <ul class="sidebar-menu">
@@ -600,6 +601,9 @@
                 </a></li>
                 <li><a href="{{ route('user.referral') }}" class="@if(request()->routeIs('user.referral')) active @endif">
                     <i class="fas fa-users"></i> Referrals
+                </a></li>
+                <li><a href="{{ route('user.team') }}" class="@if(request()->routeIs('user.team')) active @endif">
+                    <i class="fas fa-sitemap"></i> Team
                 </a></li>
                 <li><a href="{{ route('user.analytics') }}" class="@if(request()->routeIs('user.analytics')) active @endif">
                     <i class="fas fa-chart-bar"></i> Analytics

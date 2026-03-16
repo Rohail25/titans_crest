@@ -9,19 +9,42 @@ use Illuminate\Support\Facades\DB;
 
 class AdminUserService
 {
+    public static function getFilteredUsers(array $filters = [], int $limit = 50)
+    {
+        $allowedSorts = ['id', 'name', 'email', 'status', 'created_at'];
+        $sort = in_array($filters['sort'] ?? 'created_at', $allowedSorts, true)
+            ? ($filters['sort'] ?? 'created_at')
+            : 'created_at';
+        $direction = strtolower($filters['direction'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $query = User::with('wallet')->where('role', 'user');
+
+        if (!empty($filters['search'])) {
+            $search = trim((string) $filters['search']);
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('referral_code', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->orderBy($sort, $direction)
+            ->paginate($limit)
+            ->withQueryString();
+    }
+
     public static function getAllUsers($limit = 50)
     {
-        return User::with('wallet')
-            ->paginate($limit);
+        return self::getFilteredUsers([], $limit);
     }
 
     public static function searchUsers(string $query, $limit = 50)
     {
-        return User::with('wallet')
-            ->where('name', 'like', "%{$query}%")
-            ->orWhere('email', 'like', "%{$query}%")
-            ->orWhere('referral_code', 'like', "%{$query}%")
-            ->paginate($limit);
+        return self::getFilteredUsers(['search' => $query], $limit);
     }
 
     public static function getUserById(int $id): ?User
@@ -130,7 +153,7 @@ class AdminUserService
             'active_users' => User::where('role', 'user')->where('status', 'active')->count(),
             'banned_users' => User::where('role', 'user')->where('status', 'banned')->count(),
             'suspended_users' => User::where('role', 'user')->where('status', 'suspended')->count(),
-            'total_wallet_balance' => User::where('role', 'user')->sum(\DB::raw('(SELECT balance FROM wallets WHERE wallets.user_id = users.id)')),
+            'total_wallet_balance' => User::where('role', 'user')->sum(DB::raw('(SELECT balance FROM wallets WHERE wallets.user_id = users.id)')),
         ];
     }
 }

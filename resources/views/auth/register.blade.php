@@ -48,10 +48,11 @@
 
     <!-- Navigation -->
     <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a>
+                    {{-- <a href="/" class="text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a> --}}
+                    <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="80" height="80"></a>
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-700 hover:text-blue-900 transition">Back Home</a>
@@ -62,7 +63,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="min-h-screen gradient-bg pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div class="min-h-screen gradient-bg pt-27 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
         <div style="width: 100%; max-width: 450px;">
             <!-- Card -->
             <div class="bg-white rounded-2xl shadow-2xl p-8">
@@ -70,6 +71,7 @@
                 <div class="text-center mb-8">
                     <div class="mb-4">
                         <a href="/" class="inline-block text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a>
+                        
                     </div>
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
                     <p class="text-gray-600 text-sm">Join thousands of successful investors</p>
@@ -196,7 +198,7 @@
                         <div class="flex items-start">
                             <input type="checkbox" name="terms" id="terms" required class="mt-1 rounded border-2 border-gray-300 text-blue-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer">
                             <label for="terms" class="ml-3 text-sm text-gray-700 cursor-pointer">
-                                I agree to the <a href="#" class="text-blue-900 font-semibold hover:underline">Terms of Service</a> and <a href="#" class="text-blue-900 font-semibold hover:underline">Privacy Policy</a>
+                                I agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener" class="text-blue-900 font-semibold hover:underline">Terms and Conditions</a>
                             </label>
                         </div>
                         @error('terms')

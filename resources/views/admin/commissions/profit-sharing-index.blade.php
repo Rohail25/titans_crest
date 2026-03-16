@@ -30,6 +30,40 @@
         </div>
     @endif
 
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Filter Levels</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.profit-sharing.index') }}" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="search" class="form-control" placeholder="Level number" value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sort By</label>
+                    <select name="sort" class="form-select">
+                        <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Date</option>
+                        <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
+                        <option value="level" {{ request('sort') === 'level' ? 'selected' : '' }}>Level</option>
+                        <option value="percentage" {{ request('sort') === 'percentage' ? 'selected' : '' }}>Percentage</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Order</label>
+                    <select name="direction" class="form-select">
+                        <option value="desc" {{ request('direction', 'desc') === 'desc' ? 'selected' : '' }}>Descending</option>
+                        <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary grow">Apply</button>
+                    <a href="{{ route('admin.profit-sharing.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header">
             <h5 class="card-title mb-0">Profit Sharing Structure</h5>
@@ -101,6 +135,9 @@
                     </a>
                 </div>
             </form>
+        </div>
+        <div class="card-body" style="border-top: 1px solid rgba(212, 175, 55, 0.1);">
+            {{ $levels->links() }}
         </div>
     </div>
 

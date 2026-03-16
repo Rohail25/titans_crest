@@ -25,6 +25,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/terms-and-conditions', function () {
+    return view('terms-and-conditions');
+})->name('terms-and-conditions');
+
 // Authentication Routes
 Route::get('/login', function () {
     return view('auth.login');
@@ -69,6 +77,7 @@ Route::middleware(['auth'])->prefix('dashboard')->name('user.')->group(function 
     
     // Referrals
     Route::get('referrals', [ReferralController::class, 'index'])->name('referral');
+    Route::get('team', [ReferralController::class, 'team'])->name('team');
     
     // Analytics
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
