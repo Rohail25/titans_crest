@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\User;
 use App\Services\WalletService;
 use App\Models\EmailLog;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AdminUserService
@@ -49,7 +50,101 @@ class AdminUserService
 
     public static function getUserById(int $id): ?User
     {
-        return User::with('wallet', 'deposits', 'withdrawals', 'earnings')->findOrFail($id);
+        return User::with([
+            'wallet',
+            'deposits',
+            'withdrawals',
+            'earnings.userPackage.package',
+        ])->findOrFail($id);
+    }
+
+    public static function getReferralNetwork(User $user): array
+    {
+        $levels = [];
+        $visitedUserIds = collect([$user->id]);
+        $referrerIds = collect([$user->id]);
+        $level = 1;
+
+        while ($referrerIds->isNotEmpty()) {
+            $levelUsers = self::getReferralLevelUsers($referrerIds, $visitedUserIds);
+
+            if ($levelUsers->isEmpty()) {
+                break;
+            }
+
+            $levels[$level] = $levelUsers;
+            $visitedUserIds = $visitedUserIds->merge($levelUsers->pluck('id'))->unique()->values();
+            $referrerIds = $levelUsers->pluck('id');
+            $level++;
+        }
+
+        $allUsers = collect($levels)->flatten(1);
+
+        return [
+            'levels' => $levels,
+            'summary' => [
+                'total_levels' => count($levels),
+                'total_referrals' => $allUsers->count(),
+                'total_network_deposit' => (float) $allUsers->sum('total_deposit'),
+                'total_network_earned' => (float) $allUsers->sum('total_earned'),
+            ],
+        ];
+    }
+
+    public static function getUserDetailMetrics(User $user): array
+    {
+        $recentDeposits = $user->deposits
+            ->sortByDesc('created_at')
+            ->take(5)
+            ->values();
+
+        $recentWithdrawals = $user->withdrawals
+            ->sortByDesc('created_at')
+            ->take(5)
+            ->values();
+
+        $recentEarnings = $user->earnings
+            ->sortByDesc('created_at')
+            ->take(10)
+            ->values();
+
+        return [
+            'recentDeposits' => $recentDeposits,
+            'recentWithdrawals' => $recentWithdrawals,
+            'recentEarnings' => $recentEarnings,
+            'earningsSummary' => [
+                'total_earnings' => (float) $user->earnings->sum('amount'),
+                'profit_earnings' => (float) $user->earnings
+                    ->whereIn('type', ['profit_share', 'daily_profit', 'roi_profit'])
+                    ->sum('amount'),
+                'referral_earnings' => (float) $user->earnings
+                    ->whereIn('type', ['referral', 'referral_commission'])
+                    ->sum('amount'),
+                'total_entries' => $user->earnings->count(),
+            ],
+        ];
+    }
+
+    private static function getReferralLevelUsers(Collection $referrerIds, Collection $excludedUserIds): Collection
+    {
+        return User::query()
+            ->select(['id', 'referred_by', 'status', 'created_at'])
+            ->whereIn('referred_by', $referrerIds->all())
+            ->whereNotIn('id', $excludedUserIds->all())
+            ->with(['wallet:id,user_id,total_earned'])
+            ->withSum([
+                'deposits as total_deposit' => static function ($query) {
+                    $query->where('status', 'confirmed');
+                },
+            ], 'amount')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(static function (User $referralUser) {
+                $referralUser->total_deposit = (float) ($referralUser->total_deposit ?? 0);
+                $referralUser->total_earned = (float) ($referralUser->wallet?->total_earned ?? 0);
+
+                return $referralUser;
+            });
     }
 
     public static function banUser(User $user, User $admin, string $reason): void

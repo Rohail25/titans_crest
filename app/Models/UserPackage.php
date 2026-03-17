@@ -13,12 +13,23 @@ class UserPackage extends Model
         'activated_at',
         'expires_at',
         'is_active',
+        'total_deposit',
+        'total_earned',
+        'earning_cap',
+        'package_status',
+        'last_profit_time',
+        'next_profit_time',
     ];
 
     protected $casts = [
         'activated_at' => 'datetime',
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
+        'total_deposit' => 'decimal:2',
+        'total_earned' => 'decimal:2',
+        'earning_cap' => 'decimal:2',
+        'last_profit_time' => 'datetime',
+        'next_profit_time' => 'datetime',
     ];
 
     public function user(): BelongsTo

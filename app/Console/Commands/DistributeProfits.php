@@ -9,7 +9,7 @@ use App\Models\User;
 class DistributeProfits extends Command
 {
     protected $signature = 'profits:distribute {--users=* : Specific user IDs to distribute to}';
-    protected $description = 'Distribute daily profits to users based on their active packages';
+    protected $description = 'Distribute ROI profits every 8 hours to users with active packages';
 
     protected ProfitService $profitService;
 
@@ -21,7 +21,7 @@ class DistributeProfits extends Command
 
     public function handle(): int
     {
-        $this->info('Starting daily profit distribution...');
+        $this->info('Starting 8-hour profit distribution cycle...');
 
         $startTime = now();
 
@@ -36,7 +36,7 @@ class DistributeProfits extends Command
             $this->profitService->distributeProfitBatch($userIds);
 
             $duration = now()->diffInSeconds($startTime);
-            $this->info("✓ Daily profit distribution completed successfully in {$duration} seconds");
+            $this->info("✓ Profit distribution cycle completed successfully in {$duration} seconds");
 
             return self::SUCCESS;
         } catch (\Exception $e) {

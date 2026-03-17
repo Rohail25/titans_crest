@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserPackage;
-use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -26,70 +26,42 @@ class ProfitService
     {
         $activePackages = $user->userPackages()
             ->where('is_active', true)
+            ->where('package_status', 'active')
             ->with('package')
             ->get();
 
         $totalProfit = 0;
-        $maxDailyProfitMultiplier = Setting::get('max_daily_profit_multiplier', 2);
 
         foreach ($activePackages as $userPackage) {
-            $package = $userPackage->package;
-            // Calculate profit based on daily rate (percentage)
-            $calculatedProfit = ($package->price / 100) * $package->daily_profit_rate;
-            
-            // Apply maximum daily profit cap (multiplier × package price)
-            $maxProfitForPackage = $package->price * $maxDailyProfitMultiplier;
-            
-            // Use the lower of the two values
-            $profit = min($calculatedProfit, $maxProfitForPackage);
-            
-            $totalProfit += $profit;
+            $totalProfit += $this->calculateDailyProfitForPackage($userPackage);
         }
 
         return $totalProfit;
     }
 
     /**
-     * Distribute daily profit to user (called by scheduler)
+     * Distribute cycle profit to user (called by scheduler every 8 hours)
      */
     public function distributeDailyProfit(User $user): void
     {
-        // Skip if 3x cap reached
-        if ($this->walletService->has3xCapReached($user)) {
-            return;
+        /** @var \Illuminate\Database\Eloquent\Collection<int, UserPackage> $activePackages */
+        $activePackages = $user->userPackages()
+            ->where('is_active', true)
+            ->where('package_status', 'active')
+            ->with('package')
+            ->get();
+
+        foreach ($activePackages as $userPackage) {
+            try {
+                $this->distributePackageCycleProfit($user, $userPackage);
+            } catch (\Throwable $exception) {
+                Log::warning('Package cycle profit skipped', [
+                    'user_id' => $user->id,
+                    'user_package_id' => $userPackage->id,
+                    'reason' => $exception->getMessage(),
+                ]);
+            }
         }
-
-        $profit = $this->calculateDailyProfit($user);
-
-        if ($profit <= 0) {
-            return;
-        }
-
-        // Check remaining capacity before 3x cap
-        $remaining = $this->walletService->get3xCapRemaining($user);
-        if ($remaining <= 0) {
-            return;
-        }
-
-        // Don't exceed 3x cap
-        $creditAmount = min($profit, $remaining);
-
-        DB::transaction(function () use ($user, $creditAmount) {
-            $maxDailyProfitMultiplier = Setting::get('max_daily_profit_multiplier', 2);
-            $this->walletService->addBalance(
-                $user,
-                $creditAmount,
-                'profit_share',
-                null,
-                [
-                    'calculated_profit' => $this->calculateDailyProfit($user),
-                    'max_daily_profit_multiplier' => $maxDailyProfitMultiplier,
-                ]
-            );
-
-            // Share this user's earned daily profit with uplines.
-            $this->profitSharingService->shareProfitWithUplines($user, $creditAmount);
-        });
     }
 
     /**
@@ -106,7 +78,7 @@ class ProfitService
         /** @var \Illuminate\Database\Eloquent\Collection<int, User> $users */
         $users = $query->with('userPackages.package')
             ->whereHas('userPackages', function ($q) {
-                $q->where('is_active', true);
+                $q->where('is_active', true)->where('package_status', 'active');
             })
             ->get();
 
@@ -121,12 +93,15 @@ class ProfitService
     }
 
     /**
-     * Get maximum daily profit multiplier from settings
-     * Default is 2x (max daily earnings = 2x package value)
+     * ROI rate based on deposit tier
      */
-    public function getMaxDailyProfitMultiplier(): float
+    public function getRoiRateForAmount(float $amount): float
     {
-        return (float) Setting::get('max_daily_profit_multiplier', 2);
+        $percent = $amount < 500
+            ? (float) Setting::get('roi_below_500_percent', 0.60)
+            : (float) Setting::get('roi_500_plus_percent', 0.70);
+
+        return $percent / 100;
     }
 
     /**
@@ -160,17 +135,90 @@ class ProfitService
     {
         return $user->userPackages()
             ->where('is_active', true)
+            ->where('package_status', 'active')
             ->with('package')
             ->get()
             ->map(fn($up) => [
                 'id' => $up->id,
+                'user_package_id' => $up->id,
                 'name' => $up->package->name,
-                'price' => $up->package->price,
-                'daily_profit_rate' => $up->package->daily_profit_rate,
-                'daily_profit' => $up->package->price * $up->package->daily_profit_rate,
+                'price' => (float) ($up->total_deposit ?: $up->package->price),
+                'daily_profit_rate' => $this->getRoiRateForAmount((float) ($up->total_deposit ?: $up->package->price)),
+                'daily_profit' => $this->calculateDailyProfitForPackage($up),
+                'cycle_profit' => $this->calculateCycleProfitForPackage($up),
                 'activated_at' => $up->activated_at,
                 'expires_at' => $up->expires_at,
+                'earning_cap' => (float) $up->earning_cap,
+                'package_status' => $up->package_status,
+                'next_profit_time' => $up->next_profit_time,
             ])
             ->toArray();
+    }
+
+    public function getNextCycleTime(?\Carbon\Carbon $from = null): \Carbon\Carbon
+    {
+        return ($from?->copy() ?? now())->addHours(8);
+    }
+
+    private function calculateDailyProfitForPackage(UserPackage $userPackage): float
+    {
+        $depositAmount = (float) ($userPackage->total_deposit ?: $userPackage->package?->price ?: 0);
+
+        if ($depositAmount <= 0) {
+            return 0;
+        }
+
+        return $depositAmount * $this->getRoiRateForAmount($depositAmount);
+    }
+
+    private function calculateCycleProfitForPackage(UserPackage $userPackage): float
+    {
+        return $this->calculateDailyProfitForPackage($userPackage) / 3;
+    }
+
+    private function distributePackageCycleProfit(User $user, UserPackage $userPackage): void
+    {
+        if (!$userPackage->is_active || $userPackage->package_status !== 'active') {
+            return;
+        }
+
+        if ($userPackage->next_profit_time && now()->lt($userPackage->next_profit_time)) {
+            return;
+        }
+
+        $this->walletService->refreshUserPackageCap($user, $userPackage);
+        $userPackage->refresh();
+
+        if ((float) $userPackage->total_earned >= (float) $userPackage->earning_cap) {
+            $this->walletService->completeUserPackage($userPackage);
+            return;
+        }
+
+        $cycleProfit = $this->calculateCycleProfitForPackage($userPackage);
+        if ($cycleProfit <= 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($user, $userPackage, $cycleProfit) {
+            $credited = $this->walletService->addBalance(
+                $user,
+                $cycleProfit,
+                'roi_profit',
+                (string) $userPackage->id,
+                [
+                    'user_package_id' => $userPackage->id,
+                    'daily_profit' => $this->calculateDailyProfitForPackage($userPackage),
+                    'cycle_profit' => $cycleProfit,
+                    'roi_rate' => $this->getRoiRateForAmount((float) ($userPackage->total_deposit ?: $userPackage->package?->price ?: 0)),
+                ]
+            );
+
+            $userPackage->update([
+                'last_profit_time' => now(),
+                'next_profit_time' => $this->getNextCycleTime(now()),
+            ]);
+
+            $this->profitSharingService->shareProfitWithUplines($user, (float) $credited->amount);
+        });
     }
 }

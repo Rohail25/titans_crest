@@ -49,13 +49,13 @@
     <div class="col-md-3 col-sm-6">
         <div class="kpi-card">
             <div class="kpi-icon">
-                <i class="fas fa-hourglass-end" style="color: #f97316;"></i>
+                <i class="fas fa-check-circle" style="color: #22c55e;"></i>
             </div>
-            <div class="kpi-label">Pending Withdrawals</div>
-            <div class="kpi-value">{{ $kpis['pending_withdrawals'] }}</div>
-            <small style="color: #f97316;">
-                <i class="fas fa-exclamation-circle"></i>
-                ${{ number_format($kpis['pending_withdrawals_amount'], 2) }}
+            <div class="kpi-label">Approved Withdrawals</div>
+            <div class="kpi-value">{{ $kpis['approved_withdrawals'] }}</div>
+            <small style="color: #22c55e;">
+                <i class="fas fa-dollar-sign"></i>
+                ${{ number_format($kpis['approved_withdrawals_amount'], 2) }}
             </small>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
 use App\Services\WalletService;
@@ -23,7 +24,8 @@ class DashboardController extends Controller
 
     public function index(): View
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $walletSummary = $this->walletService->getWalletSummary($user);
         $profitSummary = $this->profitService->getProfitSummary($user);
         $activePackages = $this->profitService->getActivePackages($user);
@@ -33,6 +35,15 @@ class DashboardController extends Controller
         $availablePackages = Package::where('is_active', true)
             ->orderBy('price')
             ->get(['id', 'name', 'price', 'daily_profit_rate', 'duration_days']);
+
+        $latestCompletedPackage = $user->userPackages()
+            ->where('package_status', 'completed')
+            ->latest('updated_at')
+            ->first();
+
+        $nextProfitTime = !empty($activePackages)
+            ? ($activePackages[0]['next_profit_time'] ?? null)
+            : null;
 
         // Get recent earnings
         $recentEarnings = $user->earnings()
@@ -49,6 +60,8 @@ class DashboardController extends Controller
             'referrals' => $referralStats,
             'availablePackages' => $availablePackages,
             'recentEarnings' => $recentEarnings,
+            'latestCompletedPackage' => $latestCompletedPackage,
+            'nextProfitTime' => $nextProfitTime,
         ]);
     }
 }

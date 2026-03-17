@@ -79,17 +79,21 @@ class ReferralService
             if ($activePackage) {
                 $commission = $activePackage->package->price * ($commissionPercent / 100);
 
-                // Credit referrer
-                $this->walletService->addBalance(
-                    $referrer,
-                    $commission,
-                    'referral',
-                    $user->id,
-                    ['referred_user' => $user->name, 'percent' => $commissionPercent]
-                );
+                try {
+                    // Credit referrer
+                    $this->walletService->addBalance(
+                        $referrer,
+                        $commission,
+                        'referral_commission',
+                        $user->id,
+                        ['referred_user' => $user->name, 'percent' => $commissionPercent]
+                    );
 
-                // Update referral tree
-                $referrer->referralTree->increment('commission_earned', $commission);
+                    // Update referral tree
+                    $referrer->referralTree->increment('commission_earned', $commission);
+                } catch (\Throwable $exception) {
+                    // Skip commission if upline has no active package or reached earning cap.
+                }
             }
         });
     }

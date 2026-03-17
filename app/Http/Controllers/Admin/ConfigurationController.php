@@ -29,6 +29,8 @@ class ConfigurationController extends Controller
         $request->validate([
             'bnb_wallet_address' => 'required|string',
             'referral_commission_percent' => 'required|numeric|min:0|max:100',
+            'roi_below_500_percent' => 'required|numeric|min:0|max:100',
+            'roi_500_plus_percent' => 'required|numeric|min:0|max:100',
             'withdrawal_fee_percent' => 'required|numeric|min:0|max:100',
             'otp_expiry_minutes' => 'required|integer|min:1',
             'min_withdrawal_amount' => 'required|numeric|min:0',
@@ -38,6 +40,8 @@ class ConfigurationController extends Controller
         $settings = [
             'bnb_wallet_address' => $request->bnb_wallet_address,
             'referral_commission_percent' => $request->referral_commission_percent,
+            'roi_below_500_percent' => $request->roi_below_500_percent,
+            'roi_500_plus_percent' => $request->roi_500_plus_percent,
             'withdrawal_fee_percent' => $request->withdrawal_fee_percent,
             'otp_expiry_minutes' => $request->otp_expiry_minutes,
             'min_withdrawal_amount' => $request->min_withdrawal_amount,

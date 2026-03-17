@@ -35,4 +35,9 @@ class Earning extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function userPackage(): BelongsTo
+    {
+        return $this->belongsTo(UserPackage::class, 'reference_id');
+    }
 }

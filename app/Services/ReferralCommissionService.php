@@ -36,25 +36,23 @@ class ReferralCommissionService
             // Get the user's referral tree (uplines)
             $uplines = $this->getUplines($user, $commissions->max('level'));
 
-            // Distribute commissions to each upline
-            DB::transaction(function () use ($uplines, $commissions, $packagePrice, $user) {
-                foreach ($commissions as $commission) {
-                    if (!isset($uplines[$commission->level - 1])) {
-                        continue;
-                    }
+            foreach ($commissions as $commission) {
+                if (!isset($uplines[$commission->level - 1])) {
+                    continue;
+                }
 
-                    $upline = $uplines[$commission->level - 1];
-                    $commissionAmount = ($packagePrice * $commission->percentage) / 100;
+                $upline = $uplines[$commission->level - 1];
+                $commissionAmount = ($packagePrice * $commission->percentage) / 100;
 
-                    if ($commissionAmount <= 0) {
-                        continue;
-                    }
+                if ($commissionAmount <= 0) {
+                    continue;
+                }
 
-                    // WalletService creates the immutable earning row.
-                    $this->walletService->addBalance(
+                try {
+                    $earning = $this->walletService->addBalance(
                         $upline,
                         $commissionAmount,
-                        'referral',
+                        'referral_commission',
                         (string) $user->id,
                         [
                             'source' => 'package_subscription',
@@ -66,10 +64,17 @@ class ReferralCommissionService
                     );
 
                     if ($upline->referralTree) {
-                        $upline->referralTree->increment('commission_earned', $commissionAmount);
+                        $upline->referralTree->increment('commission_earned', (float) $earning->amount);
                     }
+                } catch (\Throwable $exception) {
+                    Log::info('Referral commission skipped for upline due to earning cap', [
+                        'upline_id' => $upline->id,
+                        'from_user_id' => $user->id,
+                        'level' => $commission->level,
+                        'reason' => $exception->getMessage(),
+                    ]);
                 }
-            });
+            }
         } catch (\Exception $e) {
             Log::error('Error distributing referral commissions: ' . $e->getMessage(), [
                 'user_id' => $user->id,

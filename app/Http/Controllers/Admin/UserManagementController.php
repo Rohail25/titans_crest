@@ -28,8 +28,17 @@ class UserManagementController extends Controller
     public function show($id)
     {
         $user = AdminUserService::getUserById($id);
+        $detailMetrics = AdminUserService::getUserDetailMetrics($user);
+        $referralNetwork = AdminUserService::getReferralNetwork($user);
 
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show', [
+            'user' => $user,
+            'recentDeposits' => $detailMetrics['recentDeposits'],
+            'recentWithdrawals' => $detailMetrics['recentWithdrawals'],
+            'recentEarnings' => $detailMetrics['recentEarnings'],
+            'earningsSummary' => $detailMetrics['earningsSummary'],
+            'referralNetwork' => $referralNetwork,
+        ]);
     }
 
     public function ban(Request $request, $id)

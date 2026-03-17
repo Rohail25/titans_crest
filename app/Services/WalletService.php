@@ -5,10 +5,20 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Earning;
+use App\Models\Package;
+use App\Models\ReferralTree;
+use App\Models\UserPackage;
 use Illuminate\Support\Facades\DB;
 
 class WalletService
 {
+    private const NON_CAPPED_EARNING_TYPES = [
+        'deposit',
+        'refund',
+        'withdrawal_refund',
+        'admin_fund_add',
+    ];
+
     /**
      * Get or create user wallet
      */
@@ -27,23 +37,35 @@ class WalletService
     }
 
     /**
-     * Check if user has reached 3x cap
+     * Check if user has reached earning cap on active package
      */
     public function has3xCapReached(User $user): bool
     {
-        $wallet = $user->wallet;
-        $maxEarnings = $wallet->total_deposit * 3;
-        return $wallet->total_earned >= $maxEarnings;
+        $activePackage = $this->getActiveEarningPackage($user);
+
+        if (!$activePackage) {
+            return true;
+        }
+
+        $activePackage = $this->refreshUserPackageCap($user, $activePackage);
+
+        return (float) $activePackage->total_earned >= (float) $activePackage->earning_cap;
     }
 
     /**
-     * Get remaining earnings possible before 3x cap
+     * Get remaining earnings possible before package cap
      */
     public function get3xCapRemaining(User $user): float|int
     {
-        $wallet = $user->wallet;
-        $maxEarnings = $wallet->total_deposit * 3;
-        $remaining = $maxEarnings - $wallet->total_earned;
+        $activePackage = $this->getActiveEarningPackage($user);
+
+        if (!$activePackage) {
+            return 0;
+        }
+
+        $activePackage = $this->refreshUserPackageCap($user, $activePackage);
+        $remaining = (float) $activePackage->earning_cap - (float) $activePackage->total_earned;
+
         return max(0, $remaining);
     }
 
@@ -54,16 +76,59 @@ class WalletService
     {
         return DB::transaction(function () use ($user, $amount, $earningType, $referenceId, $metadata) {
             $wallet = $this->getOrCreateWallet($user);
-            
-            // Check 3x cap before adding earnings (excluding deposits)
-            if ($earningType !== 'deposit' && $this->has3xCapReached($user)) {
-                throw new \Exception('User has reached 3x cap limit');
+            $normalizedType = $this->normalizeEarningType($earningType);
+            $ledgerMetadata = $metadata ?? [];
+
+            if ($normalizedType !== $earningType) {
+                $ledgerMetadata['original_earning_type'] = $earningType;
+            }
+
+            if ($this->isCappedEarningType($normalizedType, $amount)) {
+                $activePackage = $this->getActiveEarningPackage($user);
+
+                if (!$activePackage) {
+                    throw new \Exception('Your package has reached earning limits. Please subscribe to a new package.');
+                }
+
+                $activePackage = $this->refreshUserPackageCap($user, $activePackage);
+                $remaining = max(0, (float) $activePackage->earning_cap - (float) $activePackage->total_earned);
+
+                if ($remaining <= 0) {
+                    $this->completeUserPackage($activePackage);
+                    throw new \Exception('Your package has reached the maximum earning limit.');
+                }
+
+                $creditAmount = min($amount, $remaining);
+
+                $wallet->increment('balance', $creditAmount);
+                $wallet->increment('total_earned', $creditAmount);
+
+                $earning = Earning::create([
+                    'user_id' => $user->id,
+                    'type' => $normalizedType,
+                    'reference_id' => $referenceId,
+                    'amount' => $creditAmount,
+                    'metadata' => array_merge($ledgerMetadata, [
+                        'requested_amount' => $amount,
+                        'cap_applied' => $creditAmount < $amount,
+                        'user_package_id' => $activePackage->id,
+                    ]),
+                ]);
+
+                $activePackage->increment('total_earned', $creditAmount);
+                $activePackage->refresh();
+
+                if ((float) $activePackage->total_earned >= (float) $activePackage->earning_cap) {
+                    $this->completeUserPackage($activePackage);
+                }
+
+                return $earning;
             }
 
             $wallet->increment('balance', $amount);
-            
+
             // Update total_earned for non-deposit entries
-            if ($earningType !== 'deposit') {
+            if ($normalizedType !== 'deposit') {
                 $wallet->increment('total_earned', $amount);
             } else {
                 $wallet->increment('total_deposit', $amount);
@@ -72,10 +137,10 @@ class WalletService
             // Create ledger entry (immutable)
             return Earning::create([
                 'user_id' => $user->id,
-                'type' => $earningType,
+                'type' => $normalizedType,
                 'reference_id' => $referenceId,
                 'amount' => $amount,
-                'metadata' => $metadata,
+                'metadata' => $ledgerMetadata,
             ]);
         });
     }
@@ -155,10 +220,18 @@ class WalletService
      */
     public function getWalletSummary(User $user): array
     {
-        $wallet = $user->wallet;
-        $cap3x = $wallet->total_deposit * 3;
-        $remaining = max(0, $cap3x - $wallet->total_earned);
-        $capPercentage = $cap3x > 0 ? ($wallet->total_earned / $cap3x * 100) : 0;
+        $wallet = $this->getOrCreateWallet($user);
+        $activePackage = $this->getActiveEarningPackage($user);
+
+        if ($activePackage) {
+            $activePackage = $this->refreshUserPackageCap($user, $activePackage);
+        }
+
+        $cap = $activePackage ? (float) $activePackage->earning_cap : 0;
+        $earnedAgainstCap = $activePackage ? (float) $activePackage->total_earned : 0;
+        $remaining = max(0, $cap - $earnedAgainstCap);
+        $capPercentage = $cap > 0 ? ($earnedAgainstCap / $cap * 100) : 0;
+        $capReached = !$activePackage || $remaining <= 0;
 
         return [
             'balance' => $wallet->balance,
@@ -166,10 +239,91 @@ class WalletService
             'suspicious_balance' => $wallet->suspicious_balance,
             'total_deposit' => $wallet->total_deposit,
             'total_earned' => $wallet->total_earned,
-            'cap_3x' => $cap3x,
+            'cap_3x' => $cap,
             'remaining_3x' => $remaining,
             'cap_percentage' => min(100, $capPercentage),
-            'cap_reached' => $this->has3xCapReached($user),
+            'cap_reached' => $capReached,
+            'package_status' => $activePackage?->package_status ?? 'completed',
+            'next_profit_time' => $activePackage?->next_profit_time,
+            'last_profit_time' => $activePackage?->last_profit_time,
         ];
+    }
+
+    public function getActiveEarningPackage(User $user): ?UserPackage
+    {
+        return $user->userPackages()
+            ->where('is_active', true)
+            ->where('package_status', 'active')
+            ->with('package:id,price')
+            ->latest('id')
+            ->first();
+    }
+
+    public function determineCapMultiplier(User $user, float $depositAmount): int
+    {
+        if ($depositAmount >= 500) {
+            return 4;
+        }
+
+        $hasDirectReferral = User::where('referred_by', $user->id)->exists()
+            || ReferralTree::where('referrer_id', $user->id)->exists();
+
+        return $hasDirectReferral ? 3 : 2;
+    }
+
+    public function calculateCapForUser(User $user, float $depositAmount): float
+    {
+        return $depositAmount * $this->determineCapMultiplier($user, $depositAmount);
+    }
+
+    public function refreshUserPackageCap(User $user, UserPackage $userPackage): UserPackage
+    {
+        $packagePrice = (float) ($userPackage->package?->price ?? 0);
+
+        if ($packagePrice <= 0 && $userPackage->package_id) {
+            $packagePrice = (float) (Package::query()->whereKey($userPackage->package_id)->value('price') ?? 0);
+        }
+
+        $depositAmount = (float) ($userPackage->total_deposit ?: $packagePrice ?: 0);
+
+        if ($depositAmount <= 0) {
+            $depositAmount = (float) ($this->getOrCreateWallet($user)->total_deposit ?: 0);
+        }
+
+        $calculatedCap = $this->calculateCapForUser($user, $depositAmount);
+
+        if ((float) $userPackage->total_deposit !== $depositAmount || (float) $userPackage->earning_cap !== $calculatedCap) {
+            $userPackage->update([
+                'total_deposit' => $depositAmount,
+                'earning_cap' => $calculatedCap,
+            ]);
+        }
+
+        return $userPackage->fresh();
+    }
+
+    public function completeUserPackage(UserPackage $userPackage): void
+    {
+        $userPackage->update([
+            'is_active' => false,
+            'package_status' => 'completed',
+            'expires_at' => now(),
+            'next_profit_time' => null,
+        ]);
+    }
+
+    private function isCappedEarningType(string $earningType, float $amount): bool
+    {
+        return $amount > 0 && !in_array($earningType, self::NON_CAPPED_EARNING_TYPES, true);
+    }
+
+    private function normalizeEarningType(string $earningType): string
+    {
+        return match ($earningType) {
+            'referral_commission' => 'referral',
+            'roi_profit' => 'profit_share',
+            'withdrawal_refund' => 'refund',
+            default => $earningType,
+        };
     }
 }

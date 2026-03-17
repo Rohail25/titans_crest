@@ -43,6 +43,83 @@
     </div>
 </div>
 
+<div class="card mb-4">
+    <div class="card-header">Referral Network</div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Total Levels</div>
+                    <h5 class="mb-0">{{ $referralNetwork['summary']['total_levels'] }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Total Referrals</div>
+                    <h5 class="mb-0">{{ $referralNetwork['summary']['total_referrals'] }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Network Deposit</div>
+                    <h5 class="mb-0 text-success">${{ number_format($referralNetwork['summary']['total_network_deposit'], 2) }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Network Earned</div>
+                    <h5 class="mb-0 text-info">${{ number_format($referralNetwork['summary']['total_network_earned'], 2) }}</h5>
+                </div>
+            </div>
+        </div>
+
+        @forelse($referralNetwork['levels'] as $level => $members)
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header">
+                    <strong>Level {{ $level }}</strong>
+                    <span class="text-muted ms-2">{{ $members->count() }} referral(s)</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Join Date</th>
+                                <th>Total Deposit</th>
+                                <th>Total Earned</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($members as $member)
+                                <tr>
+                                    <td><strong>#{{ $member->id }}</strong></td>
+                                    <td>{{ $member->created_at->format('Y-m-d') }}</td>
+                                    <td><strong>${{ number_format($member->total_deposit, 2) }}</strong></td>
+                                    <td><strong>${{ number_format($member->total_earned, 2) }}</strong></td>
+                                    <td>
+                                        @if($member->status === 'active')
+                                            <span class="badge bg-success">Active</span>
+                                        @elseif($member->status === 'banned')
+                                            <span class="badge bg-danger">Banned</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($member->status) }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @empty
+            <div class="text-center text-muted py-4">
+                No referral network found for this user.
+            </div>
+        @endforelse
+    </div>
+</div>
+
 <!-- Deposits -->
 <div class="card mb-4">
     <div class="card-header">Recent Deposits</div>
@@ -57,7 +134,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($user->deposits()->latest()->take(5)->get() as $deposit)
+                @forelse($recentDeposits as $deposit)
                     <tr>
                         <td>${{ number_format($deposit->amount, 2) }}</td>
                         <td><span class="badge badge-{{ $deposit->status === 'confirmed' ? 'success' : 'warning' }}">{{ ucfirst($deposit->status) }}</span></td>
@@ -80,20 +157,20 @@
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-3">
-                <div class="text-muted small">Total Earnings</div>
-                <h5 class="text-success">${{ number_format($user->earnings->sum('amount'), 2) }}</h5>
+                <div class="text-white small">Total Earnings</div>
+                <h5 class="text-success">${{ number_format($earningsSummary['total_earnings'], 2) }}</h5>
             </div>
             <div class="col-md-3">
-                <div class="text-muted small">Daily Commissions</div>
-                <h5 class="text-info">${{ number_format($user->earnings->where('type', 'daily_profit')->sum('amount'), 2) }}</h5>
+                <div class="text-white small">Profit Earnings</div>
+                <h5 class="text-info">${{ number_format($earningsSummary['profit_earnings'], 2) }}</h5>
             </div>
             <div class="col-md-3">
-                <div class="text-muted small">Referral Commissions</div>
-                <h5 class="text-warning">${{ number_format($user->earnings->where('type', 'referral_commission')->sum('amount'), 2) }}</h5>
+                <div class="text-white small">Referral Commissions</div>
+                <h5 class="text-warning">${{ number_format($earningsSummary['referral_earnings'], 2) }}</h5>
             </div>
             <div class="col-md-3">
-                <div class="text-muted small">Total Entries</div>
-                <h5>{{ $user->earnings->count() }}</h5>
+                <div class="text-white small">Total Entries</div>
+                <h5>{{ $earningsSummary['total_entries'] }}</h5>
             </div>
         </div>
     </div>
@@ -109,12 +186,12 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($user->earnings()->latest()->take(10)->get() as $earning)
+                @forelse($recentEarnings as $earning)
                     <tr>
                         <td>
-                            @if($earning->type === 'daily_profit')
-                                <span class="badge bg-info"><i class="fas fa-calendar-day"></i> Daily Profit</span>
-                            @elseif($earning->type === 'referral_commission')
+                            @if(in_array($earning->type, ['profit_share', 'daily_profit', 'roi_profit'], true))
+                                <span class="badge bg-info"><i class="fas fa-calendar-day"></i> Profit</span>
+                            @elseif(in_array($earning->type, ['referral', 'referral_commission'], true))
                                 <span class="badge bg-warning"><i class="fas fa-users"></i> Referral</span>
                             @else
                                 <span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $earning->type)) }}</span>
@@ -167,7 +244,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($user->withdrawals()->latest()->take(5)->get() as $withdrawal)
+                @forelse($recentWithdrawals as $withdrawal)
                     <tr>
                         <td>${{ number_format($withdrawal->net_amount, 2) }}</td>
                         <td><span class="badge badge-{{ $withdrawal->status === 'approved' ? 'success' : 'warning' }}">{{ ucfirst(str_replace('_', ' ', $withdrawal->status)) }}</span></td>

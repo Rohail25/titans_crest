@@ -34,21 +34,19 @@ class ProfitSharingService
             // Get the user's uplines
             $uplines = $this->getUplines($user, $levels->max('level'));
 
-            // Distribute profit to each upline
-            DB::transaction(function () use ($uplines, $levels, $dailyProfit, $user) {
-                foreach ($levels as $level) {
-                    if (!isset($uplines[$level->level - 1])) {
-                        continue;
-                    }
+            foreach ($levels as $level) {
+                if (!isset($uplines[$level->level - 1])) {
+                    continue;
+                }
 
-                    $upline = $uplines[$level->level - 1];
-                    $shareAmount = ($dailyProfit * $level->percentage) / 100;
+                $upline = $uplines[$level->level - 1];
+                $shareAmount = ($dailyProfit * $level->percentage) / 100;
 
-                    if ($shareAmount <= 0) {
-                        continue;
-                    }
+                if ($shareAmount <= 0) {
+                    continue;
+                }
 
-                    // WalletService creates the immutable earning row.
+                try {
                     $this->walletService->addBalance(
                         $upline,
                         $shareAmount,
@@ -62,8 +60,15 @@ class ProfitSharingService
                             'from_user_name' => $user->name,
                         ]
                     );
+                } catch (\Throwable $exception) {
+                    Log::info('Profit share skipped for upline due to earning cap', [
+                        'upline_id' => $upline->id,
+                        'from_user_id' => $user->id,
+                        'level' => $level->level,
+                        'reason' => $exception->getMessage(),
+                    ]);
                 }
-            });
+            }
         } catch (\Exception $e) {
             Log::error('Error distributing profit shares: ' . $e->getMessage(), [
                 'user_id' => $user->id,

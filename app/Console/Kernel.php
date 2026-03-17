@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -12,18 +13,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Run profit distribution daily at 1 AM (adjust time as needed)
+        // Check due profit distributions continuously; each package pays every 8 hours based on next_profit_time.
         $schedule->command('profits:distribute')
-            ->dailyAt('01:00')
+            ->everyMinute()
             ->timezone('UTC')
             ->withoutOverlapping()
             ->onFailure(function () {
                 // Log failure
-                \Log::error('Profit distribution command failed');
+                Log::error('Profit distribution command failed');
             })
             ->onSuccess(function () {
                 // Log success
-                \Log::info('Daily profit distribution completed successfully');
+                Log::info('Profit distribution cycle completed successfully');
             });
 
         // Optional: Run OTP cleanup daily (expire old OTPs)

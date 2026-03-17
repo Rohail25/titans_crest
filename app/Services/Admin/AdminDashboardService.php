@@ -15,6 +15,8 @@ class AdminDashboardService
             'total_earnings' => DB::table('wallets')->sum('total_earned'),
             'pending_withdrawals' => \App\Models\Withdrawal::where('status', 'pending_approval')->count(),
             'pending_withdrawals_amount' => \App\Models\Withdrawal::where('status', 'pending_approval')->sum('net_amount'),
+            'approved_withdrawals' => \App\Models\Withdrawal::where('status', 'approved')->count(),
+            'approved_withdrawals_amount' => \App\Models\Withdrawal::where('status', 'approved')->sum('net_amount'),
             'pending_deposits' => \App\Models\Deposit::where('status', 'pending')->count(),
             'pending_deposits_amount' => \App\Models\Deposit::where('status', 'pending')->sum('amount'),
         ];

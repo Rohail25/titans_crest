@@ -49,17 +49,31 @@ class PackageSubscriptionService
                 ? now()->addDays((int) $package->duration_days)
                 : null;
 
+            $depositAmount = (float) $package->price;
+            $earningCap = $this->walletService->calculateCapForUser($user, $depositAmount);
+
             $userPackage = UserPackage::create([
                 'user_id' => $user->id,
                 'package_id' => $package->id,
                 'activated_at' => now(),
                 'expires_at' => $expiresAt,
                 'is_active' => true,
+                'total_deposit' => $depositAmount,
+                'total_earned' => 0,
+                'earning_cap' => $earningCap,
+                'package_status' => 'active',
+                'last_profit_time' => null,
+                'next_profit_time' => $this->getNextProfitTime(),
             ]);
 
             $this->referralCommissionService->distributeCommissions($user, (float) $package->price);
 
             return $userPackage;
         });
+    }
+
+    private function getNextProfitTime(): \Carbon\Carbon
+    {
+        return now()->addHours(8);
     }
 }

@@ -26,6 +26,28 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label class="form-label">ROI Below $500 (%)</label>
+                    <div class="input-group">
+                        <input type="number" name="roi_below_500_percent" step="0.01" class="form-control" value="{{ $settings->firstWhere('key', 'roi_below_500_percent')->value ?? '0.60' }}" required>
+                        <span class="input-group-text" style="background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: white;">Daily</span>
+                    </div>
+                    <small class="form-text text-white d-block mt-2">
+                        Applies to package values or deposits below $500.
+                    </small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">ROI $500 And Above (%)</label>
+                    <div class="input-group">
+                        <input type="number" name="roi_500_plus_percent" step="0.01" class="form-control" value="{{ $settings->firstWhere('key', 'roi_500_plus_percent')->value ?? '0.70' }}" required>
+                        <span class="input-group-text" style="background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: white;">Daily</span>
+                    </div>
+                    <small class="form-text text-white d-block mt-2">
+                        Applies to package values or deposits of $500 and above.
+                    </small>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Withdrawal Fee (%)</label>
                     <input type="number" name="withdrawal_fee_percent" step="0.01" class="form-control" value="{{ $settings->firstWhere('key', 'withdrawal_fee_percent')->value ?? '5' }}" required>
                 </div>

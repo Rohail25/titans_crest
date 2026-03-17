@@ -15,6 +15,16 @@
     </div>
 @endif
 
+@if($wallet['cap_reached'] && $latestCompletedPackage)
+    <div class="alert alert-warning mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+        <div class="me-md-3 mb-3 mb-md-0">
+            <strong>Your investment package has reached the maximum earning limit.</strong><br>
+            Please subscribe to a new package to continue earning.
+        </div>
+        <a href="#available-plans" class="btn btn-primary">Subscribe Plan</a>
+    </div>
+@endif
+
 <div class="row mb-4">
     <!-- Available Balance Card (Primary) -->
     <div class="col-md-6 col-lg-3">
@@ -73,19 +83,19 @@
     </div>
 </div>
 
-<!-- 3x Cap Progress and Active Package Info -->
+<!-- Earning Cap Progress and Active Package Info -->
 <div class="row mb-4">
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-target"></i> 3x Cap Progress</h5>
+                <h5><i class="fas fa-target"></i> Earning Cap Progress</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="stat-card-label mb-2">Maximum Earnings</div>
                         <div class="stat-card-value">${{ number_format($wallet['cap_3x'], 2) }}</div>
-                        <small class="text-muted">Deposit × 3</small>
+                        <small class="text-muted">Based on active package cap rules</small>
                     </div>
                     <div class="col-md-6">
                         <div class="stat-card-label mb-2">Remaining to Earn</div>
@@ -110,6 +120,14 @@
                         Earned: ${{ number_format($wallet['total_earned'], 2) }} / ${{ number_format($wallet['cap_3x'], 2) }}
                     </small>
                 </div>
+
+                @if($nextProfitTime && !$wallet['cap_reached'])
+                    <hr>
+                    <div class="stat-card-label mb-2">Next Profit Distribution In</div>
+                    <h4 id="profitCountdown" class="text-primary mb-1">-- : -- : --</h4>
+                    <small class="text-muted">Profit is distributed every 8 hours after subscription activation.</small>
+                    <div id="nextProfitTime" class="d-none">{{ \Carbon\Carbon::parse($nextProfitTime)->toIso8601String() }}</div>
+                @endif
             </div>
         </div>
     </div>
@@ -156,6 +174,7 @@
                     </div>
 
                     @if($availablePackages->count() > 0)
+                        <div id="available-plans"></div>
                         @foreach($availablePackages as $plan)
                             <div class="border rounded p-3 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -284,3 +303,49 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function initProfitCountdown() {
+    const targetNode = document.getElementById('nextProfitTime');
+    const countdownNode = document.getElementById('profitCountdown');
+
+    if (!targetNode || !countdownNode) {
+        return;
+    }
+
+    const targetDate = new Date(targetNode.textContent.trim());
+
+    function pad(value) {
+        return value.toString().padStart(2, '0');
+    }
+
+    function computeNextTarget(now) {
+        const next = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+        return next;
+    }
+
+    let activeTarget = targetDate;
+
+    function tick() {
+        const now = new Date();
+        let distance = activeTarget.getTime() - now.getTime();
+
+        if (distance <= 0) {
+            activeTarget = computeNextTarget(now);
+            distance = activeTarget.getTime() - now.getTime();
+        }
+
+        const totalSeconds = Math.floor(distance / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        countdownNode.textContent = `${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
+    }
+
+    tick();
+    setInterval(tick, 1000);
+})();
+</script>
+@endpush
