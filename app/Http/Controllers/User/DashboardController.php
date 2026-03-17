@@ -32,6 +32,7 @@ class DashboardController extends Controller
         $depositStats = $this->depositService->getDepositStats($user);
         $withdrawalStats = $this->withdrawalService->getWithdrawalStats($user);
         $referralStats = $this->referralService->getReferralStats($user);
+        $teamPerformance = $this->referralService->getDashboardTeamPerformance($user);
         $availablePackages = Package::where('is_active', true)
             ->orderBy('price')
             ->get(['id', 'name', 'price', 'daily_profit_rate', 'duration_days']);
@@ -58,6 +59,7 @@ class DashboardController extends Controller
             'deposits' => $depositStats,
             'withdrawals' => $withdrawalStats,
             'referrals' => $referralStats,
+            'teamPerformance' => $teamPerformance,
             'availablePackages' => $availablePackages,
             'recentEarnings' => $recentEarnings,
             'latestCompletedPackage' => $latestCompletedPackage,

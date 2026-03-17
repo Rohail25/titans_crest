@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Deposit;
 use App\Models\User;
 use App\Models\ReferralTree;
 use App\Models\Setting;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -133,6 +135,55 @@ class ReferralService
         ];
     }
 
+    public function getDashboardTeamPerformance(User $user): array
+    {
+        $levels = $this->getTeamLevels($user, 5);
+        $members = collect($levels)
+            ->flatMap(static fn (array $levelMembers) => $levelMembers)
+            ->values();
+
+        $memberIds = $members->pluck('id')->unique()->values();
+        $levelLookup = $members
+            ->mapWithKeys(static fn (array $member) => [$member['id'] => $member['level']]);
+
+        $recentTeamDeposits = collect();
+        $monthlyTeamDeposit = 0;
+
+        if ($memberIds->isNotEmpty()) {
+            $recentTeamDeposits = Deposit::query()
+                ->whereIn('user_id', $memberIds->all())
+                ->where('status', 'confirmed')
+                ->with('user:id,name')
+                ->orderByDesc('confirmed_at')
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get()
+                ->map(static function (Deposit $deposit) use ($levelLookup) {
+                    $deposit->team_level = $levelLookup->get($deposit->user_id);
+
+                    return $deposit;
+                });
+
+            $monthlyTeamDeposit = (float) Deposit::query()
+                ->whereIn('user_id', $memberIds->all())
+                ->where('status', 'confirmed')
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->sum('amount');
+        }
+
+        return [
+            'summary' => [
+                'team_members' => $members->count(),
+                'team_with_deposit' => $members->where('total_deposit', '>', 0)->count(),
+                'direct_team_deposit' => (float) collect($levels['level1'] ?? [])->sum('total_deposit'),
+                'monthly_team_deposit' => $monthlyTeamDeposit,
+                'total_team_deposit' => (float) $members->sum('total_deposit'),
+            ],
+            'levels' => $levels,
+            'recent_deposits' => $recentTeamDeposits,
+        ];
+    }
+
     /**
      * Count all referrals recursively
      */
@@ -171,5 +222,52 @@ class ReferralService
         }
 
         return $downline;
+    }
+
+    private function getTeamLevels(User $user, int $maxLevels = 5): array
+    {
+        $levels = [];
+        $currentReferrerIds = collect([$user->id]);
+
+        for ($level = 1; $level <= $maxLevels; $level++) {
+            $members = $this->getLevelUsers($currentReferrerIds, $level);
+
+            if ($members->isEmpty()) {
+                break;
+            }
+
+            $levels['level' . $level] = $members->all();
+            $currentReferrerIds = $members->pluck('id');
+        }
+
+        return $levels;
+    }
+
+    private function getLevelUsers(Collection $referrerIds, int $level): Collection
+    {
+        if ($referrerIds->isEmpty()) {
+            return collect();
+        }
+
+        return User::query()
+            ->select(['id', 'name', 'referred_by', 'status', 'created_at'])
+            ->whereIn('referred_by', $referrerIds->all())
+            ->withSum([
+                'deposits as total_deposit' => static function ($query) {
+                    $query->where('status', 'confirmed');
+                },
+            ], 'amount')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(static function (User $referralUser) use ($level) {
+                return [
+                    'id' => $referralUser->id,
+                    'name' => $referralUser->name,
+                    'level' => $level,
+                    'status' => $referralUser->status,
+                    'joined_at' => $referralUser->created_at,
+                    'total_deposit' => (float) ($referralUser->total_deposit ?? 0),
+                ];
+            });
     }
 }

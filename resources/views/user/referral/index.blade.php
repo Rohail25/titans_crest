@@ -20,7 +20,7 @@
                 </div>
 
                 <h6>Referral Code</h6>
-                <div class="badge badge-primary" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                <div class="badge badge-primary text-black" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
                     {{ $referral['referral_code'] }}
                 </div>
                 <small class="text-muted d-block mt-2">Share this code or link to earn commissions on referrals</small>

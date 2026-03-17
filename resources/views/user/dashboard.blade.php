@@ -253,6 +253,79 @@
     </div>
 </div>
 
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0"><i class="fas fa-chart-line"></i> Monthly Performance Excellence</h5>
+        <a href="{{ route('user.team') }}" class="btn btn-sm btn-outline-primary">View Team Details</a>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="border rounded p-3 h-100">
+                    <div class="stat-card-label mb-2">This Month Team Deposit</div>
+                    <h4 class="text-primary mb-1">${{ number_format($teamPerformance['summary']['monthly_team_deposit'] ?? 0, 2) }}</h4>
+                    <small class="text-muted">Confirmed deposits from your team this month</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="border rounded p-3 h-100">
+                    <div class="stat-card-label mb-2">Total Team Deposit</div>
+                    <h4 class="text-success mb-1">${{ number_format($teamPerformance['summary']['total_team_deposit'] ?? 0, 2) }}</h4>
+                    <small class="text-muted">Combined confirmed deposits across levels</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="border rounded p-3 h-100">
+                    <div class="stat-card-label mb-2">Direct Team Deposit</div>
+                    <h4 class="text-info mb-1">${{ number_format($teamPerformance['summary']['direct_team_deposit'] ?? 0, 2) }}</h4>
+                    <small class="text-muted">Level 1 confirmed deposits</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="border rounded p-3 h-100">
+                    <div class="stat-card-label mb-2">Active Depositors</div>
+                    <h4 class="text-warning mb-1">{{ $teamPerformance['summary']['team_with_deposit'] ?? 0 }}/{{ $teamPerformance['summary']['team_members'] ?? 0 }}</h4>
+                    <small class="text-muted">Team members with confirmed deposits</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Level</th>
+                        <th>Deposit Amount</th>
+                        <th>Confirmed At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($teamPerformance['recent_deposits'] as $deposit)
+                        <tr>
+                            <td>
+                                <strong>{{ $deposit->user->name ?? 'Unknown User' }}</strong><br>
+                                <small class="text-muted">User #{{ $deposit->user_id }}</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-primary">Level {{ $deposit->team_level ?? '-' }}</span>
+                            </td>
+                            <td>
+                                <strong class="text-success">${{ number_format($deposit->amount, 2) }}</strong>
+                            </td>
+                            <td>{{ optional($deposit->confirmed_at ?? $deposit->created_at)->format('M d, Y h:i A') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No team deposits found yet.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <!-- Recent Earnings -->
 <div class="row">
     <div class="col-lg-12">
@@ -320,20 +393,18 @@
         return value.toString().padStart(2, '0');
     }
 
-    function computeNextTarget(now) {
-        const next = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-        return next;
+    if (Number.isNaN(targetDate.getTime())) {
+        countdownNode.textContent = '-- : -- : --';
+        return;
     }
-
-    let activeTarget = targetDate;
 
     function tick() {
         const now = new Date();
-        let distance = activeTarget.getTime() - now.getTime();
+        let distance = targetDate.getTime() - now.getTime();
 
         if (distance <= 0) {
-            activeTarget = computeNextTarget(now);
-            distance = activeTarget.getTime() - now.getTime();
+            countdownNode.textContent = '00 : 00 : 00';
+            return;
         }
 
         const totalSeconds = Math.floor(distance / 1000);

@@ -92,7 +92,7 @@
                 <!-- Benefits -->
                 <div class="grid grid-cols-3 gap-3 mb-8">
                     <div class="text-center">
-                        <div class="text-2xl font-bold gradient-text">3x</div>
+                        <div class="text-2xl font-bold gradient-text">4x</div>
                         <div class="text-xs text-gray-600">Max Returns</div>
                     </div>
                     <div class="text-center">

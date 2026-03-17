@@ -27,10 +27,9 @@
                     <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="80" height="80"></a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-300 hover:text-[#d4af37] transition">Home</a>
                     <a href="/about" class="text-white hover:text-[#d4af37] transition">About</a>
-                    <a href="#features" class="text-white hover:text-[#d4af37] transition">Features</a>
                     <a href="#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
-                    <a href="#how-it-works" class="text-white hover:text-[#d4af37] transition">How It Works</a>
                     <a href="#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -53,8 +52,8 @@
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-white">
-                    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
-                        Grow Your Wealth with <span class="gradient-text">BNB Staking</span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
+                       THE PEAK OF <span class="gradient-text">FINANCIAL </span> POWER
                     </h1>
                     <p class="text-xl mb-8 text-blue-100">Join thousands of investors earning daily profits through our secure, transparent, and professional investment platform.</p>
                     <div class="flex flex-col sm:flex-row gap-4">
@@ -65,7 +64,7 @@
                     <!-- Trust Indicators -->
                     <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-blue-700">
                         <div>
-                            <div class="text-3xl font-bold gradient-text">3x</div>
+                            <div class="text-3xl font-bold gradient-text">4x</div>
                             <div class="text-sm text-blue-200">Max Returns</div>
                         </div>
                         <div>
@@ -81,8 +80,8 @@
                 
                 <!-- Hero Image/Illustration -->
                 <div class="hidden md:block">
-                    <div class="bg-[#0b2f66]/70 backdrop-blur-md rounded-2xl p-8 border border-[#d4af37]/40">
-                        <div class="space-y-4">
+                    <div class="bg-[#0b2f66]/70 backdrop-blur-md rounded-2xl p-8 ">
+                        {{-- <div class="space-y-4">
                             <div class="bg-gradient-to-r from-[#d4af37] to-[#b8901e] rounded-lg p-4 flex items-center justify-between">
                                 <div>
                                     <div class="text-white text-sm">Total Balance</div>
@@ -102,7 +101,8 @@
                                     <div class=" text-xl font-bold">$3,456.78</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
+                        <img src="images/hero-section.jpg" alt="">
                     </div>
                 </div>
             </div>
@@ -115,9 +115,9 @@
             <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden">
                 <div class="grid md:grid-cols-2 gap-8 items-center p-8 md:p-10">
                     <div>
-                        <h2 class="text-3xl font-bold text-[#062a5f] mb-2">About Titan Crest</h2>
-                        <p class="text-sm font-semibold text-[#d4af37] mb-4">Innovative &amp; Secure Digital Asset Management</p>
-                        <p class="text-gray-700 leading-relaxed">Titans Crest is a global investment platform focused on cryptocurrency trading and blockchain technology. Our mission is to provide secure digital asset investment opportunities through advanced market strategies and professional portfolio management.</p>
+                        <h2 class="text-3xl font-bold text-[#062a5f] mb-2">Welcome to Titan Crest </h2>
+                        <p class="text-sm font-semibold text-[#d4af37] mb-4">Your Digital Asset Investment Platform</p>
+                        <p class="text-gray-700 leading-relaxed">Titan Crest is a Digital Asset Investment Program designed to help investors grow their wealth through professional cryptocurrency trading and portfolio management.</p>
                     </div>
                     <div>
                         <img src="https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=1200&q=80" alt="About Titans Crest" class="w-full h-64 md:h-72 object-cover rounded-xl border border-gray-200 shadow-sm">
@@ -174,11 +174,13 @@
     </section>
 
     <!-- Investment Packages -->
-    <section id="packages" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section id="packages" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
+    style="background-image: linear-gradient(135deg, rgba(4, 26, 61, 0.86), rgba(11, 47, 102, 0.74)), url('/images/packages.jpg'); background-size: cover; background-position: center;"
+    >
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Investment <span class="gradient-text">Packages</span></h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Choose the perfect plan that matches your investment goals</p>
+                <h2 class="text-4xl  font-bold text-white mb-4">Investment <span class="gradient-text">Packages</span></h2>
+                <p class="text-xl text-white max-w-2xl mx-auto">Choose the perfect plan that matches your investment goals</p>
             </div>
             <div class="grid grid-cols-3 gap-8">
 
@@ -223,7 +225,7 @@
                 </div>
 
                 <!-- Premium Package -->
-                <div class="bg-[#0b2f66] rounded-2xl p-8 shadow-lg border-2 border-[#d4af37] card-hover relative">
+                <div class="bg-[#0b2f66] rounded-2xl p-8 shadow-lg border-2 border-[#d4af37] card-hover relative text-white">
                     <div class="absolute top-0 right-0 bg-[#d4af37] text-[#062a5f] px-4 py-1 rounded-bl-lg rounded-tr-xl text-sm font-bold">FEATURED</div>
                     <div class="text-center">
                         <h3 class="text-2xl font-bold  mb-2">Premium</h3>
@@ -247,7 +249,7 @@
     </section>
 
     <!-- 10-Level Referral Plan -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 gradient-bg">
+    <section class="py-20 px-4 sm:px-6 lg:px-8 gradient-bg" style="margin-top: 60px;">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-bold text-white mb-2">10-Level Referral Plan</h2>
@@ -485,32 +487,7 @@
         </div>
     </section>
 
-    <!-- Terms and Conditions -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-bold text-gray-900 mb-2">Terms and Conditions</h2>
-                <p class="text-gray-600">Please review the terms below before investing.</p>
-            </div>
-
-            <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-md p-8">
-                <ul class="space-y-4 text-gray-700">
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>All investments made on the platform are voluntary and users must understand the risks involved in digital asset trading.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The company aims to generate profits through professional cryptocurrency trading and digital asset management.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Returns are estimated and may vary depending on market conditions.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Investors must register an account and select an investment package to participate in the program.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The minimum withdrawal amount is 10 USD.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>A 5% withdrawal fee will be applied to every withdrawal request.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Profits will be distributed according to the investment plan selected by the user.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>The company reserves the right to update or modify the investment plans and policies when necessary.</span></li>
-                    <li class="flex items-start"><svg class="w-5 h-5 text-[#d4af37] mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Any misuse of the platform, multiple accounts, or fraudulent activity may result in account suspension.</span></li>
-                </ul>
-                <div class="mt-8 text-center">
-                    <a href="/terms-and-conditions" class="inline-flex items-center text-[#062a5f] font-semibold hover:text-[#174a8f]">View Full Terms and Conditions</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Security & Trust Section -->
     {{-- <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">

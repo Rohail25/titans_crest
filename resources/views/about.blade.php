@@ -55,7 +55,7 @@
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="/" class="text-white hover:text-[#d4af37] transition">Home</a>
-                    <a href="/about" class="text-[#d4af37] transition">About</a>
+                    <a href="/about" class="text-gray-300 transition">About</a>
                     <a href="/#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
                     <a href="/#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
                 </div>
@@ -72,16 +72,15 @@
     </nav>
 
     <!-- Hero -->
-    <section class="hero-overlay pt-36 pb-20 px-4 sm:px-6 lg:px-8">
+    <section class="hero-overlay pt-36 pb-20 px-4 sm:px-6 lg:px-8" style="padding-top: 150px;">
         <div class="max-w-6xl mx-auto">
-            <div class="grid lg:grid-cols-5 gap-8 items-center">
-                <div class="lg:col-span-3 text-left">
-                    <p class="inline-flex items-center text-[#d4af37] bg-[#041a3d]/45 border border-[#d4af37]/35 rounded-full px-4 py-1.5 font-semibold tracking-[0.14em] uppercase text-xs mb-5">About Titans Crest</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 items-center">
+                <div class="lg:col-span-3 md:col-span-3 text-left">
                     <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">Project <span class="gradient-text">Overview</span></h1>
-                    <p class="text-blue-100 text-lg leading-8 max-w-2xl">Digital asset investment backed by advanced trading systems, professional market execution, and transparent long-term operations.</p>
+                    <p class="text-blue-100 text-lg leading-8 max-w-2xl">Our platform combines advanced trading strategies, algorithmic systems, and risk-managed investments to generate consistent returns. Investors can participate safely and transparently, receiving profits regularly based on their selected investment plan.</p>
                 </div>
-                <div class="lg:col-span-2">
-                    <div class="bg-[#062a5f]/85 border border-[#d4af37]/35 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
+                <div class="lg:col-span-2 md:col-span-2">
+                    {{-- <div class="bg-[#062a5f]/85 border border-[#d4af37]/35 rounded-2xl p-6 backdrop-blur-sm shadow-xl">
                         <p class="text-[#d4af37] text-sm font-semibold mb-4 uppercase tracking-wide">Program Highlights</p>
                         <div class="space-y-4 text-white">
                             <div class="flex items-center justify-between border-b border-white/10 pb-3">
@@ -106,7 +105,8 @@
                                 <span class="font-semibold">Up to 40% Monthly</span>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
+                    <img src="images/about.jpg" alt="">
                 </div>
             </div>
         </div>
@@ -122,67 +122,101 @@
             </div>
 
             <div class="space-y-8 md:space-y-10">
-                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white rounded-2xl border border-[#dce4f1] shadow-sm overflow-hidden">
+                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white shadow-sm overflow-hidden">
                     <div class="p-8 md:p-10">
-                        <span class="inline-block text-xs font-semibold tracking-wider uppercase text-[#d4af37] mb-4">Section 01</span>
                         <h3 class="text-2xl md:text-3xl font-bold text-[#062a5f] mb-5">Project Overview</h3>
                         <p class="text-gray-700 leading-8">Our platform is a Digital Asset Investment Program designed to generate consistent returns through advanced cryptocurrency trading strategies and professional market analysis.</p>
                     </div>
                     <div class="min-h-64 md:min-h-full bg-[#0b2f66]">
-                        <img src="/images/hero-section.jpg" alt="Digital asset investment" class="w-full h-full object-cover">
+                        <img src="/images/about-1.jpg" alt="Digital asset investment" class="w-full h-full object-cover">
                     </div>
                 </article>
 
-                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white rounded-2xl border border-[#dce4f1] shadow-sm overflow-hidden">
+                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white shadow-sm overflow-hidden mt-5" style="margin-top: 50px;">
+                    <div class="min-h-64 md:min-h-full bg-[#0b2f66] md:order-1">
+                    <img src="/images/about-2.jpg" alt="Advanced trading strategies" class="w-full h-full object-cover">
+                    </div>
                     <div class="p-8 md:p-10 md:order-2">
-                        <span class="inline-block text-xs font-semibold tracking-wider uppercase text-[#d4af37] mb-4">Section 02</span>
                         <h3 class="text-2xl md:text-3xl font-bold text-[#062a5f] mb-5">Trading Strategy</h3>
                         <p class="text-gray-700 leading-8">Our team of experienced traders operates across multiple crypto exchanges, using a combination of algorithmic trading, arbitrage opportunities, and risk-managed strategies to maximize profitability while maintaining capital protection.</p>
-                    </div>
-                    <div class="min-h-64 md:min-h-full bg-[#0b2f66] md:order-1">
-                        <img src="/images/hero-section.jpg" alt="Advanced trading strategies" class="w-full h-full object-cover">
+
                     </div>
                 </article>
 
-                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white rounded-2xl border border-[#dce4f1] shadow-sm overflow-hidden">
+                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white  shadow-sm overflow-hidden" style="margin-top: 50px;">
                     <div class="p-8 md:p-10">
-                        <span class="inline-block text-xs font-semibold tracking-wider uppercase text-[#d4af37] mb-4">Section 03</span>
                         <h3 class="text-2xl md:text-3xl font-bold text-[#062a5f] mb-5">Project Goal</h3>
                         <p class="text-gray-700 leading-8">The goal of this project is to provide investors with a reliable and transparent opportunity to participate in the rapidly growing digital asset market. Through active trading and portfolio management, the program aims to generate up to 40% monthly returns, depending on market conditions.</p>
                     </div>
                     <div class="min-h-64 md:min-h-full bg-[#0b2f66]">
-                        <img src="/images/hero-section.jpg" alt="Transparent investment opportunity" class="w-full h-full object-cover">
+                        <img src="/images/about-3.jpg" alt="Transparent investment opportunity" class="w-full h-full object-cover">
                     </div>
                 </article>
 
-                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white rounded-2xl border border-[#dce4f1] shadow-sm overflow-hidden">
+                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch  shadow-sm overflow-hidden">
+                  
+                    <div class="min-h-64 md:min-h-full bg-[#0b2f66] md:order-1">
+                        <img src="/images/about-4.jpg" alt="Investment packages and regular profits" class="w-full h-full object-cover" style="margin-top: 50px;">
+                    </div>
                     <div class="p-8 md:p-10 md:order-2">
-                        <span class="inline-block text-xs font-semibold tracking-wider uppercase text-[#d4af37] mb-4">Section 04</span>
                         <h3 class="text-2xl md:text-3xl font-bold text-[#062a5f] mb-5">Investor Participation</h3>
                         <p class="text-gray-700 leading-8">Investors can participate by selecting suitable investment packages and receive profits on a regular basis according to the platform’s distribution schedule.</p>
                     </div>
-                    <div class="min-h-64 md:min-h-full bg-[#0b2f66] md:order-1">
-                        <img src="/images/hero-section.jpg" alt="Investment packages and regular profits" class="w-full h-full object-cover">
-                    </div>
                 </article>
 
-                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white rounded-2xl border border-[#dce4f1] shadow-sm overflow-hidden">
+                <article class="content-card grid md:grid-cols-2 gap-8 items-stretch bg-white shadow-sm overflow-hidden" style="margin-top: 50px;">
                     <div class="p-8 md:p-10">
-                        <span class="inline-block text-xs font-semibold tracking-wider uppercase text-[#d4af37] mb-4">Section 05</span>
                         <h3 class="text-2xl md:text-3xl font-bold text-[#062a5f] mb-5">Mission</h3>
                         <p class="text-gray-700 leading-8">Our mission is to build a long-term, trusted investment community by combining innovative trading technology, professional expertise, and transparent financial operations.</p>
                     </div>
                     <div class="min-h-64 md:min-h-full bg-[#0b2f66]">
-                        <img src="/images/hero-section.jpg" alt="Trusted long-term investment community" class="w-full h-full object-cover">
+                        <img src="/images/about-5.jpg" alt="Trusted long-term investment community" class="w-full h-full object-cover">
                     </div>
                 </article>
             </div>
         </div>
     </section>
 
-    <footer class="bg-[#041a3d] text-white py-10 px-4 sm:px-6 lg:px-8 border-t border-[#d4af37]/30">
-        <div class="max-w-6xl mx-auto text-center text-gray-300">
-            <p>&copy; {{ date('Y') }} Titans Crest. All rights reserved.</p>
+     <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Titans <span class="gradient-text">Crest</span></h3>
+                    <p class="text-gray-400">Professional BNB investment platform for sustainable wealth growth.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Platform</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-amber-400 transition">Features</a></li>
+                        <li><a href="#packages" class="hover:text-amber-400 transition">Packages</a></li>
+                        <li><a href="#how-it-works" class="hover:text-amber-400 transition">How It Works</a></li>
+                        <li><a href="#stats" class="hover:text-amber-400 transition">Statistics</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Account</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        @auth
+                            <li><a href="{{ url('/dashboard') }}" class="hover:text-amber-400 transition">Dashboard</a></li>
+                        @else
+                            <li><a href="/login" class="hover:text-amber-400 transition">Login</a></li>
+                            <li><a href="/register" class="hover:text-amber-400 transition">Register</a></li>
+                            <li><a href="/terms-and-conditions" class="hover:text-amber-400 transition">Terms and Conditions</a></li>
+                        @endauth
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>support@titanscrest.com</li>
+                        <li>24/7 Live Support</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; {{ date('Y') }} Titans Crest. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 </body>

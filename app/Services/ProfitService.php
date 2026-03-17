@@ -138,20 +138,28 @@ class ProfitService
             ->where('package_status', 'active')
             ->with('package')
             ->get()
-            ->map(fn($up) => [
-                'id' => $up->id,
-                'user_package_id' => $up->id,
-                'name' => $up->package->name,
-                'price' => (float) ($up->total_deposit ?: $up->package->price),
-                'daily_profit_rate' => $this->getRoiRateForAmount((float) ($up->total_deposit ?: $up->package->price)),
-                'daily_profit' => $this->calculateDailyProfitForPackage($up),
-                'cycle_profit' => $this->calculateCycleProfitForPackage($up),
-                'activated_at' => $up->activated_at,
-                'expires_at' => $up->expires_at,
-                'earning_cap' => (float) $up->earning_cap,
-                'package_status' => $up->package_status,
-                'next_profit_time' => $up->next_profit_time,
-            ])
+            ->map(function ($up) {
+                if (!$up->next_profit_time) {
+                    $baseTime = $up->last_profit_time ?: $up->activated_at ?: $up->created_at ?: now();
+                    $up->next_profit_time = $this->getNextCycleTime($baseTime);
+                    $up->save();
+                }
+
+                return [
+                    'id' => $up->id,
+                    'user_package_id' => $up->id,
+                    'name' => $up->package->name,
+                    'price' => (float) ($up->total_deposit ?: $up->package->price),
+                    'daily_profit_rate' => $this->getRoiRateForAmount((float) ($up->total_deposit ?: $up->package->price)),
+                    'daily_profit' => $this->calculateDailyProfitForPackage($up),
+                    'cycle_profit' => $this->calculateCycleProfitForPackage($up),
+                    'activated_at' => $up->activated_at,
+                    'expires_at' => $up->expires_at,
+                    'earning_cap' => (float) $up->earning_cap,
+                    'package_status' => $up->package_status,
+                    'next_profit_time' => $up->next_profit_time,
+                ];
+            })
             ->toArray();
     }
 
