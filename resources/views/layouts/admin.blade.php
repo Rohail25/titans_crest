@@ -45,13 +45,13 @@
         .admin-sidebar {
             width: 260px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            padding: 30px 0;
+            padding: 10px 0 30px  0;
             position: fixed;
             left: 0;
-            top: 60px;
-            height: calc(100vh - 60px);
+            height: 100vh;
             overflow-y: auto;
             border-right: 2px solid var(--accent);
+           
         }
 
         .admin-sidebar::-webkit-scrollbar {
@@ -100,7 +100,7 @@
             text-transform: uppercase;
             color: var(--accent);
             letter-spacing: 1px;
-            margin-top: 20px;
+            
             margin-left: 10px;
         }
 
@@ -459,7 +459,6 @@
             {{-- <i class="fas fa-crown"></i> --}}
             {{-- <span>Titans Crest Admin</span>
             <span class="admin-badge">Admin</span> --}}
-            <img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="100" height="100">
         </div>
         <div class="user-menu">
             {{-- <span><i class="fas fa-bell"></i></span> --}}
@@ -481,6 +480,8 @@
         <!-- Sidebar -->
         
         <div class="admin-sidebar">
+            <img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="100" height="100" style="margin-left:40px;">
+
             <div class="sidebar-title">Dashboard</div>
             <a href="{{ route('admin.dashboard') }}"
                 class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">

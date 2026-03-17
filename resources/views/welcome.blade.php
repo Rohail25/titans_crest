@@ -24,7 +24,7 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     {{-- <span class="text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></span> --}}
-                    <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="80" height="80"></a>
+                    <a href="/"><img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="80" height="80"></a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="/" class="text-gray-300 hover:text-[#d4af37] transition">Home</a>
@@ -182,7 +182,7 @@
                 <h2 class="text-4xl  font-bold text-white mb-4">Investment <span class="gradient-text">Packages</span></h2>
                 <p class="text-xl text-white max-w-2xl mx-auto">Choose the perfect plan that matches your investment goals</p>
             </div>
-            <div class="grid grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 sm:gap-8 items-start !grid">
 
                 <!-- Starter Package -->
                 <div class="bg-white rounded-2xl p-8 shadow-md border-2 border-[#d9e1ee] card-hover">
@@ -634,7 +634,7 @@
                 <div>
                     <h4 class="font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li>support@titanscrest.com</li>
+                        <li>Titansingapur7@gmail.com</li>
                         <li>24/7 Live Support</li>
                     </ul>
                 </div>

@@ -619,7 +619,7 @@
             <div class="sidebar-brand mb-0 pb-0" >
                 {{-- <h3><i class="fas fa-crown"></i> Titans Crest</h3>
                 <p>Investment Dashboard</p> --}}
-                <a href="/"><img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="150" height="150"></a>
+                <a href="/"><img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="120" height="120" style="margin-left: 40px;"></a>
             </div>
 
             <ul class="sidebar-menu">
@@ -672,10 +672,10 @@
                         <h1>@yield('page-title', 'Dashboard')</h1>
                     </div>
                     <div class="topnav-right">
-                        <div class="notification-icon">
+                        {{-- <div class="notification-icon">
                             <i class="fas fa-bell"></i>
                             <span class="notification-badge">2</span>
-                        </div>
+                        </div> --}}
                         <div class="dropdown">
                             <div class="profile-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=0D8ABC&color=fff" alt="Profile">

@@ -12,7 +12,7 @@
         <tbody>
             @forelse($users as $member)
                 <tr class="border-[#d4af37]/10 hover:bg-[#041a3d]/60 transition duration-500">
-                    <td class="text-black"><strong>#{{ $member->id }}</strong></td>
+                    <td class="text-black"><strong>TC-{{ $member->id }}</strong></td>
                     <td class="text-blue-300">{{ $member->created_at->format('Y-m-d') }}</td>
                     <td class="text-black"><strong>${{ number_format($member->total_deposit, 2) }}</strong></td>
                     <td class="text-black"><strong>${{ number_format($member->total_earned, 2) }}</strong></td>

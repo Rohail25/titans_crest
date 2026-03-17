@@ -144,7 +144,7 @@
                 <div>
                     <h4 class="font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li>support@titanscrest.com</li>
+                        <li>Titansingapur7@gmail.com</li>
                         <li>24/7 Live Support</li>
                     </ul>
                 </div>
