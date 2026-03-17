@@ -264,7 +264,7 @@
                             <th class="px-6 py-4 font-semibold text-[#d4af37]">Commission</th>
                         </tr>
                     </thead>
-                    <tbody class="text-white">
+                    <tbody class="text-white bg-[#062a5f]">
                         <tr class="border-b border-gray-200">
                             <td class="pl-4 pr-6 py-4">1</td>
                             <td class="pl-4 pr-6 py-4">7%</td>
