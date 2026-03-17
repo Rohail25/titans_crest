@@ -6,6 +6,7 @@
     <title>Login - Titans Crest</title>
     <meta name="description" content="Login to your Titans Crest account and manage your investments.">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
@@ -106,14 +107,27 @@
                     <!-- Password -->
                     <div class="mb-6">
                         <label for="password" class="block text-sm font-semibold text-gray-900 mb-3">Password</label>
-                        <input 
-                            type="password" 
-                            name="password" 
-                            id="password"
-                            required
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
-                            placeholder="••••••••"
-                        >
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="password"
+                                required
+                                class="w-full px-4 py-3 pr-14 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
+                                placeholder="••••••••"
+                            >
+                            <div class="absolute inset-y-1 right-0 flex items-center pr-4" style="margin-top:-38px; margin-right: 6px;">
+                                <button
+                                    type="button"
+                                    onclick="togglePasswordVisibility('password')"
+                                    class="text-gray-600 hover:text-blue-900 transition focus:outline-none cursor-pointer text-lg leading-none"
+                                    tabindex="-1"
+                                    title="Toggle password visibility"
+                                >
+                                    <i class="fas fa-eye" id="password-icon"></i>
+                                </button>
+                            </div>
+                        </div>
                         @error('password')
                             <p class="mt-2 text-red-600 text-sm font-medium">{{ $message }}</p>
                         @enderror
@@ -169,5 +183,21 @@
         </div>
     </div>
 
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

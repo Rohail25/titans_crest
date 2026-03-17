@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 
 class ReferralService
 {
+    private const DASHBOARD_TEAM_MAX_LEVELS = 100;
+
     protected WalletService $walletService;
 
     public function __construct(WalletService $walletService)
@@ -137,7 +139,7 @@ class ReferralService
 
     public function getDashboardTeamPerformance(User $user): array
     {
-        $levels = $this->getTeamLevels($user, 5);
+        $levels = $this->getTeamLevels($user, self::DASHBOARD_TEAM_MAX_LEVELS);
         $members = collect($levels)
             ->flatMap(static fn (array $levelMembers) => $levelMembers)
             ->values();
@@ -178,6 +180,8 @@ class ReferralService
                 'direct_team_deposit' => (float) collect($levels['level1'] ?? [])->sum('total_deposit'),
                 'monthly_team_deposit' => $monthlyTeamDeposit,
                 'total_team_deposit' => (float) $members->sum('total_deposit'),
+                'levels_discovered' => count($levels),
+                'levels_scanned' => self::DASHBOARD_TEAM_MAX_LEVELS,
             ],
             'levels' => $levels,
             'recent_deposits' => $recentTeamDeposits,

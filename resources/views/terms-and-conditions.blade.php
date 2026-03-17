@@ -57,6 +57,13 @@
         .terms-list li + li {
             margin-top: 0.55rem;
         }
+
+        .mobile-menu-trigger { display: inline-flex; }
+        @media (min-width: 768px) {
+            .mobile-menu-trigger { display: none !important; }
+            #mobileMenuOverlay,
+            #mobileMenuPanel { display: none !important; }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -73,7 +80,7 @@
                     <a href="/#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
                     <a href="/#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-4">
                     @auth
                         <a href="{{ url('/dashboard') }}" class="bg-[#d4af37] text-[#062a5f] px-6 py-2 rounded-lg font-semibold hover:bg-[#e1c263] transition">Dashboard</a>
                     @else
@@ -81,9 +88,38 @@
                         <a href="/register" class="text-white  px-6 py-2 rounded-lg font-bold hover:bg-[#e1c263] transition shadow-md" style="background-color: #d4af37;">Sign Up</a>
                     @endauth
                 </div>
+                <button id="mobileMenuButton" type="button" class="mobile-menu-trigger items-center justify-center w-11 h-11 rounded-lg border border-[#d4af37]/40 text-white hover:bg-white/10 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenuPanel">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </div>
     </nav>
+
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 md:hidden" style="z-index: 60; display: none;"></div>
+    <aside id="mobileMenuPanel" class="fixed top-0 left-0 h-full w-72 max-w-[85%] bg-[#062a5f] border-r border-[#d4af37]/30 transition-transform duration-300 ease-out md:hidden" style=" background-color: #062a5f; z-index: 70; transform: translateX(-100%);">
+        <div class="h-16 px-4 border-b border-[#d4af37]/30 flex items-center justify-between">
+            <a href="/" class="text-white font-bold text-lg">Titans Crest</a>
+            <button id="mobileMenuClose" type="button" class="w-10 h-10 inline-flex items-center justify-center text-white rounded-lg hover:bg-white/10 transition" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav class="p-4 space-y-2">
+            <a href="/" class="mobile-menu-link block text-white px-4 py-3 rounded-lg hover:bg-white/10 transition">Home</a>
+            <a href="/about" class="mobile-menu-link block text-white px-4 py-3 rounded-lg hover:bg-white/10 transition">About</a>
+            <a href="/#packages" class="mobile-menu-link block text-white px-4 py-3 rounded-lg hover:bg-white/10 transition">Packages</a>
+            <a href="/#stats" class="mobile-menu-link block text-white px-4 py-3 rounded-lg hover:bg-white/10 transition">Stats</a>
+            @auth
+                <a href="{{ url('/dashboard') }}" class="mobile-menu-link block mt-4 bg-[#d4af37] text-[#062a5f] text-center px-4 py-3 rounded-lg font-semibold">Dashboard</a>
+            @else
+                <a href="/login" class="mobile-menu-link block mt-4 text-white text-center px-4 py-3 rounded-lg border border-white/20 hover:bg-white/10 transition">Login</a>
+                <a href="/register" class="mobile-menu-link block mt-2 bg-[#d4af37] text-[#062a5f] text-center px-4 py-3 rounded-lg font-bold">Sign Up</a>
+            @endauth
+        </nav>
+    </aside>
 
 
     <section class="gradient-bg py-14 px-4 sm:px-6 lg:px-8" style="margin-top: 100px;">
@@ -154,5 +190,52 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const menuButton = document.getElementById('mobileMenuButton');
+            const menuClose = document.getElementById('mobileMenuClose');
+            const menuPanel = document.getElementById('mobileMenuPanel');
+            const menuOverlay = document.getElementById('mobileMenuOverlay');
+            const menuLinks = document.querySelectorAll('.mobile-menu-link');
+
+            if (!menuButton || !menuClose || !menuPanel || !menuOverlay) {
+                return;
+            }
+
+            const openMenu = function () {
+                menuPanel.style.transform = 'translateX(0)';
+                menuOverlay.style.display = 'block';
+                menuButton.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeMenu = function () {
+                menuPanel.style.transform = 'translateX(-100%)';
+                menuOverlay.style.display = 'none';
+                menuButton.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            };
+
+            menuButton.addEventListener('click', openMenu);
+            menuClose.addEventListener('click', closeMenu);
+            menuOverlay.addEventListener('click', closeMenu);
+            menuLinks.forEach(function (link) {
+                link.addEventListener('click', closeMenu);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) {
+                    closeMenu();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

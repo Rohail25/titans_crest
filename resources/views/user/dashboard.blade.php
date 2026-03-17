@@ -256,7 +256,10 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h5 class="mb-0"><i class="fas fa-chart-line"></i> Monthly Performance Excellence</h5>
-        <a href="{{ route('user.team') }}" class="btn btn-sm btn-outline-primary">View Team Details</a>
+        <div class="d-flex align-items-center gap-2">
+            <small class="text-muted">Showing up to {{ $teamPerformance['summary']['levels_scanned'] ?? 100 }} levels</small>
+            <a href="{{ route('user.team') }}" class="btn btn-sm btn-outline-primary">View Team Details</a>
+        </div>
     </div>
     <div class="card-body">
         <div class="row g-3 mb-4">

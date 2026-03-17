@@ -49,6 +49,11 @@ class ReferralController extends Controller
             'level3Users' => $teamLevels['level3Users'],
             'level4Users' => $teamLevels['level4Users'],
             'level5Users' => $teamLevels['level5Users'],
+            'level6Users' => $teamLevels['level6Users'],
+            'level7Users' => $teamLevels['level7Users'],
+            'level8Users' => $teamLevels['level8Users'],
+            'level9Users' => $teamLevels['level9Users'],
+            'level10Users' => $teamLevels['level10Users'],
         ]);
     }
 
@@ -59,6 +64,11 @@ class ReferralController extends Controller
         $level3Users = $this->getLevelUsers($level2Users->pluck('id'));
         $level4Users = $this->getLevelUsers($level3Users->pluck('id'));
         $level5Users = $this->getLevelUsers($level4Users->pluck('id'));
+        $level6Users = $this->getLevelUsers($level5Users->pluck('id'));
+        $level7Users = $this->getLevelUsers($level6Users->pluck('id'));
+        $level8Users = $this->getLevelUsers($level7Users->pluck('id'));
+        $level9Users = $this->getLevelUsers($level8Users->pluck('id'));
+        $level10Users = $this->getLevelUsers($level9Users->pluck('id'));
 
         return [
             'level1Users' => $level1Users,
@@ -66,6 +76,11 @@ class ReferralController extends Controller
             'level3Users' => $level3Users,
             'level4Users' => $level4Users,
             'level5Users' => $level5Users,
+            'level6Users' => $level6Users,
+            'level7Users' => $level7Users,
+            'level8Users' => $level8Users,
+            'level9Users' => $level9Users,
+            'level10Users' => $level10Users,
         ];
     }
 
