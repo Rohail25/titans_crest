@@ -70,8 +70,8 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="/"  class="text-white hover:text-[#d4af37] transition">Home</a>
                     <a href="/about"  class="text-white hover:text-[#d4af37] transition">About</a>
-                    <a href="#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
-                    <a href="#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
+                    <a href="/#packages" class="text-white hover:text-[#d4af37] transition">Packages</a>
+                    <a href="/#stats" class="text-white hover:text-[#d4af37] transition">Stats</a>
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
@@ -123,10 +123,10 @@
                 <div>
                     <h4 class="font-semibold mb-4">Platform</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#features" class="hover:text-amber-400 transition">Features</a></li>
-                        <li><a href="#packages" class="hover:text-amber-400 transition">Packages</a></li>
-                        <li><a href="#how-it-works" class="hover:text-amber-400 transition">How It Works</a></li>
-                        <li><a href="#stats" class="hover:text-amber-400 transition">Statistics</a></li>
+                        <li><a href="/#features" class="hover:text-amber-400 transition">Features</a></li>
+                        <li><a href="/#packages" class="hover:text-amber-400 transition">Packages</a></li>
+                        <li><a href="/#how-it-works" class="hover:text-amber-400 transition">How It Works</a></li>
+                        <li><a href="/#stats" class="hover:text-amber-400 transition">Statistics</a></li>
                     </ul>
                 </div>
                 <div>

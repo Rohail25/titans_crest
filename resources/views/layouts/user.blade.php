@@ -17,20 +17,20 @@
         :root {
             --primary-dark: #0f172a;
             --primary-blue: #1e40af;
-            --accent-gold: #fbbf24;
+            --accent-gold: #d4af37;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --light-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --border-light: #e2e8f0;
+            --light-bg: #041a3d;
+            --card-bg: rgba(6, 42, 95, 0.8);
+            --text-dark: #ffffff;
+            --text-light: #93c5fd;
+            --border-light: rgba(212, 175, 55, 0.2);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
+            background: linear-gradient(180deg, #041a3d 0%, #062a5f 100%);
             color: var(--text-dark);
         }
 
@@ -143,9 +143,10 @@
 
         /* Top Navigation */
         .topnav {
-            background: white;
+            background: linear-gradient(180deg, #041a3d 0%, #062a5f 100%);
             padding: 1.5rem 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 8px 24px rgba(4, 26, 61, 0.5);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -174,13 +175,37 @@
         .notification-icon {
             position: relative;
             cursor: pointer;
-            color: var(--text-light);
+            color: #dbeafe;
             font-size: 1.25rem;
             transition: color 0.3s ease;
         }
 
         .notification-icon:hover {
-            color: var(--primary-blue);
+            color: var(--accent-gold);
+        }
+
+        .profile-dropdown,
+        .profile-dropdown span {
+            color: #dbeafe;
+        }
+
+        .dropdown-menu {
+            background: rgba(6, 42, 95, 0.95);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 12px 28px rgba(4, 26, 61, 0.55);
+        }
+
+        .dropdown-item {
+            color: #dbeafe;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: #ffffff;
+        }
+
+        .dropdown-divider {
+            border-color: rgba(212, 175, 55, 0.2);
         }
 
         .notification-badge {
@@ -218,25 +243,28 @@
             margin-left: 280px;
             padding: 2rem;
             min-height: calc(100vh - 80px);
+            background: linear-gradient(180deg, #041a3d 0%, #062a5f 100%);
+            border-radius: 16px;
         }
 
         /* Cards */
         .card {
-            border: none;
+            border: 1px solid var(--border-light);
             border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 14px 34px rgba(4, 26, 61, 0.45);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             background: var(--card-bg);
+            backdrop-filter: blur(6px);
             margin-bottom: 1.5rem;
         }
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 18px 40px rgba(4, 26, 61, 0.55);
         }
 
         .card-header {
-            background: white;
+            background: linear-gradient(180deg, #041a3d 0%, #062a5f 100%);
             border-bottom: 1px solid var(--border-light);
             border-radius: 12px 12px 0 0;
             padding: 1.5rem;
@@ -256,8 +284,10 @@
         .stat-card {
             padding: 1.5rem;
             border-radius: 12px;
-            background: white;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 14px 34px rgba(4, 26, 61, 0.45);
+            backdrop-filter: blur(6px);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -275,7 +305,7 @@
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 18px 40px rgba(4, 26, 61, 0.55);
         }
 
         .stat-card-icon {
@@ -363,7 +393,7 @@
         }
 
         .table thead {
-            background: var(--light-bg);
+            background: #041a3d;
             border: none;
         }
 
@@ -388,7 +418,7 @@
         }
 
         .table tbody tr:hover {
-            background: var(--light-bg);
+            background: rgba(4, 26, 61, 0.45);
         }
 
         /* Badges */
@@ -422,6 +452,12 @@
             border-radius: 8px;
             padding: 0.75rem 1rem;
             transition: all 0.3s ease;
+            background: rgba(4, 26, 61, 0.8);
+            color: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: #93c5fd;
         }
 
         .form-control:focus, .form-select:focus {
@@ -508,12 +544,12 @@
 
         /* Footer */
         .footer {
-            background: white;
+            background: linear-gradient(180deg, #041a3d 0%, #062a5f 100%);
             padding: 1.5rem 2rem;
             border-top: 1px solid var(--border-light);
             margin-left: 280px;
             text-align: center;
-            color: var(--text-light);
+            color: #93c5fd;
             font-size: 0.875rem;
         }
 
@@ -583,7 +619,7 @@
             <div class="sidebar-brand mb-0 pb-0" >
                 {{-- <h3><i class="fas fa-crown"></i> Titans Crest</h3>
                 <p>Investment Dashboard</p> --}}
-                <a href="/"><img src="images/logo.svg" alt="Titans Crest" width="150" height="150"></a>
+                <a href="/"><img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="150" height="150"></a>
             </div>
 
             <ul class="sidebar-menu">

@@ -1,21 +1,21 @@
 <div class="table-responsive">
-    <table class="table align-middle mb-0">
-        <thead>
+    <table class="table align-middle mb-0 text-blue-200">
+        <thead class="bg-[#041a3d] text-white">
             <tr>
-                <th>User ID</th>
-                <th>Join Date</th>
-                <th>Total Deposit</th>
-                <th>Total Earned</th>
-                <th>Status</th>
+                <th class="border-[#d4af37]/20">User ID</th>
+                <th class="border-[#d4af37]/20">Join Date</th>
+                <th class="border-[#d4af37]/20">Total Deposit</th>
+                <th class="border-[ #d4af37]/20">Total Earned</th>
+                <th class="border-[#d4af37]/20">Status</th>
             </tr>
         </thead>
         <tbody>
             @forelse($users as $member)
-                <tr>
-                    <td><strong>#{{ $member->id }}</strong></td>
-                    <td>{{ $member->created_at->format('Y-m-d') }}</td>
-                    <td><strong>${{ number_format($member->total_deposit, 2) }}</strong></td>
-                    <td><strong>${{ number_format($member->total_earned, 2) }}</strong></td>
+                <tr class="border-[#d4af37]/10 hover:bg-[#041a3d]/60 transition duration-500">
+                    <td class="text-black"><strong>#{{ $member->id }}</strong></td>
+                    <td class="text-blue-300">{{ $member->created_at->format('Y-m-d') }}</td>
+                    <td class="text-black"><strong>${{ number_format($member->total_deposit, 2) }}</strong></td>
+                    <td class="text-black"><strong>${{ number_format($member->total_earned, 2) }}</strong></td>
                     <td>
                         @if($member->status === 'active')
                             <span class="badge bg-success">Active</span>
@@ -28,7 +28,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center text-muted py-4">{{ $emptyText }}</td>
+                    <td colspan="5" class="text-center text-blue-300 py-4">{{ $emptyText }}</td>
                 </tr>
             @endforelse
         </tbody>

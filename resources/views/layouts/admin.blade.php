@@ -459,7 +459,7 @@
             {{-- <i class="fas fa-crown"></i> --}}
             {{-- <span>Titans Crest Admin</span>
             <span class="admin-badge">Admin</span> --}}
-            <img src="images/logo.svg" alt="Titans Crest" width="100" height="100">
+            <img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="100" height="100">
         </div>
         <div class="user-menu">
             {{-- <span><i class="fas fa-bell"></i></span> --}}
