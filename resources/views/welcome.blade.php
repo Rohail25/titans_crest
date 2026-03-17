@@ -253,7 +253,7 @@
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-bold text-white mb-2">10-Level Referral Plan</h2>
-                <p class="text-blue-100">Earn commissions up to 10 levels deep.</p>
+                <p class="text-blue-100">Earn commissions up to 5 levels deep.</p>
             </div>
 
             <div class="bg-white/95 rounded-2xl shadow-lg overflow-hidden border border-[#d4af37]/40">
@@ -634,7 +634,7 @@
                 <div>
                     <h4 class="font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li>Titansingapur7@gmail.com</li>
+                        <li>info@titanscrest.tech</li>
                         <li>24/7 Live Support</li>
                     </ul>
                 </div>
