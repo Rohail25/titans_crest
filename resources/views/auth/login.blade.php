@@ -116,7 +116,7 @@
                                 class="w-full px-4 py-3 pr-14 border-2 border-gray-300 rounded-lg input-focus transition bg-white text-gray-900 placeholder-gray-500 hover:border-gray-400"
                                 placeholder="••••••••"
                             >
-                            <div class="absolute inset-y-1 right-0 flex items-center pr-4" style="margin-top:-38px; margin-right: 6px;">
+                            <div class="absolute inset-y-1 right-0 flex items-center pr-4" >
                                 <button
                                     type="button"
                                     onclick="togglePasswordVisibility('password')"
