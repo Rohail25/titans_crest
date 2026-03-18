@@ -189,7 +189,7 @@
                                 <span class="badge badge-info">${{ number_format($plan->price, 2) }}</span>
                             </div>
                             <small class="text-muted d-block mb-2">
-                                Profit: {{ number_format($plan->daily_profit_rate * 100, 2) }}% daily
+                                Profit: {{ number_format($plan->daily_profit_rate , 2) }}% daily
                             </small>
                             <form action="{{ route('user.package.subscribe', $plan->id) }}" method="POST">
                                 @csrf
