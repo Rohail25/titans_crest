@@ -98,8 +98,8 @@ class ProfitService
     public function getRoiRateForAmount(float $amount): float
     {
         $percent = $amount < 500
-            ? (float) Setting::get('roi_below_500_percent', 0.60)
-            : (float) Setting::get('roi_500_plus_percent', 0.70);
+            ? (float) Setting::get('roi_below_500_percent', 0.65)
+            : (float) Setting::get('roi_500_plus_percent', 0.75);
 
         return $percent / 100;
     }
@@ -139,9 +139,16 @@ class ProfitService
             ->with('package')
             ->get()
             ->map(function ($up) {
+                // Ensure next_profit_time is set
                 if (!$up->next_profit_time) {
                     $baseTime = $up->last_profit_time ?: $up->activated_at ?: $up->created_at ?: now();
                     $up->next_profit_time = $this->getNextCycleTime($baseTime);
+                    $up->save();
+                }
+
+                // Ensure next_profit_time is in the future, if not, set it to now + 8 hours
+                if ($up->next_profit_time && now()->gt($up->next_profit_time)) {
+                    $up->next_profit_time = $this->getNextCycleTime(now());
                     $up->save();
                 }
 
@@ -153,11 +160,11 @@ class ProfitService
                     'daily_profit_rate' => $this->getRoiRateForAmount((float) ($up->total_deposit ?: $up->package->price)),
                     'daily_profit' => $this->calculateDailyProfitForPackage($up),
                     'cycle_profit' => $this->calculateCycleProfitForPackage($up),
-                    'activated_at' => $up->activated_at,
-                    'expires_at' => $up->expires_at,
+                    'activated_at' => $up->activated_at ? $up->activated_at->toIso8601String() : null,
+                    'expires_at' => $up->expires_at ? $up->expires_at->toIso8601String() : null,
                     'earning_cap' => (float) $up->earning_cap,
                     'package_status' => $up->package_status,
-                    'next_profit_time' => $up->next_profit_time,
+                    'next_profit_time' => $up->next_profit_time ? $up->next_profit_time->toIso8601String() : null,
                 ];
             })
             ->toArray();
@@ -170,6 +177,9 @@ class ProfitService
 
     private function calculateDailyProfitForPackage(UserPackage $userPackage): float
     {
+        // Daily profit based on ROI rate:
+        // 0.65% for packages < $500
+        // 0.75% for packages >= $500
         $depositAmount = (float) ($userPackage->total_deposit ?: $userPackage->package?->price ?: 0);
 
         if ($depositAmount <= 0) {
@@ -181,6 +191,8 @@ class ProfitService
 
     private function calculateCycleProfitForPackage(UserPackage $userPackage): float
     {
+        // Each 8-hour cycle gets 1/3 of daily profit
+        // Daily profit is divided into 3 cycles (24 hours / 8 hours per cycle)
         return $this->calculateDailyProfitForPackage($userPackage) / 3;
     }
 

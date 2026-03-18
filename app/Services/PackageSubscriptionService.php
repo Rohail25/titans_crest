@@ -22,7 +22,10 @@ class PackageSubscriptionService
                 throw new \Exception('Selected package is not active.');
             }
 
-            $hasActivePackage = $user->userPackages()->where('is_active', true)->exists();
+            $hasActivePackage = $user->userPackages()
+                ->where('is_active', true)
+                ->where('package_status', 'active')
+                ->exists();
             if ($hasActivePackage) {
                 throw new \Exception('You already have an active package.');
             }

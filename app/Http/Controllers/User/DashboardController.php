@@ -45,6 +45,13 @@ class DashboardController extends Controller
         $nextProfitTime = !empty($activePackages)
             ? ($activePackages[0]['next_profit_time'] ?? null)
             : null;
+        
+        // Ensure nextProfitTime is a string (it should be from getActivePackages)
+        if ($nextProfitTime && is_object($nextProfitTime)) {
+            $nextProfitTime = $nextProfitTime->toIso8601String();
+        }
+        
+        $hasActivePackage = count($activePackages) > 0;
 
         // Get recent earnings
         $recentEarnings = $user->earnings()
@@ -64,6 +71,7 @@ class DashboardController extends Controller
             'recentEarnings' => $recentEarnings,
             'latestCompletedPackage' => $latestCompletedPackage,
             'nextProfitTime' => $nextProfitTime,
+            'hasActivePackage' => $hasActivePackage,
         ]);
     }
 }

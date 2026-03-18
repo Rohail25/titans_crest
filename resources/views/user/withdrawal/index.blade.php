@@ -108,7 +108,6 @@
                 <p class="text-muted small">All withdrawals require:</p>
                 <ul class="list-unstyled small text-white">
                     <li><i class="fas fa-check text-success"></i> OTP Verification</li>
-                    <li><i class="fas fa-check text-success"></i> Admin Approval</li>
                     <li><i class="fas fa-check text-success"></i> Blockchain Confirmation</li>
                 </ul>
             </div>
@@ -292,7 +291,7 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function() {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            alert('OTP Verified! Withdrawal is pending admin approval.');
+            alert('OTP Verified! Withdrawal is pending for blockchain confirmation.');
             location.reload();
         } else {
             alert('Invalid OTP: ' + data.error);

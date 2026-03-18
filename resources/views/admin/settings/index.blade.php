@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Settings & Configuration')
 
@@ -199,7 +199,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Daily Profit Rate (%)</label>
-                        <input type="number" name="daily_profit_rate" step="0.01" class="form-control" value="{{ $package->daily_profit_rate }}" required>
+                        <input type="number" name="daily_profit_rate" step="any" min="0" max="100" class="form-control" value="{{ $package->daily_profit_rate }}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Duration (days)</label>

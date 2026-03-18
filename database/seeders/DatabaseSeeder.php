@@ -27,13 +27,15 @@ class DatabaseSeeder extends Seeder
         Setting::set('withdrawal_fee_percent', '5', 'Withdrawal Fee Percentage');
         Setting::set('otp_expiry_minutes', '5', 'OTP Expiry Time in Minutes');
         Setting::set('min_withdrawal_amount', '10', 'Minimum Withdrawal Amount');
+        Setting::set('roi_below_500_percent', '0.65', 'ROI Percentage for packages below $500 (0.65% daily)');
+        Setting::set('roi_500_plus_percent', '0.75', 'ROI Percentage for packages $500 and above (0.75% daily)');
 
         // Create default packages
         Package::firstOrCreate(
             ['name' => 'Basic Package'],
             [
                 'price' => 50,
-                'daily_profit_rate' => 0.0167,
+                'daily_profit_rate' => 0.65,  // 0.65% for packages < $500
                 'duration_days' => null,
                 'is_active' => true,
             ]
@@ -43,7 +45,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Starter Package'],
             [
                 'price' => 100,
-                'daily_profit_rate' => 0.0167,  // 1.67%
+                'daily_profit_rate' => 0.65,  // 0.65% for packages < $500
                 'duration_days' => null,  // Lifetime
                 'is_active' => true,
             ]
@@ -53,7 +55,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Professional Package'],
             [
                 'price' => 500,
-                'daily_profit_rate' => 0.0167,
+                'daily_profit_rate' => 0.75,  // 0.75% for packages >= $500
                 'duration_days' => null,
                 'is_active' => true,
             ]
@@ -63,7 +65,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Premium Package'],
             [
                 'price' => 1000,
-                'daily_profit_rate' => 0.0167,
+                'daily_profit_rate' => 0.75,  // 0.75% for packages >= $500
                 'duration_days' => null,
                 'is_active' => true,
             ]
@@ -73,7 +75,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Elite Package'],
             [
                 'price' => 5000,
-                'daily_profit_rate' => 0.0167,
+                'daily_profit_rate' => 0.75,  // 0.75% for packages >= $500
                 'duration_days' => null,
                 'is_active' => true,
             ]

@@ -117,7 +117,7 @@
                         <div class="progress-bar" role="progressbar" style="width: {{ $wallet['cap_percentage'] }}%"></div>
                     </div>
                     <small class="text-muted d-block mt-2">
-                        Earned: ${{ number_format($wallet['total_earned'], 2) }} / ${{ number_format($wallet['cap_3x'], 2) }}
+                        Earned: ${{ number_format($wallet['earned_against_cap'] ?? 0, 2) }} / ${{ number_format($wallet['cap_3x'], 2) }}
                     </small>
                 </div>
 
@@ -168,33 +168,49 @@
                     <small class="text-muted">
                         Activated: {{ \Carbon\Carbon::parse($package['activated_at'])->format('M d, Y') }}
                     </small>
+
+                    <hr>
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i> You currently have an active package. You can subscribe to another one after this package completes.
+                    </div>
                 @else
                     <div class="alert alert-warning mb-3">
                         <i class="fas fa-info-circle"></i> No active package. Subscribe from the plans below.
                     </div>
+                @endif
 
-                    @if($availablePackages->count() > 0)
-                        <div id="available-plans"></div>
-                        @foreach($availablePackages as $plan)
-                            <div class="border rounded p-3 mb-2">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong>{{ $plan->name }}</strong>
-                                    <span class="badge badge-info">${{ number_format($plan->price, 2) }}</span>
-                                </div>
-                                <small class="text-muted d-block mb-2">
-                                    Profit: {{ number_format($plan->daily_profit_rate * 100, 2) }}% daily
-                                </small>
-                                <form action="{{ route('user.package.subscribe', $plan->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary btn-sm w-100" {{ $wallet['balance'] < $plan->price ? 'disabled' : '' }}>
-                                        {{ $wallet['balance'] < $plan->price ? 'Insufficient Balance' : 'Subscribe Now' }}
-                                    </button>
-                                </form>
+                @if($availablePackages->count() > 0)
+                    <div id="available-plans"></div>
+                    <h6 class="text-white mb-3"><i class="fas fa-list"></i> Available Plans</h6>
+                    @foreach($availablePackages as $plan)
+                        <div class="border rounded p-3 mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white">{{ $plan->name }}</strong>
+                                <span class="badge badge-info">${{ number_format($plan->price, 2) }}</span>
                             </div>
-                        @endforeach
-                    @else
-                        <div class="text-muted">No active plans are available right now. Please contact support.</div>
-                    @endif
+                            <small class="text-muted d-block mb-2">
+                                Profit: {{ number_format($plan->daily_profit_rate * 100, 2) }}% daily
+                            </small>
+                            <form action="{{ route('user.package.subscribe', $plan->id) }}" method="POST">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-sm w-100"
+                                    {{ $hasActivePackage || $wallet['balance'] < $plan->price ? 'disabled' : '' }}
+                                >
+                                    @if($hasActivePackage)
+                                        Active Package Running
+                                    @elseif($wallet['balance'] < $plan->price)
+                                        Insufficient Balance
+                                    @else
+                                        Subscribe Now
+                                    @endif
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-muted">No active plans are available right now. Please contact support.</div>
                 @endif
             </div>
         </div>
@@ -390,23 +406,86 @@
         return;
     }
 
-    const targetDate = new Date(targetNode.textContent.trim());
+    let targetDateStr = targetNode.textContent.trim();
+    let targetDate = null;
+    let hasTriedRefresh = false;
 
     function pad(value) {
         return value.toString().padStart(2, '0');
     }
 
-    if (Number.isNaN(targetDate.getTime())) {
+    // Parse the date - handle ISO8601 and other formats
+    try {
+        if (targetDateStr) {
+            targetDate = new Date(targetDateStr);
+        }
+    } catch (e) {
+        console.error('Failed to parse profit time:', targetDateStr, e);
+    }
+
+    // Check if date is valid and in the future
+    if (!targetDate || Number.isNaN(targetDate.getTime())) {
         countdownNode.textContent = '-- : -- : --';
         return;
     }
 
+    // If the date is in the past, try to refresh
+    if (targetDate.getTime() < new Date().getTime()) {
+        countdownNode.textContent = '00 : 00 : 00';
+        if (!hasTriedRefresh) {
+            hasTriedRefresh = true;
+            setTimeout(refreshProfitTime, 1000);
+        }
+        return;
+    }
+
+    function refreshProfitTime() {
+        // Fetch updated dashboard data to get new next_profit_time
+        fetch('{{ route("user.dashboard") }}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Extract the nextProfitTime value from the new HTML
+            const parser = new DOMParser();
+            const newDoc = parser.parseFromString(html, 'text/html');
+            const newTargetNode = newDoc.getElementById('nextProfitTime');
+            
+            if (newTargetNode && newTargetNode.textContent.trim()) {
+                const newTime = newTargetNode.textContent.trim();
+                targetNode.textContent = newTime;
+                targetDate = new Date(newTime);
+                hasTriedRefresh = false;
+                
+                // Restart the timer immediately
+                tick();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to fetch updated profit time:', error);
+            hasTriedRefresh = false; // Reset on error to allow retry
+        });
+    }
+
     function tick() {
+        if (!targetDate) {
+            countdownNode.textContent = '-- : -- : --';
+            return;
+        }
+
         const now = new Date();
-        let distance = targetDate.getTime() - now.getTime();
+        const distance = targetDate.getTime() - now.getTime();
 
         if (distance <= 0) {
             countdownNode.textContent = '00 : 00 : 00';
+            
+            // Try to refresh the profit time after a delay
+            if (!hasTriedRefresh) {
+                hasTriedRefresh = true;
+                setTimeout(refreshProfitTime, 2000);
+            }
             return;
         }
 
@@ -418,7 +497,10 @@
         countdownNode.textContent = `${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
     }
 
+    // Initial tick
     tick();
+    
+    // Update every second
     setInterval(tick, 1000);
 })();
 </script>

@@ -19,6 +19,12 @@ class WalletService
         'admin_fund_add',
     ];
 
+    private const TRACKED_EARNING_TYPES = [
+        'profit_share',
+        'referral',
+        'bonus',
+    ];
+
     /**
      * Get or create user wallet
      */
@@ -127,11 +133,11 @@ class WalletService
 
             $wallet->increment('balance', $amount);
 
-            // Update total_earned for non-deposit entries
-            if ($normalizedType !== 'deposit') {
-                $wallet->increment('total_earned', $amount);
-            } else {
+            // Track only actual earnings in total_earned (exclude deposits/funding/refunds).
+            if ($normalizedType === 'deposit') {
                 $wallet->increment('total_deposit', $amount);
+            } elseif ($amount > 0 && in_array($normalizedType, self::TRACKED_EARNING_TYPES, true)) {
+                $wallet->increment('total_earned', $amount);
             }
 
             // Create ledger entry (immutable)
@@ -233,12 +239,22 @@ class WalletService
         $capPercentage = $cap > 0 ? ($earnedAgainstCap / $cap * 100) : 0;
         $capReached = !$activePackage || $remaining <= 0;
 
+        $actualTotalEarned = (float) $user->earnings()
+            ->whereIn('type', self::TRACKED_EARNING_TYPES)
+            ->sum('amount');
+
+        if (abs((float) $wallet->total_earned - $actualTotalEarned) > 0.0001) {
+            $wallet->update(['total_earned' => $actualTotalEarned]);
+            $wallet->refresh();
+        }
+
         return [
             'balance' => $wallet->balance,
             'pending_balance' => $wallet->pending_balance,
             'suspicious_balance' => $wallet->suspicious_balance,
             'total_deposit' => $wallet->total_deposit,
-            'total_earned' => $wallet->total_earned,
+            'total_earned' => $actualTotalEarned,
+            'earned_against_cap' => $earnedAgainstCap,
             'cap_3x' => $cap,
             'remaining_3x' => $remaining,
             'cap_percentage' => min(100, $capPercentage),
