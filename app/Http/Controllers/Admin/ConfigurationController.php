@@ -18,6 +18,10 @@ class ConfigurationController extends Controller
             'direction' => 'nullable|in:asc,desc',
         ]);
 
+        if (AdminConfigService::getSetting('whatsapp_number') === null) {
+            AdminConfigService::setSetting('whatsapp_number', '15551234567', 'WhatsApp Support Number (International Format)');
+        }
+
         $settings = AdminConfigService::getAll();
         $packages = AdminConfigService::getFilteredPackageSettings($validated);
 
@@ -28,6 +32,7 @@ class ConfigurationController extends Controller
     {
         $request->validate([
             'bnb_wallet_address' => 'required|string',
+            'whatsapp_number' => 'required|string|max:30',
             'referral_commission_percent' => 'required|numeric|min:0|max:100',
             'roi_below_500_percent' => 'required|numeric|min:0|max:100',
             'roi_500_plus_percent' => 'required|numeric|min:0|max:100',
@@ -39,6 +44,7 @@ class ConfigurationController extends Controller
 
         $settings = [
             'bnb_wallet_address' => $request->bnb_wallet_address,
+            'whatsapp_number' => $request->whatsapp_number,
             'referral_commission_percent' => $request->referral_commission_percent,
             'roi_below_500_percent' => $request->roi_below_500_percent,
             'roi_500_plus_percent' => $request->roi_500_plus_percent,

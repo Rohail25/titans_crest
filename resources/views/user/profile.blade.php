@@ -8,7 +8,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">My Profile</h3>
+                    <h3 class="card-title text-white">My Profile</h3>
                 </div>
                 <div class="card-body">
                     @if (session('success'))
@@ -24,7 +24,7 @@
                                 <i class="fas fa-user-circle fa-4x"></i>
                             </div>
                             <div class="profile-info">
-                                <h2>{{ $user->name }}</h2>
+                                <h2 class="text-white">{{ $user->name }}</h2>
                                 <p class="text-muted">{{ $user->email }}</p>
                                 <p class="text-muted">Role: <span class="badge bg-primary">{{ ucfirst($user->role) }}</span></p>
                             </div>
@@ -36,18 +36,18 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="label-text">Name</label>
-                                    <p class="form-control-static">{{ $user->name }}</p>
+                                    <p class="form-control-static text-white">{{ $user->name }}</p>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="label-text">Email</label>
-                                    <p class="form-control-static">{{ $user->email }}</p>
+                                    <p class="form-control-static text-white">{{ $user->email }}</p>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="label-text">Referral Code</label>
-                                    <p class="form-control-static">{{ $user->referral_code }}</p>
+                                    <p class="form-control-static text-white">{{ $user->referral_code }}</p>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="label-text">Status</label>
@@ -62,11 +62,11 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="label-text">Member Since</label>
-                                    <p class="form-control-static">{{ $user->created_at->format('M d, Y') }}</p>
+                                    <p class="form-control-static text-white">{{ $user->created_at->format('M d, Y') }}</p>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="label-text">Last Updated</label>
-                                    <p class="form-control-static">{{ $user->updated_at->format('M d, Y H:i') }}</p>
+                                    <p class="form-control-static text-white">{{ $user->updated_at->format('M d, Y H:i') }}</p>
                                 </div>
                             </div>
                         </div>

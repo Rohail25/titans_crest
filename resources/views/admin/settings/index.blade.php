@@ -21,6 +21,14 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label class="form-label">WhatsApp Number</label>
+                    <input type="text" name="whatsapp_number" class="form-control" value="{{ $settings->firstWhere('key', 'whatsapp_number')->value ?? '15551234567' }}" placeholder="e.g. 15551234567" required>
+                    <small class="form-text text-white d-block mt-2">
+                        Use full international format without spaces or plus sign (example: 15551234567).
+                    </small>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Referral Commission (%)</label>
                     <input type="number" name="referral_commission_percent" step="0.01" class="form-control" value="{{ $settings->firstWhere('key', 'referral_commission_percent')->value ?? '10' }}" required>
                 </div>

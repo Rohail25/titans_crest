@@ -171,6 +171,32 @@
             color: var(--accent);
         }
 
+        .sidebar-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 6px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 999;
+        }
+
         /* Content Area */
         .admin-content {
             margin-top: 60px;
@@ -419,21 +445,44 @@
             .admin-sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                width: 100%;
-                z-index: 1000;
+                width: 280px;
+                max-width: 85%;
+                z-index: 1001;
             }
 
             .admin-sidebar.active {
                 transform: translateX(0);
             }
 
+            .admin-sidebar a span {
+                display: inline;
+            }
+
+            .sidebar-title {
+                display: block;
+            }
+
+            .sidebar-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
             .admin-topbar {
                 width: 100%;
                 left: 0;
+                padding: 12px 15px;
             }
 
             .admin-main {
                 margin-left: 0;
+            }
+
+            .admin-topbar .user-menu a span,
+            .admin-topbar .user-menu .btn span {
+                display: none;
             }
 
             .admin-content {
@@ -456,6 +505,9 @@
     <!-- Top Bar -->
     <div class="admin-topbar">
         <div class="brand">
+            <button id="adminSidebarToggle" class="sidebar-toggle" type="button" aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
             {{-- <i class="fas fa-crown"></i> --}}
             {{-- <span>Titans Crest Admin</span>
             <span class="admin-badge">Admin</span> --}}
@@ -464,22 +516,24 @@
             {{-- <span><i class="fas fa-bell"></i></span> --}}
             <a href="{{ route('admin.profile.show') }}">
                 <i class="fas fa-user-circle"></i>
-                {{ auth()->user()->name }}
+                <span>{{ auth()->user()->name }}</span>
             </a>
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-sm"
                     style="background: transparent; border: none; color: var(--text-light);">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
                 </button>
             </form>
         </div>
     </div>
+
+    <div id="adminSidebarOverlay" class="sidebar-overlay"></div>
     
     <div class="admin-container">
         <!-- Sidebar -->
         
-        <div class="admin-sidebar">
+        <div id="adminSidebar" class="admin-sidebar">
             <img src="{{ asset('images/logo.svg') }}" alt="Titans Crest" width="100" height="100" style="margin-left:40px;">
 
             <div class="sidebar-title">Dashboard</div>
@@ -585,6 +639,61 @@
     <script>
         // Optional: Smooth animations
         document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('adminSidebar');
+            const sidebarToggle = document.getElementById('adminSidebarToggle');
+            const sidebarOverlay = document.getElementById('adminSidebarOverlay');
+
+            const openSidebar = function() {
+                if (!sidebar || !sidebarOverlay) {
+                    return;
+                }
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeSidebar = function() {
+                if (!sidebar || !sidebarOverlay) {
+                    return;
+                }
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    const isOpen = sidebar && sidebar.classList.contains('active');
+                    if (isOpen) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                });
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+
+            if (sidebar) {
+                sidebar.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', closeSidebar);
+                });
+            }
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeSidebar();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 576) {
+                    closeSidebar();
+                }
+            });
+
             const activeLink = document.querySelector('.admin-sidebar a.active');
             if (activeLink) {
                 activeLink.scrollIntoView({

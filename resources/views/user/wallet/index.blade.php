@@ -45,11 +45,11 @@
                 <div class="row mb-3">
                     <div class="col-sm-6">
                         <div class="stat-card-label">Total Deposited</div>
-                        <h5>${{ number_format($wallet['total_deposit'], 2) }}</h5>
+                        <h5 class="text-white">${{ number_format($wallet['total_deposit'], 2) }}</h5>
                     </div>
                     <div class="col-sm-6">
                         <div class="stat-card-label">Total Earned</div>
-                        <h5>${{ number_format($wallet['total_earned'], 2) }}</h5>
+                        <h5 class="text-white">${{ number_format($wallet['total_earned'], 2) }}</h5>
                     </div>
                 </div>
 
@@ -58,8 +58,8 @@
                 <div class="mt-3">
                     <div class="stat-card-label mb-2">3x Cap Status</div>
                     <div class="progress-label">
-                        <span>Progress</span>
-                        <span>{{ number_format($wallet['cap_percentage'], 1) }}%</span>
+                        <span class="text-white">Progress</span>
+                        <span class="text-white">{{ number_format($wallet['cap_percentage'], 1) }}%</span>
                     </div>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: {{ min($wallet['cap_percentage'], 100) }}%"></div>
@@ -84,7 +84,7 @@
             </div>
             <div class="card-body">
                 <p class="text-muted">Your wallet is protected with:</p>
-                <ul class="list-unstyled">
+                <ul class="list-unstyled text-white">
                     <li><i class="fas fa-check-circle text-success"></i> AES-256 Encryption</li>
                     <li><i class="fas fa-check-circle text-success"></i> Two-Factor Authentication</li>
                     <li><i class="fas fa-check-circle text-success"></i> Transaction Verification</li>

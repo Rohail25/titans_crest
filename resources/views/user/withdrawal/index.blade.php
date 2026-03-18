@@ -83,7 +83,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="stat-card-label">Available Balance</div>
-                    <h4>${{ number_format($wallet['balance'], 2) }}</h4>
+                    <h4 class="text-white">${{ number_format($wallet['balance'], 2) }}</h4>
                 </div>
 
                 <div class="mb-3">
@@ -106,7 +106,7 @@
             </div>
             <div class="card-body">
                 <p class="text-muted small">All withdrawals require:</p>
-                <ul class="list-unstyled small">
+                <ul class="list-unstyled small text-white">
                     <li><i class="fas fa-check text-success"></i> OTP Verification</li>
                     <li><i class="fas fa-check text-success"></i> Admin Approval</li>
                     <li><i class="fas fa-check text-success"></i> Blockchain Confirmation</li>

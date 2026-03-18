@@ -144,11 +144,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="stat-card-label mb-2">Package Name</div>
-                            <h5>{{ $package['name'] }}</h5>
+                            <h5 class="text-white">{{ $package['name'] }}</h5>
                         </div>
                         <div class="col-md-6">
                             <div class="stat-card-label mb-2">Package Value</div>
-                            <div class="h5">${{ number_format($package['price'], 2) }}</div>
+                            <div class="h5 text-white">${{ number_format($package['price'], 2) }}</div>
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="stat-card-label mb-2">Daily Earnings</div>
-                            <h6>${{ number_format($package['daily_profit'], 2) }}</h6>
+                            <h6 class="text-white">${{ number_format($package['daily_profit'], 2) }}</h6>
                         </div>
                     </div>
 

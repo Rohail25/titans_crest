@@ -8,7 +8,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Profile</h3>
+                    <h3 class="card-title text-white">Edit Profile</h3>
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -46,7 +46,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Referral Code</label>
-                            <input type="text" class="form-control" value="{{ $user->referral_code }}" disabled>
+                            <input type="text" class="form-control text-black" value="{{ $user->referral_code }}" disabled>
                             <small class="text-muted">Your referral code cannot be changed</small>
                         </div>
 

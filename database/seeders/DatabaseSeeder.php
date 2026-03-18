@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         // Create default settings
         Setting::set('bnb_wallet_address', '0x742d35Cc6634C0532925a3b844Bc9e7595f7D5Cf', 'BNB Wallet Address');
+        Setting::set('whatsapp_number', '15551234567', 'WhatsApp Support Number (International Format)');
         Setting::set('referral_commission_percent', '10', 'Referral Commission Percentage');
         Setting::set('daily_profit_rate_standard', '0.0167', 'Standard Daily Profit Rate (1.67%)');
         Setting::set('withdrawal_fee_percent', '5', 'Withdrawal Fee Percentage');

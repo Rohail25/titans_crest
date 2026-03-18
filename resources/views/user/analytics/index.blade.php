@@ -87,15 +87,15 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stat-card-label">Total Deposit</div>
-                        <h4>${{ number_format($wallet['total_deposit'], 2) }}</h4>
+                        <h4 class="text-white">${{ number_format($wallet['total_deposit'], 2) }}</h4>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card-label">Cap Limit (3x)</div>
-                        <h4>${{ number_format($wallet['cap_3x'], 2) }}</h4>
+                        <h4 class="text-white">${{ number_format($wallet['cap_3x'], 2) }}</h4>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card-label">Total Earned</div>
-                        <h4>${{ number_format($wallet['total_earned'], 2) }}</h4>
+                        <h4 class="text-white">${{ number_format($wallet['total_earned'], 2) }}</h4>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card-label">Remaining to Earn</div>

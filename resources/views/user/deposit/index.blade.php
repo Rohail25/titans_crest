@@ -64,18 +64,18 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="stat-card-label">Total Confirmed</div>
-                    <h4>${{ number_format($deposits['total_confirmed'] ?? 0, 2) }}</h4>
+                    <h4 class="text-white">${{ number_format($deposits['total_confirmed'] ?? 0, 2) }}</h4>
                 </div>
 
                 <div class="mb-3">
                     <div class="stat-card-label">Pending Deposits</div>
                     <h4 class="text-warning">{{ $deposits['pending_count'] ?? 0 }}</h4>
-                    <small>${{ number_format($deposits['pending_amount'] ?? 0, 2) }}</small>
+                    <small class="text-white">${{ number_format($deposits['pending_amount'] ?? 0, 2) }}</small>
                 </div>
 
                 <div>
                     <div class="stat-card-label">Total Transactions</div>
-                    <h4>{{ $deposits['total_deposits'] ?? 0 }}</h4>
+                    <h4 class="text-white">{{ $deposits['total_deposits'] ?? 0 }}</h4>
                 </div>
             </div>
         </div>
