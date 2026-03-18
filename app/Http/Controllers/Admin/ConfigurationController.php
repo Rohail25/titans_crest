@@ -65,7 +65,7 @@ class ConfigurationController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
             'daily_profit_rate' => 'required|numeric|min:0|max:100',
-            'duration_days' => 'required|integer|min:1',
+            'duration_days' => 'nullable|integer|min:1',
             'is_active' => 'required|boolean',
         ]);
 

@@ -199,11 +199,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Daily Profit Rate (%)</label>
-                        <input type="number" name="daily_profit_rate" step="any" min="0" max="100" class="form-control" value="{{ $package->daily_profit_rate }}" required>
+                        <input type="number" name="daily_profit_rate" step="any" min="0" max="100" class="form-control" value="{{ $package->daily_profit_rate }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Duration (days)</label>
-                        <input type="number" name="duration_days" step="1" class="form-control" value="{{ $package->duration_days }}" required>
+                        <input type="number" name="duration_days" step="1" class="form-control" value="{{ $package->duration_days }}" >
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Status</label>
