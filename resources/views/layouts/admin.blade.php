@@ -366,6 +366,8 @@
             margin: 0;
             padding: 0;
             list-style: none;
+            background: transparent !important;
+            border: none !important;
         }
 
         .pagination .page-item {
@@ -381,13 +383,13 @@
             max-width: 150px;
             height: 34px;
             color: var(--text-light);
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 6px;
-            padding: 0 10px;
-            font-size: 0.85rem;
-            line-height: 1;
-            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            border-radius: 6px !important;
+            padding: 0 10px !important;
+            font-size: 0.85rem !important;
+            line-height: 1 !important;
+            white-space: nowrap !important;
         }
 
         .pagination .page-item.active .page-link {
