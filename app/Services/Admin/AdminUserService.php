@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class AdminUserService
 {
-    public static function getFilteredUsers(array $filters = [], int $limit = 50)
+    public static function getFilteredUsers(array $filters = [], int $perPage = 15)
     {
         $allowedSorts = ['id', 'name', 'email', 'status', 'created_at'];
         $sort = in_array($filters['sort'] ?? 'created_at', $allowedSorts, true)
@@ -34,18 +34,18 @@ class AdminUserService
         }
 
         return $query->orderBy($sort, $direction)
-            ->paginate($limit)
+            ->paginate($perPage)
             ->withQueryString();
     }
 
-    public static function getAllUsers($limit = 50)
+    public static function getAllUsers(int $perPage = 15)
     {
-        return self::getFilteredUsers([], $limit);
+        return self::getFilteredUsers([], $perPage);
     }
 
-    public static function searchUsers(string $query, $limit = 50)
+    public static function searchUsers(string $query, int $perPage = 15)
     {
-        return self::getFilteredUsers(['search' => $query], $limit);
+        return self::getFilteredUsers(['search' => $query], $perPage);
     }
 
     public static function getUserById(int $id): ?User

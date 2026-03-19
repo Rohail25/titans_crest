@@ -11,11 +11,14 @@ class WithdrawalController extends Controller
 {
     public function index(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'nullable|in:pending_otp,pending_approval,approved,rejected,cancelled',
+            'per_page' => 'nullable|integer|min:5|max:200',
         ]);
 
-        $withdrawals = AdminWithdrawalService::getWithdrawals($request->status);
+        $perPage = $validated['per_page'] ?? 15;
+
+        $withdrawals = AdminWithdrawalService::getWithdrawals($request->status, $perPage);
         $stats = AdminWithdrawalService::getWithdrawalStats();
 
         return view('admin.withdrawals.index', compact('withdrawals', 'stats'));

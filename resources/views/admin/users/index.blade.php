@@ -46,7 +46,7 @@
 <div class="card mb-4">
     <div class="card-body">
         <form method="GET" action="{{ route('admin.users.index') }}" class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label">Search</label>
                 <input type="text" name="search" class="form-control" placeholder="Name, email, referral code" value="{{ request('search') }}">
             </div>
@@ -68,6 +68,14 @@
                     <option value="name" {{ request('sort') === 'name' ? 'selected' : '' }}>Name</option>
                     <option value="email" {{ request('sort') === 'email' ? 'selected' : '' }}>Email</option>
                     <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label">Per Page</label>
+                <select name="per_page" class="form-select">
+                    @foreach([15, 25, 50, 100] as $count)
+                        <option value="{{ $count }}" {{ request('per_page', 15) == $count ? 'selected' : '' }}>{{ $count }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">

@@ -16,9 +16,12 @@ class UserManagementController extends Controller
             'status' => 'nullable|in:active,inactive,banned,suspended',
             'sort' => 'nullable|in:id,name,email,status,created_at',
             'direction' => 'nullable|in:asc,desc',
+            'per_page' => 'nullable|integer|min:5|max:200',
         ]);
 
-        $users = AdminUserService::getFilteredUsers($validated);
+        $perPage = $validated['per_page'] ?? 15;
+
+        $users = AdminUserService::getFilteredUsers($validated, $perPage);
 
         $stats = AdminUserService::getUserStats();
 

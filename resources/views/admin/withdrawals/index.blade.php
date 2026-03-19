@@ -49,7 +49,7 @@
                 <label class="form-label">Search</label>
                 <input type="text" name="search" class="form-control" placeholder="User name or email" value="{{ request('search') }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label">Status</label>
                 <select name="status" class="form-select">
                     <option value="">All Statuses</option>
@@ -67,6 +67,14 @@
                     <option value="id" {{ request('sort') === 'id' ? 'selected' : '' }}>ID</option>
                     <option value="net_amount" {{ request('sort') === 'net_amount' ? 'selected' : '' }}>Amount</option>
                     <option value="status" {{ request('sort') === 'status' ? 'selected' : '' }}>Status</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label">Per Page</label>
+                <select name="per_page" class="form-select">
+                    @foreach([15, 25, 50, 100] as $count)
+                        <option value="{{ $count }}" {{ request('per_page', 15) == $count ? 'selected' : '' }}>{{ $count }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">

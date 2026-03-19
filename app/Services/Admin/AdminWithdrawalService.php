@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminWithdrawalService
 {
-    public static function getWithdrawals(?string $status = null, int $limit = 50)
+    public static function getWithdrawals(?string $status = null, int $perPage = 15)
     {
         $query = Withdrawal::with('user')->orderBy('created_at', 'desc');
 
@@ -19,7 +19,7 @@ class AdminWithdrawalService
             $query->where('status', $status);
         }
 
-        return $query->paginate($limit)->withQueryString();
+        return $query->paginate($perPage)->withQueryString();
     }
 
     public static function getPendingWithdrawals($limit = 50)
