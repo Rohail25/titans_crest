@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminWithdrawalService
 {
-    public static function getWithdrawals(?string $status = null, int $perPage = 15)
+    public static function getWithdrawals(?string $status = null, int $perPage = 10)
     {
         $query = Withdrawal::with('user')->orderBy('created_at', 'desc');
 
