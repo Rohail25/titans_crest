@@ -78,7 +78,7 @@
                     <label class="form-label">Per Page</label>
                     <select name="per_page" class="form-select">
                         @foreach ([15, 25, 50, 100] as $count)
-                            <option value="{{ $count }}" {{ request('per_page', 15) == $count ? 'selected' : '' }}>
+                            <option value="{{ $count }}" class="text-black" {{ request('per_page', 15) == $count ? 'selected' : '' }}>
                                 {{ $count }}</option>
                         @endforeach
                     </select>
@@ -169,7 +169,7 @@
         </div>
         <!-- Pagination -->
         <div class="card-body" style="border-top: 1px solid rgba(212, 175, 55, 0.1);">
-            {{ $withdrawals->links() }}
+            {{ $withdrawals->links('vendor.pagination.admin-pagination') }}
         </div>
     </div>
 @endsection
