@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\DB;
 class DepositService
 {
     protected WalletService $walletService;
+    protected ReferralCommissionService $referralCommissionService;
 
-    public function __construct(WalletService $walletService)
-    {
+    public function __construct(
+        WalletService $walletService,
+        ReferralCommissionService $referralCommissionService
+    ) {
         $this->walletService = $walletService;
+        $this->referralCommissionService = $referralCommissionService;
     }
 
     /**
@@ -31,6 +35,8 @@ class DepositService
 
     /**
      * Confirm deposit and credit wallet
+     * IMPORTANT: Referral commissions are distributed HERE (on deposit confirmation), not on package subscription.
+     * This ensures upline members only receive commission after their downline has actually invested (deposited).
      */
     public function confirmDeposit(Deposit $deposit): void
     {
@@ -53,6 +59,13 @@ class DepositService
                 'status' => 'confirmed',
                 'confirmed_at' => now(),
             ]);
+
+            // **KEY FIX**: Distribute referral commissions NOW that deposit is confirmed
+            // Commission is based on the actual deposit amount
+            $this->referralCommissionService->distributeCommissions(
+                $deposit->user,
+                $deposit->amount
+            );
 
             // Dispatch email notification
             // event(new DepositConfirmed($deposit));

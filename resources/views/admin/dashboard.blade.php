@@ -29,8 +29,8 @@
             <div class="kpi-icon">
                 <i class="fas fa-wallet"></i>
             </div>
-            <div class="kpi-label">Total Balance</div>
-            <div class="kpi-value">${{ number_format($kpis['total_balance'], 2) }}</div>
+            <div class="kpi-label">Total Cash Flow</div>
+            <div class="kpi-value">${{ number_format($kpis['total_balance'] - $kpis['total_withdrawals'], 2) }}</div>
             <small text-muted>User wallets</small>
         </div>
     </div>

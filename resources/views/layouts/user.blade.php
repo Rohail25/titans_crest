@@ -683,7 +683,7 @@
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{{ route('user.profile.show') }}">Profile Settings</a></li>
-                                <li><a class="dropdown-item" href="{{ route('user.profile.edit') }}">Security</a></li>
+                                {{-- <li><a class="dropdown-item" href="{{ route('user.profile.edit') }}">Security</a></li> --}}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">

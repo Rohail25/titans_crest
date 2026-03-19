@@ -10,7 +10,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        html, body { 
+            font-family: 'Inter', sans-serif;
+            height: auto;
+            overflow-y: auto;
+        }
         .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%); }
         .gradient-text { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .input-focus:focus { 
@@ -19,7 +23,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50" style="overflow-y: auto !important;">
 
     <!-- Navigation -->
     <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
@@ -44,9 +48,7 @@
             <div class="bg-white rounded-2xl shadow-2xl p-8">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <div class="mb-4">
-                        <a href="/" class="inline-block text-2xl font-bold text-blue-900">Titans <span class="gradient-text">Crest</span></a>
-                    </div>
+                  
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
                     <p class="text-gray-600 text-sm">Sign in to access your investment account</p>
                 </div>
@@ -105,8 +107,13 @@
                     </div>
 
                     <!-- Password -->
-                    <div class="mb-6">
-                        <label for="password" class="block text-sm font-semibold text-gray-900 mb-3">Password</label>
+                    <div class="mb-3">
+                        <div class="flex justify-between items-center mb-3">
+                            <label for="password" class="block text-sm font-semibold text-gray-900">Password</label>
+                            <a href="{{ route('password.forgot') }}" class="text-sm text-blue-900 hover:text-blue-700 font-semibold transition">
+                                <i class="fas fa-question-circle"></i> Forgot Password?
+                            </a>
+                        </div>
                         <div class="relative">
                             <input 
                                 type="password" 

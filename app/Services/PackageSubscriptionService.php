@@ -12,7 +12,6 @@ class PackageSubscriptionService
 {
     public function __construct(
         protected WalletService $walletService,
-        protected ReferralCommissionService $referralCommissionService,
     ) {}
 
     public function subscribe(User $user, Package $package): UserPackage
@@ -20,14 +19,6 @@ class PackageSubscriptionService
         return DB::transaction(function () use ($user, $package) {
             if (!$package->is_active) {
                 throw new \Exception('Selected package is not active.');
-            }
-
-            $hasActivePackage = $user->userPackages()
-                ->where('is_active', true)
-                ->where('package_status', 'active')
-                ->exists();
-            if ($hasActivePackage) {
-                throw new \Exception('You already have an active package.');
             }
 
             $wallet = $this->walletService->getOrCreateWallet($user);
@@ -69,7 +60,9 @@ class PackageSubscriptionService
                 'next_profit_time' => $this->getNextProfitTime(),
             ]);
 
-            $this->referralCommissionService->distributeCommissions($user, (float) $package->price);
+            // IMPORTANT: Commission is NOT distributed here anymore.
+            // It will be distributed when the user's DEPOSIT is confirmed (see DepositService::confirmDeposit)
+            // This ensures upline only gets commission after downline has actually invested (deposited).
 
             return $userPackage;
         });

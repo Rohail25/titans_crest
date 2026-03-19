@@ -49,25 +49,25 @@
         <div class="row mb-3">
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-muted small">Total Levels</div>
+                    <div class="text-white small">Total Levels</div>
                     <h5 class="mb-0">{{ $referralNetwork['summary']['total_levels'] }}</h5>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-muted small">Total Referrals</div>
+                    <div class="text-white small">Total Referrals</div>
                     <h5 class="mb-0">{{ $referralNetwork['summary']['total_referrals'] }}</h5>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-muted small">Network Deposit</div>
+                    <div class="text-white small">Network Deposit</div>
                     <h5 class="mb-0 text-success">${{ number_format($referralNetwork['summary']['total_network_deposit'], 2) }}</h5>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-muted small">Network Earned</div>
+                    <div class="text-white small">Network Earned</div>
                     <h5 class="mb-0 text-info">${{ number_format($referralNetwork['summary']['total_network_earned'], 2) }}</h5>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                 </div>
             </div>
         @empty
-            <div class="text-center text-muted py-4">
+            <div class="text-center text-white py-4">
                 No referral network found for this user.
             </div>
         @endforelse

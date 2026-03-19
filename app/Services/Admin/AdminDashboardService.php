@@ -13,6 +13,7 @@ class AdminDashboardService
             'active_users' => \App\Models\User::where('role', 'user')->where('status', 'active')->count(),
             'total_balance' => DB::table('wallets')->sum('balance'),
             'total_earnings' => DB::table('wallets')->sum('total_earned'),
+            'total_withdrawals' => DB::table('withdrawals')->sum('net_amount'),
             'pending_withdrawals' => \App\Models\Withdrawal::where('status', 'pending_approval')->count(),
             'pending_withdrawals_amount' => \App\Models\Withdrawal::where('status', 'pending_approval')->sum('net_amount'),
             'approved_withdrawals' => \App\Models\Withdrawal::where('status', 'approved')->count(),

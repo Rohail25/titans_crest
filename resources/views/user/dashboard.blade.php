@@ -140,38 +140,43 @@
             </div>
             <div class="card-body">
                 @if(count($packages) > 0)
-                    @php $package = $packages[0] @endphp
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="stat-card-label mb-2">Package Name</div>
-                            <h5 class="text-white">{{ $package['name'] }}</h5>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="stat-card-label mb-2">Package Value</div>
-                            <div class="h5 text-white">${{ number_format($package['price'], 2) }}</div>
-                        </div>
-                    </div>
+                    @foreach($packages as $package)
+                        <div class="border rounded p-3 mb-3 bg-dark">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stat-card-label mb-2">Package Name</div>
+                                    <h5 class="text-white">{{ $package['name'] }}</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-card-label mb-2">Package Value</div>
+                                    <div class="h5 text-white">${{ number_format($package['price'], 2) }}</div>
+                                </div>
+                            </div>
 
-                    <hr>
+                            <hr>
 
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <div class="stat-card-label mb-2">Daily Profit Rate</div>
-                            <h6 class="text-success">{{ ($package['daily_profit_rate'] * 100) }}%</h6>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="stat-card-label mb-2">Daily Profit Rate</div>
+                                    <h6 class="text-success">{{ ($package['daily_profit_rate'] * 100) }}%</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-card-label mb-2">Daily Earnings</div>
+                                    <h6 class="text-white">${{ number_format($package['daily_profit'], 2) }}</h6>
+                                </div>
+                            </div>
+
+                            <small class="text-muted">
+                                Activated: {{ \Carbon\Carbon::parse($package['activated_at'])->format('M d, Y') }}
+                                @if(!empty($package['expires_at']))
+                                    | Expires: {{ \Carbon\Carbon::parse($package['expires_at'])->format('M d, Y') }}
+                                @endif
+                            </small>
                         </div>
-                        <div class="col-md-6">
-                            <div class="stat-card-label mb-2">Daily Earnings</div>
-                            <h6 class="text-white">${{ number_format($package['daily_profit'], 2) }}</h6>
-                        </div>
-                    </div>
+                    @endforeach
 
-                    <small class="text-muted">
-                        Activated: {{ \Carbon\Carbon::parse($package['activated_at'])->format('M d, Y') }}
-                    </small>
-
-                    <hr>
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> You currently have an active package. You can subscribe to another one after this package completes.
+                        <i class="fas fa-info-circle"></i> You currently have active package(s). You can subscribe to additional packages and earn from each.
                     </div>
                 @else
                     <div class="alert alert-warning mb-3">
@@ -196,11 +201,9 @@
                                 <button
                                     type="submit"
                                     class="btn btn-primary btn-sm w-100"
-                                    {{ $hasActivePackage || $wallet['balance'] < $plan->price ? 'disabled' : '' }}
+                                    {{ $wallet['balance'] < $plan->price ? 'disabled' : '' }}
                                 >
-                                    @if($hasActivePackage)
-                                        Active Package Running
-                                    @elseif($wallet['balance'] < $plan->price)
+                                    @if($wallet['balance'] < $plan->price)
                                         Insufficient Balance
                                     @else
                                         Subscribe Now

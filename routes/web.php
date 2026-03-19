@@ -57,6 +57,27 @@ Route::get('/logout', function () {
     return redirect('/');
 })->middleware('guest');
 
+// Password Management Routes
+// Authenticated Routes - Change Password (from Edit Profile)
+Route::middleware('auth')->group(function () {
+    Route::get('/change-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showChangePasswordForm'])
+        ->name('password.change-form');
+    Route::post('/change-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'sendChangePasswordEmail'])
+        ->name('password.send-change-email');
+});
+
+// Guest Routes - Forgot Password & Reset
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showForgotPasswordForm'])
+        ->name('password.forgot');
+    Route::post('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink'])
+        ->name('password.send-reset-link');
+    Route::get('/reset-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showResetForm'])
+        ->name('password.reset-form');
+    Route::post('/reset-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'updatePassword'])
+        ->name('password.update');
+});
+
 // User Dashboard Routes (Authenticated)
 Route::middleware(['auth'])->prefix('dashboard')->name('user.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

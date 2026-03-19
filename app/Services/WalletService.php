@@ -43,34 +43,66 @@ class WalletService
     }
 
     /**
-     * Check if user has reached earning cap on active package
+     * Get all active earning packages for a user (refreshing cap data).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserPackage>
      */
-    public function has3xCapReached(User $user): bool
+    public function getActiveEarningPackages(User $user)
     {
-        $activePackage = $this->getActiveEarningPackage($user);
+        $packages = $user->userPackages()
+            ->where('is_active', true)
+            ->where('package_status', 'active')
+            ->with('package')
+            ->orderBy('id')
+            ->get();
 
-        if (!$activePackage) {
-            return true;
-        }
-
-        $activePackage = $this->refreshUserPackageCap($user, $activePackage);
-
-        return (float) $activePackage->total_earned >= (float) $activePackage->earning_cap;
+        return $packages->map(fn (UserPackage $userPackage) => $this->refreshUserPackageCap($user, $userPackage));
     }
 
     /**
-     * Get remaining earnings possible before package cap
+     * Get the active earning package that still has remaining cap.
+     * If multiple packages are active, the first package with remaining cap is returned.
+     */
+    public function getActiveEarningPackage(User $user): ?UserPackage
+    {
+        return $this->getActiveEarningPackages($user)
+            ->filter(fn (UserPackage $up) => (float) $up->total_earned < (float) $up->earning_cap)
+            ->sortBy('id')
+            ->first();
+    }
+
+    /**
+     * Check if user has reached earning cap on active packages
+     */
+    public function has3xCapReached(User $user): bool
+    {
+        $activePackages = $this->getActiveEarningPackages($user);
+
+        if ($activePackages->isEmpty()) {
+            return true;
+        }
+
+        $remaining = $activePackages->reduce(function ($carry, UserPackage $up) {
+            return $carry + max(0, (float) $up->earning_cap - (float) $up->total_earned);
+        }, 0);
+
+        return $remaining <= 0;
+    }
+
+    /**
+     * Get remaining earnings possible before package caps are reached
      */
     public function get3xCapRemaining(User $user): float|int
     {
-        $activePackage = $this->getActiveEarningPackage($user);
+        $activePackages = $this->getActiveEarningPackages($user);
 
-        if (!$activePackage) {
+        if ($activePackages->isEmpty()) {
             return 0;
         }
 
-        $activePackage = $this->refreshUserPackageCap($user, $activePackage);
-        $remaining = (float) $activePackage->earning_cap - (float) $activePackage->total_earned;
+        $remaining = $activePackages->reduce(function ($carry, UserPackage $up) {
+            return $carry + max(0, (float) $up->earning_cap - (float) $up->total_earned);
+        }, 0);
 
         return max(0, $remaining);
     }
@@ -90,7 +122,24 @@ class WalletService
             }
 
             if ($this->isCappedEarningType($normalizedType, $amount)) {
-                $activePackage = $this->getActiveEarningPackage($user);
+                $activePackage = null;
+
+                // If an active package is explicitly provided, use that one.
+                $userPackageId = $ledgerMetadata['user_package_id'] ?? null;
+                if ($userPackageId) {
+                    $activePackage = UserPackage::query()
+                        ->where('id', $userPackageId)
+                        ->where('user_id', $user->id)
+                        ->where('is_active', true)
+                        ->where('package_status', 'active')
+                        ->with('package')
+                        ->first();
+                }
+
+                // Fall back to any active package with remaining cap
+                if (!$activePackage) {
+                    $activePackage = $this->getActiveEarningPackage($user);
+                }
 
                 if (!$activePackage) {
                     throw new \Exception('Your package has reached earning limits. Please subscribe to a new package.');
@@ -227,17 +276,25 @@ class WalletService
     public function getWalletSummary(User $user): array
     {
         $wallet = $this->getOrCreateWallet($user);
-        $activePackage = $this->getActiveEarningPackage($user);
+        $activePackages = $this->getActiveEarningPackages($user);
 
-        if ($activePackage) {
-            $activePackage = $this->refreshUserPackageCap($user, $activePackage);
-        }
-
-        $cap = $activePackage ? (float) $activePackage->earning_cap : 0;
-        $earnedAgainstCap = $activePackage ? (float) $activePackage->total_earned : 0;
+        $cap = $activePackages->sum(fn (UserPackage $up) => (float) $up->earning_cap);
+        $earnedAgainstCap = $activePackages->sum(fn (UserPackage $up) => (float) $up->total_earned);
         $remaining = max(0, $cap - $earnedAgainstCap);
         $capPercentage = $cap > 0 ? ($earnedAgainstCap / $cap * 100) : 0;
-        $capReached = !$activePackage || $remaining <= 0;
+        $capReached = $activePackages->isEmpty() || $remaining <= 0;
+
+        $nextProfitTime = $activePackages
+            ->pluck('next_profit_time')
+            ->filter()
+            ->sort()
+            ->first();
+
+        $lastProfitTime = $activePackages
+            ->pluck('last_profit_time')
+            ->filter()
+            ->sort()
+            ->last();
 
         $actualTotalEarned = (float) $user->earnings()
             ->whereIn('type', self::TRACKED_EARNING_TYPES)
@@ -259,32 +316,21 @@ class WalletService
             'remaining_3x' => $remaining,
             'cap_percentage' => min(100, $capPercentage),
             'cap_reached' => $capReached,
-            'package_status' => $activePackage?->package_status ?? 'completed',
-            'next_profit_time' => $activePackage?->next_profit_time,
-            'last_profit_time' => $activePackage?->last_profit_time,
+            'package_status' => $activePackages->isEmpty() ? 'completed' : 'active',
+            'next_profit_time' => $nextProfitTime,
+            'last_profit_time' => $lastProfitTime,
         ];
-    }
-
-    public function getActiveEarningPackage(User $user): ?UserPackage
-    {
-        return $user->userPackages()
-            ->where('is_active', true)
-            ->where('package_status', 'active')
-            ->with('package:id,price')
-            ->latest('id')
-            ->first();
     }
 
     public function determineCapMultiplier(User $user, float $depositAmount): int
     {
+        // Packages under $500: 3x cap
+        // Packages $500 or more: 4x cap
         if ($depositAmount >= 500) {
             return 4;
         }
 
-        $hasDirectReferral = User::where('referred_by', $user->id)->exists()
-            || ReferralTree::where('referrer_id', $user->id)->exists();
-
-        return $hasDirectReferral ? 3 : 2;
+        return 3;
     }
 
     public function calculateCapForUser(User $user, float $depositAmount): float

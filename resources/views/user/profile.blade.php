@@ -77,6 +77,9 @@
                             <a href="{{ route('user.profile.edit') }}" class="btn btn-primary">
                                 <i class="fas fa-edit"></i> Edit Profile
                             </a>
+                            <a href="{{ route('password.change-form') }}" class="btn btn-warning">
+                                <i class="fas fa-lock"></i> Change Password
+                            </a>
                             <a href="{{ route('user.dashboard') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to Dashboard
                             </a>
