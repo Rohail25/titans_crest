@@ -60,12 +60,8 @@ class DepositService
                 'confirmed_at' => now(),
             ]);
 
-            // **KEY FIX**: Distribute referral commissions NOW that deposit is confirmed
-            // Commission is based on the actual deposit amount
-            $this->referralCommissionService->distributeCommissions(
-                $deposit->user,
-                $deposit->amount
-            );
+            // Referral commission is handled on package subscription instead of deposit confirmation.
+            // This avoids double-triggering commission for the same transaction.
 
             // Dispatch email notification
             // event(new DepositConfirmed($deposit));

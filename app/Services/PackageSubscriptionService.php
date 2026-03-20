@@ -12,6 +12,7 @@ class PackageSubscriptionService
 {
     public function __construct(
         protected WalletService $walletService,
+        protected ReferralCommissionService $referralCommissionService,
     ) {}
 
     public function subscribe(User $user, Package $package): UserPackage
@@ -60,9 +61,9 @@ class PackageSubscriptionService
                 'next_profit_time' => $this->getNextProfitTime(),
             ]);
 
-            // IMPORTANT: Commission is NOT distributed here anymore.
-            // It will be distributed when the user's DEPOSIT is confirmed (see DepositService::confirmDeposit)
-            // This ensures upline only gets commission after downline has actually invested (deposited).
+            // Now distribute referral commission at package subscription, as requested.
+            // This change removes commission from deposit-only flow and ties it to subscription success.
+            $this->referralCommissionService->distributeCommissions($user, $depositAmount);
 
             return $userPackage;
         });

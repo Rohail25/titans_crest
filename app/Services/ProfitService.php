@@ -146,11 +146,8 @@ class ProfitService
                     $up->save();
                 }
 
-                // Ensure next_profit_time is in the future, if not, set it to now + 8 hours
-                if ($up->next_profit_time && now()->gt($up->next_profit_time)) {
-                    $up->next_profit_time = $this->getNextCycleTime(now());
-                    $up->save();
-                }
+                // Keep overdue next_profit_time as-is; do not auto-update on dashboard load.
+                // This ensures scheduler/ROI dispatcher handles exactly one cycle per period.
 
                 return [
                     'id' => $up->id,
