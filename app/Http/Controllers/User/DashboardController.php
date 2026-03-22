@@ -52,9 +52,9 @@ class DashboardController extends Controller
                 // Parse the ISO string to check if it's in the past
                 $nextTime = \Carbon\Carbon::parse($package['next_profit_time']);
                 if ($nextTime->lt(now())) {
-                    // If overdue, calculate next cycle from last_profit_time + 8 hours
+                    // If overdue, calculate next cycle from last_profit_time + 15 minutes
                     // This prevents timer from showing 00:00:00
-                    $calculatedTime = now()->addHours(8);
+                    $calculatedTime = now()->addMinutes(15);
                     return $calculatedTime->toIso8601String();
                 }
                 

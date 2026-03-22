@@ -125,7 +125,7 @@
                     <hr>
                     <div class="stat-card-label mb-2">Next Profit Distribution In</div>
                     <h4 id="profitCountdown" class="text-primary mb-1">-- : -- : --</h4>
-                    <small class="text-muted">Profit is distributed every 8 hours after subscription activation.</small>
+                    <small class="text-muted">Profit is distributed every 15 minutes after subscription activation.</small>
                     <div id="nextProfitTime" class="d-none">{{ \Carbon\Carbon::parse($nextProfitTime)->toIso8601String() }}</div>
                 @endif
             </div>
@@ -434,11 +434,11 @@
         return;
     }
 
-    // If the date is in the past, calculate fallback time (8 hours from now)
+    // If the date is in the past, calculate fallback time (15 minutes from now)
     const now = new Date();
     if (targetDate.getTime() < now.getTime()) {
-        // Calculate fallback: add 8 hours to current time
-        const fallbackTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+        // Calculate fallback: add 15 minutes to current time
+        const fallbackTime = new Date(now.getTime() + 15 * 60 * 1000);
         targetDate = fallbackTime;
         console.info('Next profit time was in the past. Using fallback time:', fallbackTime.toISOString());
     }
@@ -446,8 +446,8 @@
     function refreshProfitTime() {
         if (refreshAttempts >= maxRefreshAttempts) {
             console.warn('Max refresh attempts reached. Using calculated fallback time.');
-            // Use fallback: 8 hours from now
-            targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+            // Use fallback: 15 minutes from now
+            targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
             tick();
             return;
         }
@@ -486,7 +486,7 @@
                 } else {
                     // Invalid new time, use fallback
                     console.warn('Refreshed time is invalid or in past. Using fallback.');
-                    targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+                    targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
                     tick();
                 }
             } else {
@@ -504,7 +504,7 @@
                 setTimeout(refreshProfitTime, delayMs);
             } else {
                 // Use fallback after max attempts
-                targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+                targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
                 tick();
             }
         });

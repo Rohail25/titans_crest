@@ -40,7 +40,7 @@ class ProfitService
     }
 
     /**
-     * Distribute cycle profit to user (called by scheduler every 8 hours)
+     * Distribute cycle profit to user (called by scheduler every 15 minutes)
      */
     public function distributeDailyProfit(User $user): void
     {
@@ -170,7 +170,7 @@ class ProfitService
 
     public function getNextCycleTime(?\Carbon\Carbon $from = null): \Carbon\Carbon
     {
-        return ($from?->copy() ?? now())->addHours(8);
+        return ($from?->copy() ?? now())->addMinutes(15);
     }
 
     private function calculateDailyProfitForPackage(UserPackage $userPackage): float
@@ -189,9 +189,9 @@ class ProfitService
 
     private function calculateCycleProfitForPackage(UserPackage $userPackage): float
     {
-        // Each 8-hour cycle gets 1/3 of daily profit
-        // Daily profit is divided into 3 cycles (24 hours / 8 hours per cycle)
-        return $this->calculateDailyProfitForPackage($userPackage) / 3;
+        // Each 15-minute cycle gets 1/96 of daily profit
+        // Daily profit is divided into 96 cycles (24 hours / 15 minutes per cycle)
+        return $this->calculateDailyProfitForPackage($userPackage) / 96;
     }
 
     private function distributePackageCycleProfit(User $user, UserPackage $userPackage): void

@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Check due profit distributions continuously; each package pays every 8 hours based on next_profit_time.
+        // Check due profit distributions continuously; each package pays every 15 minutes based on next_profit_time.
         $schedule->command('profits:distribute')
             ->everyMinute()
             ->timezone('UTC')
