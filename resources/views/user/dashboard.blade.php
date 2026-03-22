@@ -414,18 +414,36 @@
     let hasTriedRefresh = false;
     let refreshAttempts = 0;
     const maxRefreshAttempts = 3;
+    const storageKey = 'profitCountdownTarget';
 
     function pad(value) {
         return value.toString().padStart(2, '0');
     }
 
-    // Parse the date - handle ISO8601 and other formats
-    try {
-        if (targetDateStr) {
-            targetDate = new Date(targetDateStr);
+    // Check localStorage for persisted target time
+    const storedTarget = localStorage.getItem(storageKey);
+    if (storedTarget) {
+        const storedDate = new Date(storedTarget);
+        const now = new Date();
+        if (storedDate.getTime() > now.getTime()) {
+            // Use stored time if it's in the future
+            targetDate = storedDate;
+            console.info('Using persisted profit time from localStorage:', storedTarget);
+        } else {
+            // Stored time is in the past, remove it
+            localStorage.removeItem(storageKey);
         }
-    } catch (e) {
-        console.error('Failed to parse profit time:', targetDateStr, e);
+    }
+
+    // If no valid stored time, parse from backend
+    if (!targetDate) {
+        try {
+            if (targetDateStr) {
+                targetDate = new Date(targetDateStr);
+            }
+        } catch (e) {
+            console.error('Failed to parse profit time:', targetDateStr, e);
+        }
     }
 
     // Check if date is valid and in the future
@@ -448,6 +466,7 @@
             console.warn('Max refresh attempts reached. Using calculated fallback time.');
             // Use fallback: 15 minutes from now
             targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+            localStorage.setItem(storageKey, targetDate.toISOString());
             tick();
             return;
         }
@@ -479,6 +498,7 @@
                 if (!isNaN(newDate.getTime()) && newDate.getTime() > new Date().getTime()) {
                     targetNode.textContent = newTime;
                     targetDate = newDate;
+                    localStorage.setItem(storageKey, newTime);
                     refreshAttempts = 0; // Reset on success
                     hasTriedRefresh = false;
                     console.info('Successfully updated profit time:', newTime);
@@ -487,6 +507,7 @@
                     // Invalid new time, use fallback
                     console.warn('Refreshed time is invalid or in past. Using fallback.');
                     targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+                    localStorage.setItem(storageKey, targetDate.toISOString());
                     tick();
                 }
             } else {
@@ -505,6 +526,7 @@
             } else {
                 // Use fallback after max attempts
                 targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+                localStorage.setItem(storageKey, targetDate.toISOString());
                 tick();
             }
         });
@@ -539,6 +561,9 @@
 
         countdownNode.textContent = `${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
     }
+
+    // Save initial target to localStorage
+    localStorage.setItem(storageKey, targetDate.toISOString());
 
     // Initial tick
     tick();
