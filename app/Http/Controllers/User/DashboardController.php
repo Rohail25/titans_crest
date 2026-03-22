@@ -43,7 +43,23 @@ class DashboardController extends Controller
             ->first();
 
         $nextProfitTime = collect($activePackages)
-            ->pluck('next_profit_time')
+            ->map(function ($package) {
+                // If next_profit_time is missing or in the past, calculate it from last_profit_time
+                if (empty($package['next_profit_time'])) {
+                    return null; // Skip packages without profit time
+                }
+                
+                // Parse the ISO string to check if it's in the past
+                $nextTime = \Carbon\Carbon::parse($package['next_profit_time']);
+                if ($nextTime->lt(now())) {
+                    // If overdue, calculate next cycle from last_profit_time + 8 hours
+                    // This prevents timer from showing 00:00:00
+                    $calculatedTime = now()->addHours(8);
+                    return $calculatedTime->toIso8601String();
+                }
+                
+                return $package['next_profit_time'];
+            })
             ->filter()
             ->sort()
             ->first();

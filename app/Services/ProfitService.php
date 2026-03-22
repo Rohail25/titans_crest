@@ -78,7 +78,8 @@ class ProfitService
         /** @var \Illuminate\Database\Eloquent\Collection<int, User> $users */
         $users = $query->with('userPackages.package')
             ->whereHas('userPackages', function ($q) {
-                $q->where('is_active', true)->where('package_status', 'active');
+                $q->where('is_active', true)
+                    ->where('package_status', 'active');
             })
             ->get();
 
@@ -195,6 +196,7 @@ class ProfitService
 
     private function distributePackageCycleProfit(User $user, UserPackage $userPackage): void
     {
+        // Only active, non-completed packages can generate profit
         if (!$userPackage->is_active || $userPackage->package_status !== 'active') {
             return;
         }

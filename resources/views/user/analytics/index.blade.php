@@ -153,7 +153,14 @@
                                 <tr>
                                     <td><strong>{{ $package['name'] }}</strong></td>
                                     <td>${{ number_format($package['price'], 2) }}</td>
-                                    <td>{{ ($package['daily_profit_rate'] * 100) }}%</td>
+                                    <td>
+                                        {{ number_format(($package['daily_profit_rate'] * 100), 2) }}%
+                                        @if($package['price'] < 500)
+                                            <small>(0.65% )</small>
+                                        @else
+                                            <small>(0.75%)</small>
+                                        @endif
+                                    </td>
                                     <td><strong>${{ number_format($package['daily_profit'], 2) }}</strong></td>
                                     <td>{{ \Carbon\Carbon::parse($package['activated_at'])->format('M d, Y') }}</td>
                                 </tr>

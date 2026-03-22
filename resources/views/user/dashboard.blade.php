@@ -326,11 +326,11 @@
                     @forelse($teamPerformance['recent_deposits'] as $deposit)
                         <tr>
                             <td>
-                                <strong>{{ $deposit->user->name ?? 'Unknown User' }}</strong><br>
-                                <small class="text-muted">User #{{ $deposit->user_id }}</small>
+                                <strong>TC {{ $deposit->user_id ?? 'Unknown User' }}</strong><br>
+                                {{-- <small class="text-muted">User #{{ $deposit->user_id }}</small> --}}
                             </td>
                             <td>
-                                <span class="badge badge-primary">Level {{ $deposit->team_level ?? '-' }}</span>
+                                <span class="badge text-black">Level {{ $deposit->team_level ?? '-' }}</span>
                             </td>
                             <td>
                                 <strong class="text-success">${{ number_format($deposit->amount, 2) }}</strong>
@@ -372,7 +372,7 @@
                                 <tr>
                                     <td>{{ $earning->created_at->format('M d, Y h:i A') }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $earning->type == 'deposit' ? 'info' : ($earning->type == 'profit_share' ? 'success' : 'primary') }}">
+                                        <span class="badge badge-{{ $earning->type == 'deposit' ? 'info' : ($earning->type == 'profit_share' ? 'success' : 'warning') }}">
                                             {{ ucfirst(str_replace('_', ' ', $earning->type)) }}
                                         </span>
                                     </td>
@@ -412,6 +412,8 @@
     let targetDateStr = targetNode.textContent.trim();
     let targetDate = null;
     let hasTriedRefresh = false;
+    let refreshAttempts = 0;
+    const maxRefreshAttempts = 3;
 
     function pad(value) {
         return value.toString().padStart(2, '0');
@@ -432,24 +434,37 @@
         return;
     }
 
-    // If the date is in the past, try to refresh
-    if (targetDate.getTime() < new Date().getTime()) {
-        countdownNode.textContent = '00 : 00 : 00';
-        if (!hasTriedRefresh) {
-            hasTriedRefresh = true;
-            setTimeout(refreshProfitTime, 1000);
-        }
-        return;
+    // If the date is in the past, calculate fallback time (8 hours from now)
+    const now = new Date();
+    if (targetDate.getTime() < now.getTime()) {
+        // Calculate fallback: add 8 hours to current time
+        const fallbackTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+        targetDate = fallbackTime;
+        console.info('Next profit time was in the past. Using fallback time:', fallbackTime.toISOString());
     }
 
     function refreshProfitTime() {
+        if (refreshAttempts >= maxRefreshAttempts) {
+            console.warn('Max refresh attempts reached. Using calculated fallback time.');
+            // Use fallback: 8 hours from now
+            targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+            tick();
+            return;
+        }
+
+        refreshAttempts++;
+        console.info(`Refreshing profit time (attempt ${refreshAttempts}/${maxRefreshAttempts})`);
+
         // Fetch updated dashboard data to get new next_profit_time
         fetch('{{ route("user.dashboard") }}', {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.text();
+        })
         .then(html => {
             // Extract the nextProfitTime value from the new HTML
             const parser = new DOMParser();
@@ -458,17 +473,40 @@
             
             if (newTargetNode && newTargetNode.textContent.trim()) {
                 const newTime = newTargetNode.textContent.trim();
-                targetNode.textContent = newTime;
-                targetDate = new Date(newTime);
-                hasTriedRefresh = false;
+                const newDate = new Date(newTime);
                 
-                // Restart the timer immediately
-                tick();
+                // Verify new date is valid and in future
+                if (!isNaN(newDate.getTime()) && newDate.getTime() > new Date().getTime()) {
+                    targetNode.textContent = newTime;
+                    targetDate = newDate;
+                    refreshAttempts = 0; // Reset on success
+                    hasTriedRefresh = false;
+                    console.info('Successfully updated profit time:', newTime);
+                    tick();
+                } else {
+                    // Invalid new time, use fallback
+                    console.warn('Refreshed time is invalid or in past. Using fallback.');
+                    targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+                    tick();
+                }
+            } else {
+                // No time found in response
+                console.warn('No profit time found in response. Retrying...');
+                setTimeout(refreshProfitTime, 2000 * refreshAttempts); // Exponential backoff
             }
         })
         .catch(error => {
-            console.error('Failed to fetch updated profit time:', error);
-            hasTriedRefresh = false; // Reset on error to allow retry
+            console.error('Error fetching updated profit time:', error);
+            if (refreshAttempts < maxRefreshAttempts) {
+                // Retry with exponential backoff
+                const delayMs = 2000 * refreshAttempts;
+                console.info(`Retrying in ${delayMs}ms...`);
+                setTimeout(refreshProfitTime, delayMs);
+            } else {
+                // Use fallback after max attempts
+                targetDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+                tick();
+            }
         });
     }
 
@@ -482,12 +520,14 @@
         const distance = targetDate.getTime() - now.getTime();
 
         if (distance <= 0) {
+            // Timer expired - show 00:00:00 temporarily, then refresh
             countdownNode.textContent = '00 : 00 : 00';
             
-            // Try to refresh the profit time after a delay
+            // Try to refresh the profit time after a short delay
             if (!hasTriedRefresh) {
                 hasTriedRefresh = true;
-                setTimeout(refreshProfitTime, 2000);
+                console.info('Countdown reached zero. Refreshing profit time...');
+                setTimeout(refreshProfitTime, 1000);
             }
             return;
         }

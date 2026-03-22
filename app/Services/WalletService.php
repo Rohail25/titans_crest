@@ -366,6 +366,8 @@ class WalletService
 
     public function completeUserPackage(UserPackage $userPackage): void
     {
+        // If package is completed (earning cap reached), disable it and clear next_profit_time.
+        // This ensures profit distribution stops until user reinvests.
         $userPackage->update([
             'is_active' => false,
             'package_status' => 'completed',

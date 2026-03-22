@@ -38,6 +38,7 @@ class AnalyticsController extends Controller
                 return $earning->created_at->format('Y-m');
             })
             ->map(fn($group) => $group->sum('amount'));
+            // $packages = Package
 
         return view('user.analytics.index', [
             'wallet' => $walletSummary,
