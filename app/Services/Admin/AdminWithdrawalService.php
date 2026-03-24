@@ -42,6 +42,9 @@ class AdminWithdrawalService
                 throw new \Exception('Withdrawal cannot be approved. Status: ' . $withdrawal->status);
             }
 
+            $walletService = new WalletService();
+            $walletService->releasePendingBalance($withdrawal->user, (float) $withdrawal->requested_amount);
+
             $withdrawal->update([
                 'status' => 'approved',
                 'tx_hash' => $txHash,
@@ -79,9 +82,10 @@ class AdminWithdrawalService
             // Refund balance if funds were locked
             if ($withdrawal->status === 'pending_approval') {
                 $walletService = new WalletService();
+                $walletService->releasePendingBalance($withdrawal->user, (float) $withdrawal->requested_amount);
                 $walletService->addBalance(
                     $withdrawal->user,
-                    (float) $withdrawal->net_amount,
+                    (float) $withdrawal->requested_amount,
                     'withdrawal_refund',
                     (string) $withdrawal->id,
                     ['reason' => $reason]

@@ -91,10 +91,10 @@
                     <li><i class="fas fa-check-circle text-success"></i> Cold Storage for Large Amounts</li>
                 </ul>
 
-                <div class="alert alert-info mt-4">
+                {{-- <div class="alert alert-info mt-4">
                     <i class="fas fa-info-circle"></i>
                     <strong>Suspicious Balance:</strong> Funds marked as suspicious until you generate 3x earnings from them.
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

@@ -33,23 +33,36 @@
                 <i class="fas fa-wallet"></i>
             </div>
             <div class="stat-card-label">Available Balance</div>
-            <div class="stat-card-value">${{ number_format($wallet['balance'], 2) }}</div>
+            <div class="stat-card-value">${{ number_format($wallet['available_earnings_balance'] ?? 0, 2) }}</div>
             <div class="stat-card-change">
-                <i class="fas fa-arrow-up"></i> All funds available
+                <i class="fas fa-arrow-up"></i> ROI + commission only
             </div>
         </div>
     </div>
 
-    <!-- Pending Balance -->
+    <!-- Pending Deposit -->
     <div class="col-md-6 col-lg-3">
         <div class="stat-card">
             <div class="stat-card-icon">
                 <i class="fas fa-hourglass-half"></i>
             </div>
-            <div class="stat-card-label">Pending Balance</div>
-            <div class="stat-card-value">${{ number_format($wallet['pending_balance'], 2) }}</div>
+            <div class="stat-card-label">Pending Deposit</div>
+            <div class="stat-card-value">${{ number_format($deposits['pending_amount'] ?? 0, 2) }}</div>
             <div class="stat-card-change">
                 {{ $deposits['pending_count'] ?? 0 }} pending confirmations
+            </div>
+        </div>
+    </div>
+    <!-- Pending withdrawal -->
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-card-label">Pending Withdrawal</div>
+            <div class="stat-card-value">${{ number_format($withdrawals['pending_amount'], 2) }}</div>
+            <div class="stat-card-change">
+                {{ $withdrawals['pending_count'] ?? 0 }} pending withdrawals
             </div>
         </div>
     </div>
@@ -68,16 +81,29 @@
         </div>
     </div>
 
-    <!-- Total Earned -->
-    <div class="col-md-6 col-lg-3">
+    <!-- Total ROI Earned -->
+    <div class="col-md-6 col-lg-3 mt-3">
         <div class="stat-card">
             <div class="stat-card-icon">
                 <i class="fas fa-money-bill-wave"></i>
             </div>
-            <div class="stat-card-label">Total Earned</div>
+            <div class="stat-card-label">Total ROI Earned</div>
             <div class="stat-card-value">${{ number_format($wallet['total_earned'], 2) }}</div>
             <div class="stat-card-change positive">
-                {{ number_format($profit['daily_profit'], 2) }}/day profit
+                ${{ number_format($profit['daily_profit'], 2) }} / per day
+            </div>
+        </div>
+    </div>
+    {{-- total referral commission --}}
+    <div class="col-md-6 col-lg-3 mt-3">
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-card-label">Referral Commission</div>
+            <div class="stat-card-value">${{ number_format($wallet['total_referral_commission'] ?? 0, 2) }}</div>
+            <div class="stat-card-change positive">
+                {{ number_format($referrals['total_referrals'] ?? 0) }} total referrals
             </div>
         </div>
     </div>

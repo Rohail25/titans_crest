@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Earning;
 use App\Models\Package;
+use App\Models\Deposit;
 use App\Models\ReferralTree;
 use App\Models\UserPackage;
+use App\Models\Withdrawal;
 use Illuminate\Support\Facades\DB;
 
 class WalletService
@@ -225,6 +227,43 @@ class WalletService
     }
 
     /**
+     * Add amount to pending balance.
+     */
+    public function addPendingBalance(User $user, float $amount): void
+    {
+        if ($amount <= 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($user, $amount) {
+            $wallet = $this->getOrCreateWallet($user);
+            $wallet->increment('pending_balance', $amount);
+        });
+    }
+
+    /**
+     * Release amount from pending balance without allowing negative values.
+     */
+    public function releasePendingBalance(User $user, float $amount): void
+    {
+        if ($amount <= 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($user, $amount) {
+            $wallet = $this->getOrCreateWallet($user);
+            $lockedWallet = Wallet::query()->whereKey($wallet->id)->lockForUpdate()->first();
+
+            if (!$lockedWallet) {
+                return;
+            }
+
+            $nextPending = max(0, (float) $lockedWallet->pending_balance - $amount);
+            $lockedWallet->update(['pending_balance' => $nextPending]);
+        });
+    }
+
+    /**
      * Add to suspicious balance
      */
     public function addSuspiciousBalance(User $user, float $amount, string $reason): void
@@ -297,20 +336,45 @@ class WalletService
             ->last();
 
         $actualTotalEarned = (float) $user->earnings()
-            ->whereIn('type', self::TRACKED_EARNING_TYPES)
+            ->where('type', 'profit_share')
             ->sum('amount');
 
-        if (abs((float) $wallet->total_earned - $actualTotalEarned) > 0.0001) {
-            $wallet->update(['total_earned' => $actualTotalEarned]);
+        $totalReferralCommission = (float) $user->earnings()
+            ->where('type', 'referral')
+            ->sum('amount');
+
+        $availableEarningsBalance = (float) $user->earnings()
+            ->whereIn('type', ['profit_share', 'referral', 'withdrawal', 'refund'])
+            ->sum('amount');
+
+        $expectedPendingBalance = (float) Deposit::query()
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->sum('amount')
+            + (float) Withdrawal::query()
+                ->where('user_id', $user->id)
+                ->whereIn('status', ['pending_otp', 'pending_approval'])
+                ->sum('requested_amount');
+
+        $walletNeedsSync = abs((float) $wallet->total_earned - $actualTotalEarned) > 0.0001
+            || abs((float) $wallet->pending_balance - $expectedPendingBalance) > 0.0001;
+
+        if ($walletNeedsSync) {
+            $wallet->update([
+                'total_earned' => $actualTotalEarned,
+                'pending_balance' => $expectedPendingBalance,
+            ]);
             $wallet->refresh();
         }
 
         return [
             'balance' => $wallet->balance,
+            'available_earnings_balance' => max(0, $availableEarningsBalance),
             'pending_balance' => $wallet->pending_balance,
             'suspicious_balance' => $wallet->suspicious_balance,
             'total_deposit' => $wallet->total_deposit,
             'total_earned' => $actualTotalEarned,
+            'total_referral_commission' => $totalReferralCommission,
             'earned_against_cap' => $earnedAgainstCap,
             'cap_3x' => $cap,
             'remaining_3x' => $remaining,

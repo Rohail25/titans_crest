@@ -54,11 +54,7 @@ class DepositController extends Controller
         ]);
 
         try {
-            $deposit->update([
-                'status' => 'rejected',
-                'rejected_at' => now(),
-                'rejection_reason' => $request->rejection_reason,
-            ]);
+            $this->depositService->rejectDeposit($deposit, $request->rejection_reason);
 
             return back()->with('success', sprintf(
                 'Deposit of %s %s rejected for %s',

@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Services\WithdrawalService;
 use App\Services\OTPService;
@@ -22,7 +23,7 @@ class WithdrawalController extends Controller
 
     public function index(): View
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $walletSummary = $this->walletService->getWalletSummary($user);
         $withdrawalHistory = $this->withdrawalService->getWithdrawalHistory($user);
 
@@ -42,7 +43,7 @@ class WithdrawalController extends Controller
         ]);
 
         try {
-            $user = auth()->user();
+            $user = Auth::user();
             $withdrawal = $this->withdrawalService->initiateWithdrawal(
                 $user, 
                 (float) $validated['amount'],
@@ -71,7 +72,7 @@ class WithdrawalController extends Controller
         ]);
 
         try {
-            $user = auth()->user();
+            $user = Auth::user();
             $withdrawal = Withdrawal::where('id', $validated['withdrawal_id'])
                 ->where('user_id', $user->id)
                 ->first();
@@ -97,13 +98,14 @@ class WithdrawalController extends Controller
 
     public function cancel(Withdrawal $withdrawal): RedirectResponse
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($withdrawal->user_id !== $user->id) {
             abort(403);
         }
 
         if ($withdrawal->status === 'pending_otp') {
+            $this->walletService->releasePendingBalance($user, (float) $withdrawal->requested_amount);
             $withdrawal->update(['status' => 'cancelled']);
             return redirect()->back()->with('success', 'Withdrawal cancelled.');
         }

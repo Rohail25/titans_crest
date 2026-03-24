@@ -28,6 +28,7 @@ class WithdrawalService
     {
         $errors = [];
         $wallet = $user->wallet;
+        $withdrawableFromEarnings = $this->getWithdrawableFromEarnings($user);
 
         if ($amount < self::MINIMUM_WITHDRAWAL) {
             $errors['amount'] = "Minimum withdrawal is $" . self::MINIMUM_WITHDRAWAL;
@@ -37,12 +38,32 @@ class WithdrawalService
             $errors['balance'] = "Insufficient balance. Available: $" . $wallet->balance;
         }
 
+        if ($amount > $withdrawableFromEarnings) {
+            $errors['earned'] = "Insufficient earned balance. Withdrawable from earnings: $" . number_format($withdrawableFromEarnings, 2);
+        }
+
         // Check if suspicious funds
         if ($this->containsSuspiciousFunds($user, $amount)) {
             $errors['suspicious'] = "Cannot withdraw from suspicious balance";
         }
 
         return $errors;
+    }
+
+    /**
+     * Withdrawable amount based on earned funds only.
+     */
+    public function getWithdrawableFromEarnings(User $user): float
+    {
+        $totalEarned = (float) $user->earnings()
+            ->whereIn('type', ['profit_share', 'referral', 'bonus'])
+            ->sum('amount');
+
+        $consumedByWithdrawals = (float) $user->withdrawals()
+            ->whereIn('status', ['pending_otp', 'pending_approval', 'approved'])
+            ->sum('requested_amount');
+
+        return max(0, $totalEarned - $consumedByWithdrawals);
     }
 
     /**
@@ -90,6 +111,8 @@ class WithdrawalService
         $netAmount = $amount - $deduction;
 
         return DB::transaction(function () use ($user, $amount, $deduction, $netAmount, $walletAddress) {
+            $this->walletService->addPendingBalance($user, $amount);
+
             // Create withdrawal record with pending_otp status
             return Withdrawal::create([
                 'user_id' => $user->id,
@@ -120,7 +143,7 @@ class WithdrawalService
             // Deduct from wallet immediately
             $this->walletService->deductBalance(
                 $withdrawal->user,
-                $withdrawal->requested_amount,
+                (float) $withdrawal->requested_amount,
                 'withdrawal_initiated',
                 $withdrawal->id
             );
@@ -142,6 +165,8 @@ class WithdrawalService
         }
 
         DB::transaction(function () use ($withdrawal, $walletAddress) {
+            $this->walletService->releasePendingBalance($withdrawal->user, (float) $withdrawal->requested_amount);
+
             $withdrawal->update([
                 'status' => 'approved',
                 'wallet_address' => $walletAddress,
@@ -163,12 +188,14 @@ class WithdrawalService
         }
 
         DB::transaction(function () use ($withdrawal, $reason) {
+            $this->walletService->releasePendingBalance($withdrawal->user, (float) $withdrawal->requested_amount);
+
             // If funds were already deducted, restore them
             if ($withdrawal->status === 'pending_approval') {
                 $withdrawalService = app(WithdrawalService::class);
                 $withdrawalService->walletService->addBalance(
                     $withdrawal->user,
-                    $withdrawal->requested_amount,
+                    (float) $withdrawal->requested_amount,
                     'refund',
                     $withdrawal->id,
                     ['original_withdrawal_id' => $withdrawal->id]

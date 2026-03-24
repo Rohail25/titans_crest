@@ -24,13 +24,17 @@ class DepositService
      */
     public function createDeposit(User $user, float $amount, string $txHash = null): Deposit
     {
-        return Deposit::create([
+        $deposit = Deposit::create([
             'user_id' => $user->id,
             'amount' => $amount,
             'tx_hash' => $txHash,
             'status' => 'pending',
             'network' => 'BNB',
         ]);
+
+        $this->walletService->addPendingBalance($user, $amount);
+
+        return $deposit;
     }
 
     /**
@@ -45,10 +49,12 @@ class DepositService
                 throw new \Exception('Deposit is not in pending status');
             }
 
+            $this->walletService->releasePendingBalance($deposit->user, (float) $deposit->amount);
+
             // Credit wallet
             $this->walletService->addBalance(
                 $deposit->user,
-                $deposit->amount,
+                (float) $deposit->amount,
                 'deposit',
                 $deposit->id,
                 ['tx_hash' => $deposit->tx_hash]
@@ -76,6 +82,8 @@ class DepositService
         if ($deposit->status !== 'pending') {
             throw new \Exception('Only pending deposits can be rejected');
         }
+
+        $this->walletService->releasePendingBalance($deposit->user, (float) $deposit->amount);
 
         $deposit->update([
             'status' => 'rejected',
