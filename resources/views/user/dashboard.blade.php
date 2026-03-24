@@ -404,6 +404,7 @@
 (function initProfitCountdown() {
     const targetNode = document.getElementById('nextProfitTime');
     const countdownNode = document.getElementById('profitCountdown');
+    const cycleMinutes = {{ $profitCycleMinutes ?? 15 }};
 
     if (!targetNode || !countdownNode) {
         return;
@@ -452,11 +453,11 @@
         return;
     }
 
-    // If the date is in the past, calculate fallback time (15 minutes from now)
+    // If the date is in the past, calculate fallback time (configured minutes from now)
     const now = new Date();
     if (targetDate.getTime() < now.getTime()) {
-        // Calculate fallback: add 15 minutes to current time
-        const fallbackTime = new Date(now.getTime() + 15 * 60 * 1000);
+        // Calculate fallback: add configured minutes to current time
+        const fallbackTime = new Date(now.getTime() + cycleMinutes * 60 * 1000);
         targetDate = fallbackTime;
         console.info('Next profit time was in the past. Using fallback time:', fallbackTime.toISOString());
     }
@@ -464,8 +465,8 @@
     function refreshProfitTime() {
         if (refreshAttempts >= maxRefreshAttempts) {
             console.warn('Max refresh attempts reached. Using calculated fallback time.');
-            // Use fallback: 15 minutes from now
-            targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+            // Use fallback: configured minutes from now
+            targetDate = new Date(new Date().getTime() + cycleMinutes * 60 * 1000);
             localStorage.setItem(storageKey, targetDate.toISOString());
             tick();
             return;
@@ -525,7 +526,7 @@
                 setTimeout(refreshProfitTime, delayMs);
             } else {
                 // Use fallback after max attempts
-                targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+                targetDate = new Date(new Date().getTime() + cycleMinutes * 60 * 1000);
                 localStorage.setItem(storageKey, targetDate.toISOString());
                 tick();
             }

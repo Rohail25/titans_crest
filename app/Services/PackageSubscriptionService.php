@@ -71,6 +71,8 @@ class PackageSubscriptionService
 
     private function getNextProfitTime(): \Carbon\Carbon
     {
-        return now()->addHours(8);
+        // Set the initial next profit time based on the configured cycle minutes
+        $cycleMinutes = (int) \App\Models\Setting::get('profit_distribution_cycle_minutes', 15);
+        return now()->addMinutes($cycleMinutes);
     }
 }

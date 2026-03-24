@@ -42,8 +42,14 @@ class ProfitService
     /**
      * Distribute cycle profit to user (called by scheduler every 15 minutes)
      */
-    public function distributeDailyProfit(User $user): void
+    public function distributeDailyProfit(User $user): array
     {
+        $stats = [
+            'checked' => 0,
+            'distributed' => 0,
+            'completed' => 0,
+        ];
+
         /** @var \Illuminate\Database\Eloquent\Collection<int, UserPackage> $activePackages */
         $activePackages = $user->userPackages()
             ->where('is_active', true)
@@ -52,8 +58,18 @@ class ProfitService
             ->get();
 
         foreach ($activePackages as $userPackage) {
+            $stats['checked']++;
+
             try {
-                $this->distributePackageCycleProfit($user, $userPackage);
+                $result = $this->distributePackageCycleProfit($user, $userPackage);
+
+                if ($result['distributed']) {
+                    $stats['distributed']++;
+                }
+
+                if ($result['completed']) {
+                    $stats['completed']++;
+                }
             } catch (\Throwable $exception) {
                 Log::warning('Package cycle profit skipped', [
                     'user_id' => $user->id,
@@ -62,13 +78,23 @@ class ProfitService
                 ]);
             }
         }
+
+        return $stats;
     }
 
     /**
      * Distribute profit to multiple users (batch for scheduler)
      */
-    public function distributeProfitBatch(array $userIds = []): void
+    public function distributeProfitBatch(array $userIds = []): array
     {
+        $stats = [
+            'users' => 0,
+            'checked_packages' => 0,
+            'distributed_packages' => 0,
+            'completed_packages' => 0,
+            'errors' => 0,
+        ];
+
         $query = User::query();
 
         if (!empty($userIds)) {
@@ -84,13 +110,20 @@ class ProfitService
             ->get();
 
         foreach ($users as $user) {
+            $stats['users']++;
+
             try {
-                $this->distributeDailyProfit($user);
+                $userStats = $this->distributeDailyProfit($user);
+                $stats['checked_packages'] += $userStats['checked'];
+                $stats['distributed_packages'] += $userStats['distributed'];
+                $stats['completed_packages'] += $userStats['completed'];
             } catch (\Exception $e) {
-                // Log error but continue with next user
+                $stats['errors']++;
                 Log::error("Profit distribution failed for user {$user->id}: " . $e->getMessage());
             }
         }
+
+        return $stats;
     }
 
     /**
@@ -170,7 +203,8 @@ class ProfitService
 
     public function getNextCycleTime(?\Carbon\Carbon $from = null): \Carbon\Carbon
     {
-        return ($from?->copy() ?? now())->addMinutes(15);
+        $cycleMinutes = (int) \App\Models\Setting::get('profit_distribution_cycle_minutes', 15);
+        return ($from?->copy() ?? now())->addMinutes($cycleMinutes);
     }
 
     private function calculateDailyProfitForPackage(UserPackage $userPackage): float
@@ -189,20 +223,24 @@ class ProfitService
 
     private function calculateCycleProfitForPackage(UserPackage $userPackage): float
     {
-        // Each 15-minute cycle gets 1/96 of daily profit
-        // Daily profit is divided into 96 cycles (24 hours / 15 minutes per cycle)
-        return $this->calculateDailyProfitForPackage($userPackage) / 96;
+        // Daily profit is divided into 3 cycles per day
+        return $this->calculateDailyProfitForPackage($userPackage) / 3;
     }
 
-    private function distributePackageCycleProfit(User $user, UserPackage $userPackage): void
+    private function distributePackageCycleProfit(User $user, UserPackage $userPackage): array
     {
+        $result = [
+            'distributed' => false,
+            'completed' => false,
+        ];
+
         // Only active, non-completed packages can generate profit
         if (!$userPackage->is_active || $userPackage->package_status !== 'active') {
-            return;
+            return $result;
         }
 
         if ($userPackage->next_profit_time && now()->lt($userPackage->next_profit_time)) {
-            return;
+            return $result;
         }
 
         $this->walletService->refreshUserPackageCap($user, $userPackage);
@@ -210,12 +248,13 @@ class ProfitService
 
         if ((float) $userPackage->total_earned >= (float) $userPackage->earning_cap) {
             $this->walletService->completeUserPackage($userPackage);
-            return;
+            $result['completed'] = true;
+            return $result;
         }
 
         $cycleProfit = $this->calculateCycleProfitForPackage($userPackage);
         if ($cycleProfit <= 0) {
-            return;
+            return $result;
         }
 
         DB::transaction(function () use ($user, $userPackage, $cycleProfit) {
@@ -239,5 +278,9 @@ class ProfitService
 
             $this->profitSharingService->shareProfitWithUplines($user, (float) $credited->amount);
         });
+
+        $result['distributed'] = true;
+
+        return $result;
     }
 }

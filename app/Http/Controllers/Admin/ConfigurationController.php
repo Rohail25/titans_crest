@@ -40,6 +40,7 @@ class ConfigurationController extends Controller
             'otp_expiry_minutes' => 'required|integer|min:1',
             'min_withdrawal_amount' => 'required|numeric|min:0',
             'max_daily_profit_multiplier' => 'required|numeric|min:0.1|max:10',
+            'profit_distribution_cycle_minutes' => 'required|integer|min:1|max:1440',
         ]);
 
         $settings = [
@@ -52,6 +53,7 @@ class ConfigurationController extends Controller
             'otp_expiry_minutes' => $request->otp_expiry_minutes,
             'min_withdrawal_amount' => $request->min_withdrawal_amount,
             'max_daily_profit_multiplier' => $request->max_daily_profit_multiplier,
+            'profit_distribution_cycle_minutes' => $request->profit_distribution_cycle_minutes,
         ];
 
         AdminConfigService::updateSettings($settings, Auth::user());

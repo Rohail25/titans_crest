@@ -52,9 +52,10 @@ class DashboardController extends Controller
                 // Parse the ISO string to check if it's in the past
                 $nextTime = \Carbon\Carbon::parse($package['next_profit_time']);
                 if ($nextTime->lt(now())) {
-                    // If overdue, calculate next cycle from last_profit_time + 15 minutes
+                    // If overdue, calculate next cycle from current time + configured cycle minutes
                     // This prevents timer from showing 00:00:00
-                    $calculatedTime = now()->addMinutes(15);
+                    $cycleMinutes = (int) \App\Models\Setting::get('profit_distribution_cycle_minutes', 15);
+                    $calculatedTime = now()->addMinutes($cycleMinutes);
                     return $calculatedTime->toIso8601String();
                 }
                 
@@ -75,6 +76,8 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $cycleMinutes = (int) \App\Models\Setting::get('profit_distribution_cycle_minutes', 15);
+
         return view('user.dashboard', [
             'wallet' => $walletSummary,
             'profit' => $profitSummary,
@@ -87,6 +90,7 @@ class DashboardController extends Controller
             'recentEarnings' => $recentEarnings,
             'latestCompletedPackage' => $latestCompletedPackage,
             'nextProfitTime' => $nextProfitTime,
+            'profitCycleMinutes' => $cycleMinutes,
         ]);
     }
 }

@@ -81,6 +81,18 @@
                         <br>Example: $1000 package with 0.1% daily rate and 2x multiplier = Max $2 daily profit
                     </small> --}}
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Profit Distribution Cycle (minutes)</label>
+                    <div class="input-group">
+                        <input type="number" name="profit_distribution_cycle_minutes" step="1" min="1" max="1440" class="form-control" value="{{ $settings->firstWhere('key', 'profit_distribution_cycle_minutes')->value ?? '15' }}" required>
+                        <span class="input-group-text" style="background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: white;">minutes</span>
+                    </div>
+                    <small class="form-text text-white d-block mt-2">
+                        <i class="fas fa-info-circle"></i> How often profits are distributed. Daily profit is divided by 3 cycles.
+                        <br>Example: 15 minutes = 3 cycles per hour, 96 cycles per day
+                    </small>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Settings

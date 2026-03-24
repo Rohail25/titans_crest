@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="col-lg-4">
+    {{-- <div class="col-lg-4">
         <div class="stat-card">
             <div class="stat-card-icon">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -32,7 +32,7 @@
             <div class="stat-card-label">Suspicious Balance</div>
             <div class="stat-card-value text-warning">${{ number_format($wallet['suspicious_balance'], 2) }}</div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <div class="row">
