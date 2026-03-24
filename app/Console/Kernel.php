@@ -13,19 +13,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Check due profit distributions continuously; each package pays every 15 minutes based on next_profit_time.
-        $schedule->command('profits:distribute')
-            ->everyMinute()
-            ->timezone('UTC')
-            ->withoutOverlapping()
-            ->onFailure(function () {
-                // Log failure
-                Log::error('Profit distribution command failed');
-            })
-            ->onSuccess(function () {
-                // Log success
-                Log::info('Profit distribution cycle completed successfully');
-            });
+        // Schedule is now handled in bootstrap/app.php
+    }
 
         // Optional: Run OTP cleanup daily (expire old OTPs)
         $schedule->command('tinker')
@@ -44,6 +33,11 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
+
+        // Command alias to support old name from user request
+        \Artisan::command('profit:distribute', function () {
+            $this->call('profits:distribute');
+        });
 
         require base_path('routes/console.php');
     }

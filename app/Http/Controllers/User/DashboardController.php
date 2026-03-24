@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
+use App\Models\Setting;
 use App\Services\WalletService;
 use App\Services\ProfitService;
 use App\Services\DepositService;
@@ -92,5 +93,27 @@ class DashboardController extends Controller
             'nextProfitTime' => $nextProfitTime,
             'profitCycleMinutes' => $cycleMinutes,
         ]);
+    }
+
+    public function triggerProfitDistribution()
+    {
+        try {
+            $user = Auth::user();
+
+            $stats = $this->profitService->distributeDailyProfit($user);
+            $cycleMinutes = (int) Setting::get('profit_distribution_cycle_minutes', 15);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Profit distribution executed.',
+                'stats' => $stats,
+                'cycle_minutes' => $cycleMinutes,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Profit distribution failed: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

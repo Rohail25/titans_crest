@@ -507,7 +507,7 @@
                 } else {
                     // Invalid new time, use fallback
                     console.warn('Refreshed time is invalid or in past. Using fallback.');
-                    targetDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+                    targetDate = new Date(new Date().getTime() + cycleMinutes * 60 * 1000);
                     localStorage.setItem(storageKey, targetDate.toISOString());
                     tick();
                 }
@@ -533,6 +533,30 @@
         });
     }
 
+    async function triggerProfitDistribution() {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const response = await fetch('{{ route("user.profit.distribute.now") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            });
+
+            if (!response.ok) {
+                console.warn('Profit distribution trigger failed with status', response.status);
+                return;
+            }
+
+            const result = await response.json();
+            console.info('Profit distribution triggered:', result);
+        } catch (error) {
+            console.error('Error triggering profit distribution:', error);
+        }
+    }
+
     function tick() {
         if (!targetDate) {
             countdownNode.textContent = '-- : -- : --';
@@ -543,14 +567,22 @@
         const distance = targetDate.getTime() - now.getTime();
 
         if (distance <= 0) {
-            // Timer expired - show 00:00:00 temporarily, then refresh
+            // Timer expired - show 00:00:00 temporarily, then trigger profit distribution + refresh
             countdownNode.textContent = '00 : 00 : 00';
             
-            // Try to refresh the profit time after a short delay
+            // Try to distribute profit now (in case schedule isn't running) and refresh time
             if (!hasTriedRefresh) {
                 hasTriedRefresh = true;
-                console.info('Countdown reached zero. Refreshing profit time...');
-                setTimeout(refreshProfitTime, 1000);
+                console.info('Countdown reached zero. Triggering profit distribution and refreshing profit time...');
+
+                triggerProfitDistribution()
+                    .then(() => {
+                        // Give backend just enough time to update DB before re-fetching new next_profit_time
+                        setTimeout(refreshProfitTime, 1000);
+                    })
+                    .catch(() => {
+                        setTimeout(refreshProfitTime, 1000);
+                    });
             }
             return;
         }

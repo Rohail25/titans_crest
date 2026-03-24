@@ -110,6 +110,9 @@ Route::middleware(['auth'])->prefix('dashboard')->name('user.')->group(function 
 
     // Package Subscription
     Route::post('packages/{package}/subscribe', [PackageController::class, 'subscribe'])->name('package.subscribe');
+
+    // Trigger profit distribution for current user (called by front-end countdown at 00:00)
+    Route::post('profit-distribute-now', [DashboardController::class, 'triggerProfitDistribution'])->name('profit.distribute.now');
 });
 
 // Admin Routes (Authenticated & Admin Role)
