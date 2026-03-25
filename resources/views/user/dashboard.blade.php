@@ -388,7 +388,7 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Type</th>
+                                {{-- <th>Type</th> --}}
                                 <th>Amount</th>
                                 <th>Status</th>
                             </tr>
@@ -397,11 +397,11 @@
                             @forelse($recentEarnings as $earning)
                                 <tr>
                                     <td>{{ $earning->created_at->format('M d, Y h:i A') }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <span class="badge badge-{{ $earning->type == 'deposit' ? 'info' : ($earning->type == 'profit_share' ? 'success' : 'warning') }}">
                                             {{ ucfirst(str_replace('_', ' ', $earning->type)) }}
                                         </span>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <strong class="text-success">+${{ number_format($earning->amount, 2) }}</strong>
                                     </td>
