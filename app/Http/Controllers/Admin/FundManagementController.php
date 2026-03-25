@@ -36,7 +36,7 @@ class FundManagementController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:0.01',
-            'reason' => 'required|string|min:10',
+            'reason' => 'required|string|min:5',
         ]);
 
         $user = \App\Models\User::findOrFail($request->user_id);
@@ -51,7 +51,7 @@ class FundManagementController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:0.01',
-            'reason' => 'required|string|min:10',
+            'reason' => 'required|string',
         ]);
 
         $user = \App\Models\User::findOrFail($request->user_id);
