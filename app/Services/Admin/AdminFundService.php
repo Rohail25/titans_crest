@@ -2,7 +2,9 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Deposit;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\DB;
 
@@ -11,16 +13,27 @@ class AdminFundService
     public static function addFundsToWallet(User $user, User $admin, float $amount, string $reason): void
     {
         DB::transaction(function () use ($user, $admin, $amount, $reason) {
-            $walletService = new WalletService();
-            $walletService->addBalance($user, $amount, 'admin_fund_add', null, ['reason' => $reason]);
-            
+            $deposit = Deposit::create([
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'status' => 'confirmed',
+                'network' => 'ADMIN',
+                'metadata' => [
+                    'source' => 'admin_fund_add',
+                    'admin_id' => $admin->id,
+                    'reason' => $reason,
+                ],
+            ]);
+            $walletDeposit = Wallet::where('user_id', $user->id)->first();
+            $walletDeposit->total_deposit += $amount;
+            $walletDeposit->save();
             AuditLogService::log(
                 $admin,
                 'add_funds',
-                'Wallet',
-                $user->id,
+                'Deposit',
+                $deposit->id,
                 null,
-                ['amount' => $amount, 'reason' => $reason],
+                ['user_id' => $user->id, 'amount' => $amount, 'reason' => $reason],
                 $reason
             );
         });
@@ -35,7 +48,7 @@ class AdminFundService
             }
 
             $walletService = new WalletService();
-            $walletService->deductBalance($user, $amount, 'admin_fund_deduct', null, $reason);
+            $walletService->deductBalance($user, $amount, 'admin_fund_deduct: ' . $reason, null);
             
             AuditLogService::log(
                 $admin,

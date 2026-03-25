@@ -144,6 +144,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('deduct', [FundManagementController::class, 'deductFunds'])->name('deduct');
         Route::post('convert', [FundManagementController::class, 'convertSuspicious'])->name('convert');
         Route::get('ledger/{userId}', [FundManagementController::class, 'showLedger'])->name('ledger');
+        Route::get('deposits', [FundManagementController::class, 'depositsList'])->name('deposits');
     });
     
     // Settings & Configuration

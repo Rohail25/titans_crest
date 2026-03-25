@@ -611,9 +611,14 @@
                 <span>Users</span>
             </a>
             <a href="{{ route('admin.fund-management.index') }}"
-                class="{{ request()->routeIs('admin.fund-management.*') ? 'active' : '' }}">
+                class="{{ request()->routeIs('admin.fund-management.*') && !request()->routeIs('admin.fund-management.deposits') ? 'active' : '' }}">
                 <i class="fas fa-wallet"></i>
                 <span>Fund Mgmt</span>
+            </a>
+            <a href="{{ route('admin.fund-management.deposits') }}"
+                class="{{ request()->routeIs('admin.fund-management.deposits') ? 'active' : '' }}">
+                <i class="fas fa-wallet"></i>
+                <span>All Deposits</span>
             </a>
 
             <div class="sidebar-title">System</div>

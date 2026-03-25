@@ -109,7 +109,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Status</th>
-                    <th>Balance</th>
+                    <th>Total Deposit</th>
                     <th>Total Earned</th>
                     <th>Joined</th>
                     <th>Action</th>
@@ -125,7 +125,7 @@
                                 {{ ucfirst($user->status) }}
                             </span>
                         </td>
-                        <td>${{ number_format($user->wallet->balance ?? 0, 2) }}</td>
+                        <td>${{ number_format($user->deposits->sum('amount') ?? 0, 2) }}</td>
                         <td>${{ number_format($user->wallet->total_earned ?? 0, 2) }}</td>
                         <td><small class="text-muted">{{ $user->created_at->format('M d, Y') }}</small></td>
                         <td>

@@ -6,6 +6,9 @@
 <div class="page-title">
     <i class="fas fa-wallet"></i>
     Fund Management
+    <a href="{{ route('admin.fund-management.deposits') }}" class="btn btn-info btn-sm float-end">
+        <i class="fas fa-list"></i> View All Deposits
+    </a>
 </div>
 
 <!-- Fund Stats -->
@@ -57,7 +60,7 @@
                         <select name="user_id" class="form-select" required>
                             <option value="">Select User...</option>
                             @foreach(\App\Models\User::where('role', 'user')->orderBy('name')->get() as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                <option value="{{ $u->id }}" class="text-black">{{ $u->name }} ({{ $u->email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -91,7 +94,7 @@
                         <select name="user_id" class="form-select" required>
                             <option value="">Select User...</option>
                             @foreach(\App\Models\User::where('role', 'user')->orderBy('name')->get() as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                <option value="{{ $u->id }}" class="text-black">{{ $u->name }} ({{ $u->email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -125,7 +128,7 @@
                         <select name="user_id" class="form-select" required>
                             <option value="">Select User...</option>
                             @foreach(\App\Models\User::where('role', 'user')->orderBy('name')->get() as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                                <option value="{{ $u->id }}" class="text-black">{{ $u->name }} ({{ $u->email }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -146,7 +149,7 @@
     </div>
 
     <!-- View Ledger -->
-    <div class="col-lg-6 mb-4">
+    {{-- <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header">View User Ledger</div>
             <div class="card-body">
@@ -163,6 +166,6 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 @endsection
