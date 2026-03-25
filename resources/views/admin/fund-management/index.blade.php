@@ -6,20 +6,17 @@
 <div class="page-title">
     <i class="fas fa-wallet"></i>
     Fund Management
-    <a href="{{ route('admin.fund-management.deposits') }}" class="btn btn-info btn-sm float-end">
-        <i class="fas fa-list"></i> View All Deposits
-    </a>
 </div>
 
 <!-- Fund Stats -->
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="kpi-card">
             <div class="kpi-label">Total Balance</div>
             <div class="kpi-value">${{ number_format($stats['total_balance'], 2) }}</div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="kpi-card">
             <div class="kpi-label">Pending</div>
             <div class="kpi-value">${{ number_format($stats['total_pending'], 2) }}</div>
