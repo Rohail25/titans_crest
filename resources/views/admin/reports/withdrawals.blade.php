@@ -142,12 +142,12 @@
                                 <i class="fas fa-{{ $statusIcon }}"></i> {{ $statusLabel }}
                             </span>
                         </td>
-                        <td>{{ $withdrawal->created_at->format('M d, Y H:i') }}</td>
+                        <td>{{ optional($withdrawal->created_at)->format('M d, Y H:i') ?? 'N/A' }}</td>
                         <td>
                             @if($withdrawal->approved_at)
-                                {{ $withdrawal->approved_at->format('M d, Y H:i') }}
+                                {{ optional($withdrawal->approved_at)->format('M d, Y H:i') ?? 'N/A' }}
                             @elseif($withdrawal->rejected_at)
-                                {{ $withdrawal->rejected_at->format('M d, Y H:i') }}
+                                {{ optional($withdrawal->rejected_at)->format('M d, Y H:i') ?? 'N/A' }}
                             @else
                                 -
                             @endif

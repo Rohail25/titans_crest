@@ -28,7 +28,7 @@ class WithdrawalController extends Controller
     {
         $withdrawal = AdminWithdrawalService::getWithdrawalById($id);
         $recentWithdrawals = $withdrawal->user->withdrawals()
-            ->latest()
+            ->latest('id')
             ->take(5)
             ->get();
 

@@ -98,7 +98,7 @@
                     <tr>
                         <td>${{ number_format($w->net_amount, 2) }}</td>
                         <td><span class="badge badge-{{ $w->status === 'approved' ? 'success' : ($w->status === 'rejected' ? 'danger' : 'warning') }}">{{ ucfirst(str_replace('_', ' ', $w->status)) }}</span></td>
-                        <td>{{ $w->created_at->format('M d, Y H:i') }}</td>
+                        <td>{{ optional($w->created_at)->format('M d, Y H:i') ?? 'N/A' }}</td>
                     </tr>
                 @empty
                     <tr>

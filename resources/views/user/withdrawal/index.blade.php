@@ -170,7 +170,7 @@
                                     <td>
                                         @switch($withdrawal['status'])
                                             @case('pending_otp')
-                                                <span class="badge badge-info">Awaiting OTP</span>
+                                                <span class="badge badge-info text-black">Awaiting OTP</span>
                                                 @break
                                             @case('pending_approval')
                                                 <span class="badge badge-warning">Pending Approval</span>
@@ -182,12 +182,12 @@
                                                 <span class="badge badge-danger">Rejected</span>
                                                 @break
                                             @default
-                                                <span class="badge badge-secondary">{{ ucfirst($withdrawal['status']) }}</span>
+                                                <span class="badge badge-secondary text-black">{{ ucfirst($withdrawal['status']) }}</span>
                                         @endswitch
                                     </td>
                                     <td>
                                         @if($withdrawal['status'] === 'pending_otp')
-                                            <button class="btn btn-sm btn-outline-primary" onclick="editWithdrawal({{ $withdrawal['id'] }})">
+                                            <button class="btn btn-sm btn-outline-primary " onclick="editWithdrawal({{ $withdrawal['id'] }})">
                                                 Cancel
                                             </button>
                                         @endif
@@ -319,13 +319,20 @@ function startOtpTimer() {
 function editWithdrawal(withdrawalId) {
     if (confirm('Are you sure you want to cancel this withdrawal?')) {
         const form = document.createElement('form');
-        form.method = 'DELETE';
-        form.action = '/dashboard/withdrawals/' + withdrawalId + '/cancel';
-        
-        const token = document.querySelector('input[name="_token"]');
-        if (token) {
-            form.appendChild(token.cloneNode());
-        }
+        form.method = 'POST';
+        form.action = '{{ url('/dashboard/withdrawals') }}/' + withdrawalId + '/cancel';
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = '{{ csrf_token() }}';
+        form.appendChild(csrfInput);
+
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        form.appendChild(methodInput);
         
         document.body.appendChild(form);
         form.submit();
