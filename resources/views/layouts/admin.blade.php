@@ -627,6 +627,11 @@
                 <i class="fas fa-file-alt"></i>
                 <span>Reports</span>
             </a>
+            <a href="{{ route('admin.monthly-performance.index') }}"
+                class="{{ request()->routeIs('admin.monthly-performance.*') ? 'active' : '' }}">
+                <i class="fas fa-medal"></i>
+                <span>Monthly Performance</span>
+            </a>
             <a href="{{ route('admin.settings.index') }}"
                 class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <i class="fas fa-cog"></i>

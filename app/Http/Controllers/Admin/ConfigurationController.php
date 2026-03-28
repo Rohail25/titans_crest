@@ -22,6 +22,10 @@ class ConfigurationController extends Controller
             AdminConfigService::setSetting('whatsapp_number', '15551234567', 'WhatsApp Support Number (International Format)');
         }
 
+        if (AdminConfigService::getSetting('monthly_performance_min_registration_days') === null) {
+            AdminConfigService::setSetting('monthly_performance_min_registration_days', '30', 'Minimum user account age (days) before monthly performance evaluation');
+        }
+
         $settings = AdminConfigService::getAll();
         $packages = AdminConfigService::getFilteredPackageSettings($validated);
 
@@ -41,6 +45,7 @@ class ConfigurationController extends Controller
             'min_withdrawal_amount' => 'required|numeric|min:0',
             'max_daily_profit_multiplier' => 'required|numeric|min:0.1|max:10',
             'profit_distribution_cycle_minutes' => 'required|integer|min:1|max:1440',
+            'monthly_performance_min_registration_days' => 'required|integer|min:0|max:3650',
         ]);
 
         $settings = [
@@ -54,6 +59,7 @@ class ConfigurationController extends Controller
             'min_withdrawal_amount' => $request->min_withdrawal_amount,
             'max_daily_profit_multiplier' => $request->max_daily_profit_multiplier,
             'profit_distribution_cycle_minutes' => $request->profit_distribution_cycle_minutes,
+            'monthly_performance_min_registration_days' => $request->monthly_performance_min_registration_days,
         ];
 
         AdminConfigService::updateSettings($settings, Auth::user());

@@ -32,6 +32,16 @@ return Application::configure(basePath: dirname(__DIR__))
             ->onSuccess(function () {
                 \Illuminate\Support\Facades\Log::info('Leadership performance distribution cycle completed successfully');
             });
+
+        // Run after month closes: evaluates previous calendar month and pays qualified leaders.
+        $schedule->command('monthly-performance:distribute')
+            ->monthlyOn(1, '00:00')
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Monthly performance excellence distribution command failed');
+            })
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Monthly performance excellence distribution cycle completed successfully');
+            });
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([

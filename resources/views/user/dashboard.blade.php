@@ -35,7 +35,7 @@
             <div class="stat-card-label">Available Balance</div>
             <div class="stat-card-value">${{ number_format($wallet['available_earnings_balance'] ?? 0, 2) }}</div>
             <div class="stat-card-change">
-                <i class="fas fa-arrow-up"></i> ROI + commission only
+                <i class="fas fa-arrow-up"></i> ROI + referral + leadership + monthly bonus
             </div>
         </div>
     </div>
@@ -87,11 +87,9 @@
             <div class="stat-card-icon">
                 <i class="fas fa-money-bill-wave"></i>
             </div>
-            <div class="stat-card-label">Total ROI Earned</div>
+            <div class="stat-card-label">Total Earned</div>
             <div class="stat-card-value">${{ number_format($wallet['total_earned'], 2) }}</div>
-            <div class="stat-card-change positive">
-                ${{ number_format($profit['daily_profit'], 2) }} / per day
-            </div>
+            
         </div>
     </div>
     {{-- total referral commission --}}
@@ -123,6 +121,77 @@
                     Last paid: {{ \Carbon\Carbon::parse($leadershipPerformance['last_daily_bonus_paid_at'])->format('M d, Y H:i') }}
                 </small>
             @endif
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mt-3">
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+            <div class="stat-card-label">Monthly Performance</div>
+            <div class="stat-card-value">${{ number_format($monthlyPerformance['total_earned'] ?? 0, 2) }}</div>
+            <div class="stat-card-change positive">
+                Months: {{ number_format($monthlyPerformance['total_months_processed'] ?? 0) }} | Qualified: {{ number_format($monthlyPerformance['qualified_months'] ?? 0) }}
+            </div>
+            @if(!empty($monthlyPerformance['last_period']))
+                <small class="text-muted d-block mt-1">
+                    Last period: {{ \Carbon\Carbon::parse($monthlyPerformance['last_period']['period_start'])->format('M Y') }} | Volume: ${{ number_format($monthlyPerformance['last_total_volume'] ?? 0, 2) }}
+                </small>
+            @endif
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0"><i class="fas fa-medal"></i> Monthly Performance History</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Total Volume</th>
+                        <th>Qualified Legs</th>
+                        <th>Tier Target</th>
+                        <th>Reward</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($monthlyPerformanceRecords as $record)
+                        <tr>
+                            <td>
+                                {{ optional($record->period_start)->format('M d, Y') }} -
+                                {{ optional($record->period_end)->format('M d, Y') }}
+                            </td>
+                            <td>${{ number_format((float) $record->total_volume, 2) }}</td>
+                            <td>{{ number_format((int) $record->qualified_legs) }}</td>
+                            <td>
+                                @if(!is_null($record->qualifying_tier_volume))
+                                    ${{ number_format((float) $record->qualifying_tier_volume, 2) }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>${{ number_format((float) $record->qualifying_tier_reward, 2) }}</td>
+                            <td>
+                                <span class="badge bg-{{ $record->status === 'paid' ? 'success' : ($record->status === 'not_qualified' ? 'warning text-dark' : 'secondary') }}">
+                                    {{ ucfirst(str_replace('_', ' ', $record->status)) }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No monthly performance records available yet.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

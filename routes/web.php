@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ReferralCommissionController;
 use App\Http\Controllers\Admin\ProfitSharingController;
+use App\Http\Controllers\Admin\MonthlyPerformanceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -168,6 +169,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('withdrawals', [ReportController::class, 'withdrawals'])->name('withdrawals');
         Route::get('earnings', [ReportController::class, 'earnings'])->name('earnings');
         Route::get('daily', [ReportController::class, 'daily'])->name('daily');
+    });
+
+    // Monthly Performance Excellence (user-wise)
+    Route::prefix('monthly-performance')->name('monthly-performance.')->group(function () {
+        Route::get('/', [MonthlyPerformanceController::class, 'index'])->name('index');
+        Route::post('{reward}/confirm', [MonthlyPerformanceController::class, 'confirm'])->name('confirm');
+        Route::post('{reward}/reject', [MonthlyPerformanceController::class, 'reject'])->name('reject');
     });
     
     // Email Logs

@@ -93,6 +93,17 @@
                         <br>Example: 15 minutes = 3 cycles per hour, 96 cycles per day
                     </small>
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Monthly Evaluation After Registration (days)</label>
+                    <div class="input-group">
+                        <input type="number" name="monthly_performance_min_registration_days" step="1" min="0" max="3650" class="form-control" value="{{ $settings->firstWhere('key', 'monthly_performance_min_registration_days')->value ?? '30' }}" required>
+                        <span class="input-group-text" style="background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.2); color: white;">days</span>
+                    </div>
+                    <small class="form-text text-white d-block mt-2">
+                        Monthly performance considers leaders only after this many days since registration.
+                    </small>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Settings

@@ -336,7 +336,7 @@ class WalletService
             ->last();
 
         $actualTotalEarned = (float) $user->earnings()
-            ->where('type', 'profit_share')
+            ->whereIn('type', ['profit_share', 'referral', 'bonus'])
             ->sum('amount');
 
         $totalReferralCommission = (float) $user->earnings()
@@ -344,7 +344,7 @@ class WalletService
             ->sum('amount');
 
         $availableEarningsBalance = (float) $user->earnings()
-            ->whereIn('type', ['profit_share', 'referral', 'withdrawal', 'refund'])
+            ->whereIn('type', ['profit_share', 'referral', 'bonus', 'withdrawal', 'refund'])
             ->sum('amount');
 
         $expectedPendingBalance = (float) Deposit::query()
