@@ -12,6 +12,7 @@ use App\Services\ProfitService;
 use App\Services\DepositService;
 use App\Services\WithdrawalService;
 use App\Services\ReferralService;
+use App\Services\LeadershipPerformanceService;
 
 class DashboardController extends Controller
 {
@@ -21,6 +22,7 @@ class DashboardController extends Controller
         protected DepositService $depositService,
         protected WithdrawalService $withdrawalService,
         protected ReferralService $referralService,
+        protected LeadershipPerformanceService $leadershipPerformanceService,
     ) {}
 
     public function index(): View
@@ -34,6 +36,7 @@ class DashboardController extends Controller
         $withdrawalStats = $this->withdrawalService->getWithdrawalStats($user);
         $referralStats = $this->referralService->getReferralStats($user);
         $teamPerformance = $this->referralService->getDashboardTeamPerformance($user);
+        $leadershipPerformance = $this->leadershipPerformanceService->getUserLeadershipPerformanceSummary($user);
         $availablePackages = Package::where('is_active', true)
             ->orderBy('price')
             ->get(['id', 'name', 'price', 'daily_profit_rate', 'duration_days']);
@@ -86,6 +89,7 @@ class DashboardController extends Controller
             'deposits' => $depositStats,
             'withdrawals' => $withdrawalStats,
             'referrals' => $referralStats,
+            'leadershipPerformance' => $leadershipPerformance,
             'teamPerformance' => $teamPerformance,
             'availablePackages' => $availablePackages,
             'recentEarnings' => $recentEarnings,

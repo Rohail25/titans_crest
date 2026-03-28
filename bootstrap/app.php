@@ -17,11 +17,20 @@ return Application::configure(basePath: dirname(__DIR__))
             ->everyMinute()
             ->onFailure(function () {
                 // Log failure
-                Log::error('Profit distribution command failed');
+                \Illuminate\Support\Facades\Log::error('Profit distribution command failed');
             })
             ->onSuccess(function () {
                 // Log success
-                Log::info('Profit distribution cycle completed successfully');
+                \Illuminate\Support\Facades\Log::info('Profit distribution cycle completed successfully');
+            });
+
+        $schedule->command('leadership-performance:distribute')
+            ->everyMinute()
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Leadership performance distribution command failed');
+            })
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Leadership performance distribution cycle completed successfully');
             });
     })
     ->withMiddleware(function (Middleware $middleware): void {

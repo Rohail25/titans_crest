@@ -107,6 +107,24 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6 col-lg-3 mt-3">
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="stat-card-label">Leadership Daily Bonus</div>
+            <div class="stat-card-value">${{ number_format($leadershipPerformance['total_earned'] ?? 0, 2) }}</div>
+            <div class="stat-card-change positive">
+                Today: ${{ number_format($leadershipPerformance['daily_bonus_received_today'] ?? 0, 2) }} | Running: ${{ number_format($leadershipPerformance['daily_running_amount'] ?? 0, 2) }}/day
+            </div>
+            @if(!empty($leadershipPerformance['last_daily_bonus_paid_at']))
+                <small class="text-muted d-block mt-1">
+                    Last paid: {{ \Carbon\Carbon::parse($leadershipPerformance['last_daily_bonus_paid_at'])->format('M d, Y H:i') }}
+                </small>
+            @endif
+        </div>
+    </div>
 </div>
 
 <!-- Earning Cap Progress and Active Package Info -->

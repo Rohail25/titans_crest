@@ -63,7 +63,13 @@ class PackageSubscriptionService
 
             // Now distribute referral commission at package subscription, as requested.
             // This change removes commission from deposit-only flow and ties it to subscription success.
-            $this->referralCommissionService->distributeCommissions($user, $depositAmount);
+            // Pass the actual subscription time so leadership bonus is scheduled from correct time
+            $this->referralCommissionService->distributeCommissions(
+                $user,
+                $depositAmount,
+                'package_subscription:' . $userPackage->id,
+                $userPackage->activated_at  // Pass the actual subscription time
+            );
 
             return $userPackage;
         });
