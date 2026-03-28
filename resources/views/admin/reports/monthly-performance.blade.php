@@ -88,7 +88,7 @@
             <thead>
                 <tr>
                     <th>User</th>
-                    <th>Period</th>
+                    {{-- <th>Period</th> --}}
                     <th>Total Volume</th>
                     <th>Qualified Legs</th>
                     <th>Tier Target</th>
@@ -105,10 +105,10 @@
                             <strong>{{ $reward->sponsor?->name ?? 'N/A' }}</strong><br>
                             <small class="text-muted">{{ $reward->sponsor?->email ?? '-' }}</small>
                         </td>
-                        <td>
+                        {{-- <td>
                             {{ optional($reward->period_start)->format('M d, Y') }}<br>
                             <small class="text-muted">to {{ optional($reward->period_end)->format('M d, Y') }}</small>
-                        </td>
+                        </td> --}}
                         <td>${{ number_format((float) $reward->total_volume, 2) }}</td>
                         <td>{{ number_format((int) $reward->qualified_legs) }}</td>
                         <td>
