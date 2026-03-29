@@ -12,12 +12,12 @@
             <div class="card-body">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Deposit Instructions:</strong> Send BNB to the wallet address below. Your balance will be credited after blockchain confirmation.
+                    <strong>Deposit Instructions:</strong> Send Usdt Bep20 to the wallet address below. Your balance will be credited after blockchain confirmation.
                 </div>
 
                 <div class="card border-light mb-4">
                     <div class="card-body">
-                        <h6 class="text-muted mb-3">BNB Wallet Address</h6>
+                        <h6 class="text-muted mb-3">Usdt Bep20 Wallet Address</h6>
                         <div class="input-group">
                             <input type="text" class="form-control" value="{{ $bnbAddress }}" readonly id="bnbAddress">
                             <button class="btn btn-primary" type="button" onclick="copyToClipboard('bnbAddress')">
@@ -31,7 +31,7 @@
                 <form action="{{ route('user.deposit.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Amount (BNB or equivalent)</label>
+                        <label class="form-label">Amount (Usdt Bep20 or equivalent)</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" class="form-control @error('amount') is-invalid @enderror" 

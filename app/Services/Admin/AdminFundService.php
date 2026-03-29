@@ -26,6 +26,7 @@ class AdminFundService
             ]);
             $walletDeposit = Wallet::where('user_id', $user->id)->first();
             $walletDeposit->total_deposit += $amount;
+            $walletDeposit->balance += $amount;
             $walletDeposit->save();
             AuditLogService::log(
                 $admin,
