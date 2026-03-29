@@ -120,7 +120,7 @@
                         </td>
                         <td>${{ number_format((float) $reward->qualifying_tier_reward, 2) }}</td>
                         <td>
-                            <span class="badge badge-{{ $reward->status === 'paid' ? 'success' : ($reward->status === 'pending_payout' ? 'primary' : ($reward->status === 'not_qualified' ? 'warning' : ($reward->status === 'rejected' ? 'secondary' : 'danger'))) }}">
+                            <span class="badge badge-{{ $reward->status === 'paid' ? 'success' : ($reward->status === 'pending_payout' ? 'warning' : ($reward->status === 'not_qualified' ? 'warning' : ($reward->status === 'rejected' ? 'danger' : 'danger'))) }}">
                                 {{ ucfirst(str_replace('_', ' ', $reward->status)) }}
                             </span>
                         </td>
