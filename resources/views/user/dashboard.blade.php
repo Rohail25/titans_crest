@@ -314,9 +314,9 @@
                                 <button
                                     type="submit"
                                     class="btn btn-primary btn-sm w-100"
-                                    {{ $wallet['balance'] < $plan->price ? 'disabled' : '' }}
+                                    {{ ($wallet['spendable_deposit_balance'] ?? 0) < $plan->price ? 'disabled' : '' }}
                                 >
-                                    @if($wallet['balance'] < $plan->price)
+                                    @if(($wallet['spendable_deposit_balance'] ?? 0) < $plan->price)
                                         Insufficient Balance
                                     @else
                                         Subscribe Now

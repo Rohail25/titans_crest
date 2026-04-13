@@ -316,6 +316,7 @@ class WalletService
     {
         $wallet = $this->getOrCreateWallet($user);
         $activePackages = $this->getActiveEarningPackages($user);
+        $spendableDepositBalance = $this->getSpendableDepositBalance($user);
 
         $cap = $activePackages->sum(fn (UserPackage $up) => (float) $up->earning_cap);
         $earnedAgainstCap = $activePackages->sum(fn (UserPackage $up) => (float) $up->total_earned);
@@ -369,6 +370,7 @@ class WalletService
 
         return [
             'balance' => $wallet->balance,
+            'spendable_deposit_balance' => $spendableDepositBalance,
             'available_earnings_balance' => max(0, $availableEarningsBalance),
             'pending_balance' => $wallet->pending_balance,
             'suspicious_balance' => $wallet->suspicious_balance,
@@ -384,6 +386,29 @@ class WalletService
             'next_profit_time' => $nextProfitTime,
             'last_profit_time' => $lastProfitTime,
         ];
+    }
+
+    /**
+     * Get balance that can be used for package subscriptions (deposit funds only).
+     */
+    public function getSpendableDepositBalance(User $user): float
+    {
+        $wallet = $this->getOrCreateWallet($user);
+
+        $totalDebits = abs((float) Earning::query()
+            ->where('user_id', $user->id)
+            ->whereIn('type', ['withdrawal', 'package_subscription', 'admin_fund_deduct'])
+            ->sum('amount'));
+
+        $totalNonDepositEarnings = (float) Earning::query()
+            ->where('user_id', $user->id)
+            ->whereIn('type', ['referral', 'profit_share', 'bonus', 'commission', 'leadership_bonus'])
+            ->sum('amount');
+
+        $spendableFromDeposits = max(0, (float) $wallet->total_deposit - $totalDebits);
+        $maxSpendable = max(0, (float) $wallet->balance - $totalNonDepositEarnings);
+
+        return min($spendableFromDeposits, $maxSpendable);
     }
 
     public function determineCapMultiplier(User $user, float $depositAmount): int

@@ -132,6 +132,9 @@
                             <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-sm btn-primary">
                                 <i class="fas fa-eye"></i> View
                             </a>
+                            <a href="{{ route('admin.users.edit-email', $user->id) }}" class="btn btn-sm btn-warning ms-1">
+                                <i class="fas fa-envelope"></i> Edit Email
+                            </a>
                         </td>
                     </tr>
                 @empty

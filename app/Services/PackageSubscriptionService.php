@@ -23,8 +23,12 @@ class PackageSubscriptionService
             }
 
             $wallet = $this->walletService->getOrCreateWallet($user);
-            if ((float) $wallet->balance < (float) $package->price) {
-                throw new \Exception('Insufficient balance to subscribe this package.');
+            
+            // Only use deposits for package subscription - no commission, no bonuses, no profit sharing
+            $spendableFromDeposits = $this->walletService->getSpendableDepositBalance($user);
+
+            if ($spendableFromDeposits < (float) $package->price) {
+                throw new \Exception('Insufficient deposit balance to subscribe this package.');
             }
 
             $wallet->decrement('balance', (float) $package->price);
@@ -73,6 +77,19 @@ class PackageSubscriptionService
 
             return $userPackage;
         });
+    }
+
+    private function getRemainingDepositQuota(User $user): float
+    {
+        $wallet = $this->walletService->getOrCreateWallet($user);
+        $totalDeposited = (float) $wallet->total_deposit;
+
+        $totalSubscribedFromDeposits = abs((float) Earning::query()
+            ->where('user_id', $user->id)
+            ->where('type', 'package_subscription')
+            ->sum('amount'));
+
+        return max(0, $totalDeposited - $totalSubscribedFromDeposits);
     }
 
     private function getNextProfitTime(): \Carbon\Carbon

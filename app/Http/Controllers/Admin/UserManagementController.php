@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\Admin\AdminUserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserManagementController extends Controller
 {
@@ -44,13 +46,45 @@ class UserManagementController extends Controller
         ]);
     }
 
+    public function editEmail($id)
+    {
+        $user = User::where('role', 'user')->findOrFail($id);
+
+        return view('admin.users.edit-email', compact('user'));
+    }
+
+    public function updateEmail(Request $request, $id)
+    {
+        $user = User::where('role', 'user')->findOrFail($id);
+
+        $validated = $request->validate([
+            'email' => [
+                'required',
+                'string',
+                'email:rfc',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+
+        if ($email === strtolower((string) $user->email)) {
+            return redirect()->route('admin.users.show', $id)->with('success', 'Email is already up to date.');
+        }
+
+        AdminUserService::updateUserEmail($user, Auth::user(), $email);
+
+        return redirect()->route('admin.users.show', $id)->with('success', 'User email updated successfully.');
+    }
+
     public function ban(Request $request, $id)
     {
         $request->validate([
             'reason' => 'required|string|min:10',
         ]);
 
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         AdminUserService::banUser($user, Auth::user(), $request->reason);
 
@@ -59,7 +93,7 @@ class UserManagementController extends Controller
 
     public function activate($id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         AdminUserService::activateUser($user, Auth::user());
 
@@ -73,7 +107,7 @@ class UserManagementController extends Controller
             'reason' => 'required|string|min:10',
         ]);
 
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         AdminUserService::addManualCredit($user, Auth::user(), $request->amount, $request->reason);
 

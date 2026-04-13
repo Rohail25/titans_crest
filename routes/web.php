@@ -132,6 +132,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // User Management
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::get('{id}/edit-email', [UserManagementController::class, 'editEmail'])->name('edit-email');
+        Route::patch('{id}/email', [UserManagementController::class, 'updateEmail'])->name('update-email');
         Route::get('{id}', [UserManagementController::class, 'show'])->name('show');
         Route::post('{id}/ban', [UserManagementController::class, 'ban'])->name('ban');
         Route::post('{id}/activate', [UserManagementController::class, 'activate'])->name('activate');

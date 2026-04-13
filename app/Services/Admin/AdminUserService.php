@@ -241,6 +241,27 @@ class AdminUserService
         });
     }
 
+    public static function updateUserEmail(User $user, User $admin, string $email): void
+    {
+        DB::transaction(function () use ($user, $admin, $email) {
+            $oldValues = $user->only('email', 'email_verified_at');
+
+            $user->forceFill([
+                'email' => $email,
+                'email_verified_at' => null,
+            ])->save();
+
+            AuditLogService::log(
+                $admin,
+                'update_user_email',
+                'User',
+                $user->id,
+                $oldValues,
+                ['email' => $email, 'email_verified_at' => null]
+            );
+        });
+    }
+
     public static function getUserStats()
     {
         return [
