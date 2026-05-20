@@ -60,7 +60,7 @@ Route::get('/logout', function () {
 
 // Password Management Routes
 // Authenticated Routes - Change Password (from Edit Profile)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'active.user'])->group(function () {
     Route::get('/change-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showChangePasswordForm'])
         ->name('password.change-form');
     Route::post('/change-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'sendChangePasswordEmail'])
@@ -80,7 +80,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // User Dashboard Routes (Authenticated)
-Route::middleware(['auth'])->prefix('dashboard')->name('user.')->group(function () {
+Route::middleware(['auth', 'active.user'])->prefix('dashboard')->name('user.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     
     // Wallet Management

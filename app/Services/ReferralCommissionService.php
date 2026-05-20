@@ -41,7 +41,7 @@ class ReferralCommissionService
                 $directUpline = $uplines[0];
                 $instantCommissionAmount = round(($packagePrice * self::LEADERSHIP_INSTANT_PERCENT) / 100, 2);
 
-                if ($instantCommissionAmount > 0) {
+                if ($instantCommissionAmount > 0 && $directUpline->isActive()) {
                     try {
                         $this->walletService->addBalance(
                             $directUpline,
@@ -92,6 +92,11 @@ class ReferralCommissionService
                 }
 
                 $upline = $uplines[$commission->level - 1];
+
+                if (!$upline->isActive()) {
+                    continue;
+                }
+
                 $effectivePercentage = (float) $commission->percentage;
                 $commissionAmount = ($packagePrice * $effectivePercentage) / 100;
 

@@ -103,6 +103,7 @@ class ProfitService
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, User> $users */
         $users = $query->with('userPackages.package')
+            ->where('status', 'active')
             ->whereHas('userPackages', function ($q) {
                 $q->where('is_active', true)
                     ->where('package_status', 'active');

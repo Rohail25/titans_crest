@@ -40,6 +40,11 @@ class ProfitSharingService
                 }
 
                 $upline = $uplines[$level->level - 1];
+
+                if (!$upline->isActive()) {
+                    continue;
+                }
+
                 $shareAmount = ($dailyProfit * $level->percentage) / 100;
 
                 if ($shareAmount <= 0) {

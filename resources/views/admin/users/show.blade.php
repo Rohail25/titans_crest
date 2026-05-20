@@ -8,12 +8,6 @@
     User: {{ $user->name }}
 </div>
 
-<div class="mb-4">
-    <a href="{{ route('admin.users.edit-email', $user->id) }}" class="btn btn-warning">
-        <i class="fas fa-envelope"></i> Edit Email
-    </a>
-</div>
-
 <div class="row mb-4">
     <!-- User Info -->
     <div class="col-lg-6 mb-4">

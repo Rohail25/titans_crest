@@ -74,9 +74,9 @@
                         <hr>
 
                         <div class="profile-actions">
-                            <a href="{{ route('user.profile.edit') }}" class="btn btn-primary">
+                            {{-- <a href="{{ route('user.profile.edit') }}" class="btn btn-primary">
                                 <i class="fas fa-edit"></i> Edit Profile
-                            </a>
+                            </a> --}}
                             <a href="{{ route('password.change-form') }}" class="btn btn-warning">
                                 <i class="fas fa-lock"></i> Change Password
                             </a>

@@ -121,6 +121,10 @@ class LeadershipPerformanceService
                         return 'skip';
                     }
 
+                    if (!$sponsor->isActive()) {
+                        return 'skip';
+                    }
+
                     $credited = false;
 
                     try {

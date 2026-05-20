@@ -23,9 +23,19 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+
+            if ($user->role === 'user' && !$user->isActive()) {
+                Auth::logout();
+
+                return back()->withErrors([
+                    'email' => 'Your account is currently ' . $user->status . '. Please contact support.',
+                ])->withInput($request->except('password'));
+            }
+
             $request->session()->regenerate();
 
-            if (Auth::user()->role === 'admin') {
+            if ($user->role === 'admin') {
                 return redirect()->intended('/admin');
             }
 

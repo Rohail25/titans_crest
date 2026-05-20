@@ -155,6 +155,12 @@ class PasswordResetController extends Controller
         // Fire password reset event
         event(new PasswordReset($user));
 
+        if ($user->role === 'user' && !$user->isActive()) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Your account is currently ' . $user->status . '. Please contact support.',
+            ]);
+        }
+
         // Log user in
         auth()->login($user);
 
